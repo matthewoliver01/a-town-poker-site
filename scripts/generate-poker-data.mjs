@@ -263,6 +263,14 @@ const requirePlacement = (row, column) => {
   }
 };
 
+const requireEliminationRound = (row, column) => {
+  const value = cleanCell(row[column]);
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return String(value);
+  }
+  return requireString(row, column);
+};
+
 const placementRank = (placement) =>
   typeof placement === "number"
     ? placement
@@ -347,16 +355,16 @@ const groupPlayerRows = (rows, idColumn, validIds, onWarning) => {
   const grouped = new Map();
   for (const row of rows) {
     const eventId = requireString(row, idColumn);
+    const otherValues = Object.entries(row)
+      .filter(([column]) => column !== idColumn && !column.startsWith("__"))
+      .map(([, value]) => value);
+    if (otherValues.every(isBlank)) {
+      onWarning(
+        `${row.__sheet} row ${row.__row} was ignored because it only contains the unfinished event ID “${eventId}”.`,
+      );
+      continue;
+    }
     if (!validIds.has(eventId)) {
-      const otherValues = Object.entries(row)
-        .filter(([column]) => column !== idColumn && !column.startsWith("__"))
-        .map(([, value]) => value);
-      if (otherValues.every(isBlank)) {
-        onWarning(
-          `${row.__sheet} row ${row.__row} was ignored because it only contains the unfinished event ID “${eventId}”.`,
-        );
-        continue;
-      }
       fail(row, idColumn, `“${eventId}” does not match an event on its event sheet.`);
     }
     const eventRows = grouped.get(eventId) ?? [];
@@ -479,7 +487,7 @@ const buildTournaments = (parents, groupedRows) => {
         name,
         totalBuyIn,
         placement: requirePlacement(row, "Placement"),
-        eliminationRound: requireString(row, "Elimination Round"),
+        eliminationRound: requireEliminationRound(row, "Elimination Round"),
         placementPayout: requireMoney(row, "Placement Payout", 0),
         bonusPayout: requireMoney(row, "Bonus Payout", 0),
         __source: row,

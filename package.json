@@ -6,6 +6,7 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "update-data": "node scripts/generate-poker-data.mjs",
     "data:generate": "node scripts/generate-poker-data.mjs",
     "data:check": "node scripts/generate-poker-data.mjs --check",
     "predev": "npm run data:generate",

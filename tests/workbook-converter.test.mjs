@@ -39,6 +39,16 @@ test("the converter preserves tied placements from Excel as T-n strings", async 
   assert.equal(parseTournamentPlacementCell("3"), 3);
 });
 
+test("the converter safely skips an event-ID-only draft result row", async () => {
+  const sheets = structuredClone(await loadWorkbookSheets());
+  const results = sheets.find((sheet) => sheet.sheet === "Tournament Results");
+  const warnings = [];
+  results.data.push([results.data[4][0]]);
+
+  parsePokerSheets(sheets, { onWarning: (warning) => warnings.push(warning) });
+  assert.match(warnings.at(-1), /only contains the unfinished event ID/);
+});
+
 test("the converter rejects duplicate slugs with a sheet and row reference", async () => {
   const sheets = structuredClone(await loadWorkbookSheets());
   const tournaments = sheets.find((sheet) => sheet.sheet === "Tournaments");
