@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
-  const host = requestHeaders.get("host") ?? "river-street-poker.pages.dev";
+  const host = requestHeaders.get("host") ?? "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
   const metadataBase = new URL(`${protocol}://${host}`);
   const description = "Cash games, tournament results, player stats, and friendly rivalries—all in one place.";
@@ -26,19 +26,19 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase,
     title: {
-      default: "River Street Poker Club",
-      template: "%s · River Street Poker",
+      default: "A-Town Poker",
+      template: "%s · A-Town Poker",
     },
     description,
     openGraph: {
       type: "website",
-      title: "River Street Poker Club",
+      title: "A-Town Poker",
       description,
-      images: [{ url: "/og.png", width: 1728, height: 909, alt: "River Street Poker Club — The ledger behind the legend." }],
+      images: [{ url: "/og.png", width: 1728, height: 909, alt: "A-Town Poker — The ledger behind the legend." }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "River Street Poker Club",
+      title: "A-Town Poker",
       description,
       images: ["/og.png"],
     },
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <span className="grid size-7 place-items-center rounded-lg bg-primary text-primary-foreground">
                 <Club className="size-3.5 fill-current" aria-hidden="true" />
               </span>
-              <span className="font-semibold">River Street Poker Club</span>
+              <span className="font-semibold">A-Town Poker</span>
             </div>
             <p>Good hands. Better stories. Tracked since 2025.</p>
             <div className="flex gap-4">

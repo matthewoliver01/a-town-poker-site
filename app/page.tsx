@@ -14,8 +14,8 @@ import type { CashGame, Tournament } from "@/lib/poker-types";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "River Street Poker Club",
-  description: "Tournament finishes, cash-game ledgers, player stats, and friendly rivalries for the River Street Poker Club.",
+  title: "A-Town Poker",
+  description: "Tournament finishes, cash-game ledgers, player stats, and friendly rivalries for A-Town Poker.",
 };
 
 const tournaments = tournamentsJson as Tournament[];

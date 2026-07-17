@@ -26,13 +26,13 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">
       <div className="page-shell flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="group flex items-center gap-2.5" aria-label="River Street Poker home">
+        <Link href="/" className="group flex items-center gap-2.5" aria-label="A-Town Poker home">
           <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm transition-transform group-hover:-rotate-3">
             <Club className="size-4.5 fill-current" aria-hidden="true" />
           </span>
           <span className="leading-none">
-            <span className="block text-sm font-semibold tracking-tight">River Street</span>
-            <span className="mt-1 block text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Poker Club</span>
+            <span className="block text-sm font-semibold tracking-tight">A-Town</span>
+            <span className="mt-1 block text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Poker</span>
           </span>
         </Link>
 
