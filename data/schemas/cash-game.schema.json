@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://atownpoker.local/schemas/cash-game.schema.json",
+  "title": "A-Town poker cash games",
+  "description": "A collection of completed and upcoming cash games. Monetary values are whole US dollars.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "slug",
+      "title",
+      "date",
+      "host",
+      "venue",
+      "status",
+      "initialBuyIn",
+      "players"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^cash-game-[0-9]{4}-[0-9]{2}$"
+      },
+      "slug": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      },
+      "date": {
+        "type": "string",
+        "format": "date"
+      },
+      "host": {
+        "type": "string",
+        "minLength": 1
+      },
+      "venue": {
+        "type": "string",
+        "minLength": 1
+      },
+      "status": {
+        "enum": ["completed", "upcoming"]
+      },
+      "startTime": {
+        "type": "string",
+        "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+      },
+      "initialBuyIn": {
+        "type": "integer",
+        "exclusiveMinimum": 0
+      },
+      "players": {
+        "type": "array",
+        "minItems": 2
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": {
+            "status": { "const": "completed" }
+          },
+          "required": ["status"]
+        },
+        "then": {
+          "properties": {
+            "players": {
+              "items": { "$ref": "#/$defs/completedPlayer" }
+            }
+          },
+          "not": { "required": ["startTime"] }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "status": { "const": "upcoming" }
+          },
+          "required": ["status"]
+        },
+        "then": {
+          "required": ["startTime"],
+          "properties": {
+            "players": {
+              "items": { "$ref": "#/$defs/upcomingPlayer" }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "$defs": {
+    "completedPlayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "amountBuyIn", "amountAtEnd"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "amountBuyIn": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        },
+        "amountAtEnd": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "upcomingPlayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "amountBuyIn"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "amountBuyIn": {
+          "type": "integer",
+          "exclusiveMinimum": 0
+        }
+      }
+    }
+  }
+}
