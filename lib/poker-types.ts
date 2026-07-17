@@ -2,7 +2,7 @@
  * Core poker domain models.
  *
  * Dates use the ISO `YYYY-MM-DD` format and every monetary value is expressed
- * in whole US dollars. Tournament and cash-game records are discriminated by
+ * in US dollars with up to two decimal places. Tournament and cash-game records are discriminated by
  * `status`, so an upcoming event cannot accidentally contain completed results.
  */
 
@@ -18,6 +18,7 @@ export interface TournamentBase {
   date: ISODate;
   host: PlayerName;
   venue: string;
+  startTime?: string;
   initialBuyIn: number;
 }
 
@@ -61,6 +62,7 @@ export interface CashGameBase {
   date: ISODate;
   host: PlayerName;
   venue: string;
+  startTime?: string;
   initialBuyIn: number;
 }
 

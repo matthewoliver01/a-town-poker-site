@@ -466,14 +466,38 @@
     "startTime": "18:30",
     "initialBuyIn": 50,
     "players": [
-      { "name": "Alex Morgan", "totalBuyIn": 50 },
-      { "name": "Brooke Chen", "totalBuyIn": 50 },
-      { "name": "Chris Rivera", "totalBuyIn": 50 },
-      { "name": "Dana Patel", "totalBuyIn": 50 },
-      { "name": "Ethan Brooks", "totalBuyIn": 50 },
-      { "name": "Jordan Lee", "totalBuyIn": 50 },
-      { "name": "Morgan Reed", "totalBuyIn": 50 },
-      { "name": "Sam Taylor", "totalBuyIn": 50 }
+      {
+        "name": "Alex Morgan",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Brooke Chen",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Chris Rivera",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Dana Patel",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Ethan Brooks",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Jordan Lee",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Morgan Reed",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Sam Taylor",
+        "totalBuyIn": 50
+      }
     ]
   }
 ]

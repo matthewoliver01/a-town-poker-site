@@ -1,122 +1,60 @@
 [
   {
-    "id": "cash-game-2026-01",
-    "slug": "january-cash-night-2026",
-    "title": "January Cash Night",
-    "date": "2026-01-24",
-    "host": "Alex Morgan",
-    "venue": "Alex's Loft",
+    "id": "cash-game-2026-07-15",
+    "slug": "cash-game-2026-07-15",
+    "title": "Wednesday 7/15/26",
+    "date": "2026-07-15",
+    "host": "Matthew Oliver",
+    "venue": "Arrakis",
     "status": "completed",
-    "initialBuyIn": 100,
+    "startTime": "20:00",
+    "initialBuyIn": 20,
     "players": [
-      { "name": "Alex Morgan", "amountBuyIn": 200, "amountAtEnd": 310 },
-      { "name": "Brooke Chen", "amountBuyIn": 100, "amountAtEnd": 40 },
-      { "name": "Chris Rivera", "amountBuyIn": 150, "amountAtEnd": 90 },
-      { "name": "Dana Patel", "amountBuyIn": 100, "amountAtEnd": 180 },
-      { "name": "Ethan Brooks", "amountBuyIn": 200, "amountAtEnd": 120 },
-      { "name": "Jordan Lee", "amountBuyIn": 100, "amountAtEnd": 170 },
-      { "name": "Morgan Reed", "amountBuyIn": 150, "amountAtEnd": 140 },
-      { "name": "Sam Taylor", "amountBuyIn": 100, "amountAtEnd": 50 }
-    ]
-  },
-  {
-    "id": "cash-game-2026-02",
-    "slug": "february-cash-night-2026",
-    "title": "February Cash Night",
-    "date": "2026-02-28",
-    "host": "Brooke Chen",
-    "venue": "Brooke's Game Room",
-    "status": "completed",
-    "initialBuyIn": 100,
-    "players": [
-      { "name": "Alex Morgan", "amountBuyIn": 100, "amountAtEnd": 60 },
-      { "name": "Brooke Chen", "amountBuyIn": 200, "amountAtEnd": 340 },
-      { "name": "Chris Rivera", "amountBuyIn": 100, "amountAtEnd": 20 },
-      { "name": "Dana Patel", "amountBuyIn": 150, "amountAtEnd": 220 },
-      { "name": "Ethan Brooks", "amountBuyIn": 100, "amountAtEnd": 110 },
-      { "name": "Jordan Lee", "amountBuyIn": 200, "amountAtEnd": 120 },
-      { "name": "Morgan Reed", "amountBuyIn": 100, "amountAtEnd": 180 },
-      { "name": "Sam Taylor", "amountBuyIn": 150, "amountAtEnd": 50 }
-    ]
-  },
-  {
-    "id": "cash-game-2026-03",
-    "slug": "march-cash-night-2026",
-    "title": "March Cash Night",
-    "date": "2026-03-28",
-    "host": "Chris Rivera",
-    "venue": "Rivera Residence",
-    "status": "completed",
-    "initialBuyIn": 100,
-    "players": [
-      { "name": "Alex Morgan", "amountBuyIn": 150, "amountAtEnd": 240 },
-      { "name": "Brooke Chen", "amountBuyIn": 100, "amountAtEnd": 70 },
-      { "name": "Chris Rivera", "amountBuyIn": 200, "amountAtEnd": 330 },
-      { "name": "Dana Patel", "amountBuyIn": 100, "amountAtEnd": 40 },
-      { "name": "Ethan Brooks", "amountBuyIn": 150, "amountAtEnd": 90 },
-      { "name": "Jordan Lee", "amountBuyIn": 100, "amountAtEnd": 180 },
-      { "name": "Morgan Reed", "amountBuyIn": 200, "amountAtEnd": 100 },
-      { "name": "Sam Taylor", "amountBuyIn": 100, "amountAtEnd": 50 }
-    ]
-  },
-  {
-    "id": "cash-game-2026-04",
-    "slug": "april-cash-night-2026",
-    "title": "April Cash Night",
-    "date": "2026-04-25",
-    "host": "Dana Patel",
-    "venue": "Dana's Den",
-    "status": "completed",
-    "initialBuyIn": 100,
-    "players": [
-      { "name": "Alex Morgan", "amountBuyIn": 200, "amountAtEnd": 80 },
-      { "name": "Brooke Chen", "amountBuyIn": 150, "amountAtEnd": 260 },
-      { "name": "Chris Rivera", "amountBuyIn": 100, "amountAtEnd": 150 },
-      { "name": "Dana Patel", "amountBuyIn": 200, "amountAtEnd": 310 },
-      { "name": "Ethan Brooks", "amountBuyIn": 100, "amountAtEnd": 40 },
-      { "name": "Jordan Lee", "amountBuyIn": 150, "amountAtEnd": 90 },
-      { "name": "Morgan Reed", "amountBuyIn": 100, "amountAtEnd": 190 },
-      { "name": "Sam Taylor", "amountBuyIn": 200, "amountAtEnd": 80 }
-    ]
-  },
-  {
-    "id": "cash-game-2026-05",
-    "slug": "may-cash-night-2026",
-    "title": "May Cash Night",
-    "date": "2026-05-30",
-    "host": "Ethan Brooks",
-    "venue": "Brooks Basement Club",
-    "status": "completed",
-    "initialBuyIn": 100,
-    "players": [
-      { "name": "Alex Morgan", "amountBuyIn": 100, "amountAtEnd": 160 },
-      { "name": "Brooke Chen", "amountBuyIn": 200, "amountAtEnd": 90 },
-      { "name": "Chris Rivera", "amountBuyIn": 150, "amountAtEnd": 250 },
-      { "name": "Dana Patel", "amountBuyIn": 100, "amountAtEnd": 140 },
-      { "name": "Ethan Brooks", "amountBuyIn": 200, "amountAtEnd": 330 },
-      { "name": "Jordan Lee", "amountBuyIn": 100, "amountAtEnd": 40 },
-      { "name": "Morgan Reed", "amountBuyIn": 150, "amountAtEnd": 60 },
-      { "name": "Sam Taylor", "amountBuyIn": 100, "amountAtEnd": 30 }
-    ]
-  },
-  {
-    "id": "cash-game-2026-06",
-    "slug": "june-cash-night-2026",
-    "title": "June Cash Night",
-    "date": "2026-06-27",
-    "host": "Jordan Lee",
-    "venue": "Lee Family Patio",
-    "status": "completed",
-    "initialBuyIn": 100,
-    "players": [
-      { "name": "Alex Morgan", "amountBuyIn": 150, "amountAtEnd": 280 },
-      { "name": "Brooke Chen", "amountBuyIn": 100, "amountAtEnd": 150 },
-      { "name": "Chris Rivera", "amountBuyIn": 100, "amountAtEnd": 40 },
-      { "name": "Dana Patel", "amountBuyIn": 200, "amountAtEnd": 90 },
-      { "name": "Ethan Brooks", "amountBuyIn": 150, "amountAtEnd": 210 },
-      { "name": "Jordan Lee", "amountBuyIn": 200, "amountAtEnd": 330 },
-      { "name": "Morgan Reed", "amountBuyIn": 100, "amountAtEnd": 30 },
-      { "name": "Sam Taylor", "amountBuyIn": 150, "amountAtEnd": 20 }
+      {
+        "name": "Matthew Oliver",
+        "amountBuyIn": 40,
+        "amountAtEnd": 65
+      },
+      {
+        "name": "Luke Kadingo",
+        "amountBuyIn": 40,
+        "amountAtEnd": 41.25
+      },
+      {
+        "name": "Kyser Ehrhardt",
+        "amountBuyIn": 20,
+        "amountAtEnd": 42.75
+      },
+      {
+        "name": "Tony Puciloski",
+        "amountBuyIn": 40,
+        "amountAtEnd": 48.55
+      },
+      {
+        "name": "Sofia Medillin",
+        "amountBuyIn": 60,
+        "amountAtEnd": 23.25
+      },
+      {
+        "name": "Adam Blair",
+        "amountBuyIn": 60,
+        "amountAtEnd": 23.3
+      },
+      {
+        "name": "Nate Feldman",
+        "amountBuyIn": 20,
+        "amountAtEnd": 11.7
+      },
+      {
+        "name": "Liam Mayhew",
+        "amountBuyIn": 20,
+        "amountAtEnd": 33.5
+      },
+      {
+        "name": "Justin Ahmuty",
+        "amountBuyIn": 20,
+        "amountAtEnd": 30.05
+      }
     ]
   }
 ]

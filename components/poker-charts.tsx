@@ -90,7 +90,8 @@ function formatMoney(value: number, currency: string, locale: string) {
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(value);
 }
 
@@ -99,7 +100,7 @@ function formatCompactMoney(value: number, currency: string, locale: string) {
     style: "currency",
     currency,
     notation: Math.abs(value) >= 1_000 ? "compact" : "standard",
-    maximumFractionDigits: 1,
+    maximumFractionDigits: Math.abs(value) >= 1_000 ? 1 : 2,
   }).format(value);
 }
 

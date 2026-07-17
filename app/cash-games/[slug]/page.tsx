@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, CircleDollarSign, Coins, House, MapPin, Scale, TrendingUp, Users } from "lucide-react";
+import { ArrowLeft, CalendarDays, CircleDollarSign, Clock3, Coins, House, MapPin, Scale, TrendingUp, Users } from "lucide-react";
 import cashGamesJson from "@/data/cash-games.json";
 import { PlayerAvatar } from "@/components/player-avatar";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +51,7 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
   const biggestWinner = results[0];
   const averageBuyIn = totalBuyIn / game.players.length;
   const totalCashedOut = game.players.reduce((total, player) => total + player.amountAtEnd, 0);
+  const ledgerBalanced = Math.round(totalBuyIn * 100) === Math.round(totalCashedOut * 100);
 
   return (
     <div className="page-shell py-8 sm:py-12">
@@ -58,7 +59,7 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
 
       <header className="relative overflow-hidden rounded-3xl border bg-primary px-6 py-8 text-primary-foreground shadow-xl shadow-primary/10 subtle-grid sm:px-10 sm:py-10">
         <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div><Badge className="mb-5 bg-white/12 text-white ring-1 ring-inset ring-white/15">Session complete</Badge><h1 className="text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">{game.title}</h1><div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/70"><span className="inline-flex items-center gap-2"><CalendarDays className="size-4" /> {formatDate(game.date)}</span><span className="inline-flex items-center gap-2"><MapPin className="size-4" /> {game.venue}</span></div></div>
+          <div><Badge className="mb-5 bg-white/12 text-white ring-1 ring-inset ring-white/15">Session complete</Badge><h1 className="text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">{game.title}</h1><div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/70"><span className="inline-flex items-center gap-2"><CalendarDays className="size-4" /> {formatDate(game.date)}</span><span className="inline-flex items-center gap-2"><MapPin className="size-4" /> {game.venue}</span>{game.startTime ? <span className="inline-flex items-center gap-2"><Clock3 className="size-4" /> {game.startTime}</span> : null}</div></div>
           {biggestWinner ? <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm"><span className="grid size-11 place-items-center rounded-xl bg-[#d4ad56] text-[#2e2512]"><TrendingUp className="size-5" /></span><div><p className="text-xs font-medium text-white/60">Biggest winner</p><p className="mt-1 font-semibold">{biggestWinner.name} <span className="numeric ml-1 text-[#c7e7d4]">{formatSignedMoney(biggestWinner.profit)}</span></p></div></div> : null}
         </div>
       </header>
@@ -67,7 +68,7 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
         <SummaryCard icon={House} label="Host" value={game.host} />
         <SummaryCard icon={Users} label="Players" value={String(game.players.length)} />
         <SummaryCard icon={Coins} label="Total action" value={formatMoney(totalBuyIn)} subvalue={`${formatMoney(averageBuyIn)} avg. buy-in`} />
-        <SummaryCard icon={Scale} label="Ledger check" value={totalBuyIn === totalCashedOut ? "Balanced" : "Review needed"} subvalue={`${formatMoney(totalCashedOut)} cashed out`} />
+        <SummaryCard icon={Scale} label="Ledger check" value={ledgerBalanced ? "Balanced" : "Review needed"} subvalue={`${formatMoney(totalCashedOut)} cashed out`} />
       </section>
 
       <Card className="mt-10 overflow-hidden">

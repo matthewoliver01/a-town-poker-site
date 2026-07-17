@@ -64,7 +64,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/70">
               <span className="inline-flex items-center gap-2"><CalendarDays className="size-4" /> {formatDate(tournament.date)}</span>
               <span className="inline-flex items-center gap-2"><MapPin className="size-4" /> {tournament.venue}</span>
-              {tournament.status === "upcoming" ? <span className="inline-flex items-center gap-2"><Clock3 className="size-4" /> {tournament.startTime}</span> : null}
+              {tournament.startTime ? <span className="inline-flex items-center gap-2"><Clock3 className="size-4" /> {tournament.startTime}</span> : null}
             </div>
           </div>
           {tournament.status === "completed" ? (() => {

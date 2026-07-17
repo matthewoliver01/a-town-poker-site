@@ -38,6 +38,8 @@ const byOldestDate = <T extends { date: string }>(a: T, b: T): number =>
 const total = (values: readonly number[]): number =>
   values.reduce((sum, value) => sum + value, 0);
 
+const moneyTotal = (values: readonly number[]): number => round(total(values), 2);
+
 const monthKey = (date: string): string => date.slice(0, 7);
 
 export const toPlayerSlug = (name: PlayerName): string =>
@@ -133,23 +135,23 @@ export const getCashGameById = (
 ): CashGame | undefined => cashGames.find((cashGame) => cashGame.id === id);
 
 export const getTournamentPrizePool = (tournament: Tournament): number =>
-  total(tournament.players.map((player) => player.totalBuyIn));
+  moneyTotal(tournament.players.map((player) => player.totalBuyIn));
 
 export const getTournamentPayoutTotal = (
   tournament: CompletedTournament,
 ): number =>
-  total(
+  moneyTotal(
     tournament.players.map(
       (player) => player.placementPayout + player.bonusPayout,
     ),
   );
 
 export const getCashGameTotalBuyIn = (cashGame: CashGame): number =>
-  total(cashGame.players.map((player) => player.amountBuyIn));
+  moneyTotal(cashGame.players.map((player) => player.amountBuyIn));
 
 export const getCashGameEndingTotal = (
   cashGame: CompletedCashGame,
-): number => total(cashGame.players.map((player) => player.amountAtEnd));
+): number => moneyTotal(cashGame.players.map((player) => player.amountAtEnd));
 
 export const isTournamentPrizePoolBalanced = (
   tournament: CompletedTournament,
@@ -359,7 +361,9 @@ export const getMonthlyProfitSeries = (
 
   return [...points.values()].map((point) => ({
     ...point,
-    totalProfit: point.tournamentProfit + point.cashGameProfit,
+    tournamentProfit: round(point.tournamentProfit, 2),
+    cashGameProfit: round(point.cashGameProfit, 2),
+    totalProfit: round(point.tournamentProfit + point.cashGameProfit, 2),
   }));
 };
 

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://atownpoker.local/schemas/cash-game.schema.json",
   "title": "A-Town poker cash games",
-  "description": "A collection of completed and upcoming cash games. Monetary values are whole US dollars.",
+  "description": "A collection of completed and upcoming cash games. Monetary values are US dollars with up to two decimal places.",
   "type": "array",
   "minItems": 1,
   "items": {
@@ -22,7 +22,7 @@
     "properties": {
       "id": {
         "type": "string",
-        "pattern": "^cash-game-[0-9]{4}-[0-9]{2}$"
+        "pattern": "^cash-game-[0-9]{4}-[0-9]{2}(?:-[a-z0-9]+(?:-[a-z0-9]+)*)?$"
       },
       "slug": {
         "type": "string",
@@ -53,7 +53,8 @@
         "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
       },
       "initialBuyIn": {
-        "type": "integer",
+        "type": "number",
+        "multipleOf": 0.01,
         "exclusiveMinimum": 0
       },
       "players": {
@@ -74,8 +75,7 @@
             "players": {
               "items": { "$ref": "#/$defs/completedPlayer" }
             }
-          },
-          "not": { "required": ["startTime"] }
+          }
         }
       },
       {
@@ -107,11 +107,13 @@
           "minLength": 1
         },
         "amountBuyIn": {
-          "type": "integer",
+          "type": "number",
+          "multipleOf": 0.01,
           "exclusiveMinimum": 0
         },
         "amountAtEnd": {
-          "type": "integer",
+          "type": "number",
+          "multipleOf": 0.01,
           "minimum": 0
         }
       }
@@ -126,7 +128,8 @@
           "minLength": 1
         },
         "amountBuyIn": {
-          "type": "integer",
+          "type": "number",
+          "multipleOf": 0.01,
           "exclusiveMinimum": 0
         }
       }

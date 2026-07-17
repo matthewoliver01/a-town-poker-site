@@ -6,10 +6,14 @@
     "node": ">=22.13.0"
   },
   "scripts": {
+    "data:generate": "node scripts/generate-poker-data.mjs",
+    "data:check": "node scripts/generate-poker-data.mjs --check",
+    "predev": "npm run data:generate",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
+    "prebuild": "npm run data:generate",
     "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
+    "test": "npm run build && node --import tsx --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate"
   },
@@ -37,7 +41,9 @@
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
     "react-server-dom-webpack": "19.2.6",
+    "read-excel-file": "^9.3.2",
     "tailwindcss": "4.2.1",
+    "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "vinext": "0.0.50",
     "vite": "8.0.13",
