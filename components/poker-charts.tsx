@@ -3,6 +3,12 @@
 import { useId, useMemo } from "react";
 import { ChartNoAxesColumnIncreasing } from "lucide-react";
 import {
+  formatTournamentPlacement,
+  placementRank,
+  placementSortValue,
+} from "@/lib/poker-placement";
+import type { TournamentPlacement } from "@/lib/poker-types";
+import {
   Area,
   AreaChart,
   Bar,
@@ -46,7 +52,7 @@ export type TournamentFinishPoint = {
   /** Tournament name or a compact date label for the horizontal axis. */
   tournament: string;
   /** One-based finishing position. */
-  placement: number;
+  placement: TournamentPlacement;
   /** Number of entrants. Supplying it makes performances comparable across field sizes. */
   fieldSize?: number;
   payout?: number;
@@ -68,7 +74,10 @@ type ProfitTooltipProps = TooltipContentProps<number, string> & {
   locale: string;
 };
 
-type TournamentChartPoint = TournamentFinishPoint & {
+type TournamentChartPoint = Omit<TournamentFinishPoint, "fieldSize"> & {
+  fieldSize: number;
+  rank: number;
+  sortValue: number;
   performance: number;
 };
 
@@ -92,23 +101,6 @@ function formatCompactMoney(value: number, currency: string, locale: string) {
     notation: Math.abs(value) >= 1_000 ? "compact" : "standard",
     maximumFractionDigits: 1,
   }).format(value);
-}
-
-function ordinal(value: number) {
-  const remainder = value % 100;
-
-  if (remainder >= 11 && remainder <= 13) return `${value}th`;
-
-  switch (value % 10) {
-    case 1:
-      return `${value}st`;
-    case 2:
-      return `${value}nd`;
-    case 3:
-      return `${value}rd`;
-    default:
-      return `${value}th`;
-  }
 }
 
 function chartClassName(className?: string) {
@@ -217,7 +209,7 @@ function TournamentTooltip({
       <div className="mt-2 flex items-center justify-between gap-5">
         <span className="text-slate-500 dark:text-slate-400">Finish</span>
         <span className="font-semibold tabular-nums text-slate-800 dark:text-slate-200">
-          {ordinal(point.placement)}
+          {formatTournamentPlacement(point.placement)}
           {point.fieldSize ? ` of ${point.fieldSize}` : ""}
         </span>
       </div>
@@ -390,20 +382,28 @@ export function TournamentFinishesChart({
   emptyLabel = "Tournament finishes will appear after results are recorded.",
 }: TournamentFinishesChartProps) {
   const safeData = useMemo(() => {
-    const valid = data.filter(
-      (point) =>
-        point.tournament.trim().length > 0 &&
-        Number.isFinite(point.placement) &&
-        point.placement >= 1,
-    );
+    const valid = data.flatMap((point) => {
+      if (point.tournament.trim().length === 0) return [];
+
+      try {
+        const rank = placementRank(point.placement);
+        const sortValue = placementSortValue(point.placement);
+
+        if (!Number.isFinite(rank) || !Number.isFinite(sortValue)) return [];
+
+        return [{ ...point, rank, sortValue }];
+      } catch {
+        return [];
+      }
+    });
     const inferredFieldSize = Math.max(
       1,
-      ...valid.map((point) => Math.ceil(point.placement)),
+      ...valid.map((point) => Math.ceil(point.sortValue)),
     );
 
     return valid.map<TournamentChartPoint>((point) => {
       const fieldSize = Math.max(
-        Math.ceil(point.placement),
+        Math.ceil(point.sortValue),
         point.fieldSize && Number.isFinite(point.fieldSize)
           ? Math.ceil(point.fieldSize)
           : inferredFieldSize,
@@ -414,7 +414,7 @@ export function TournamentFinishesChart({
         fieldSize,
         performance: Math.max(
           0,
-          Math.min(100, ((fieldSize - point.placement + 1) / fieldSize) * 100),
+          Math.min(100, ((fieldSize - point.sortValue + 1) / fieldSize) * 100),
         ),
       };
     });
@@ -431,7 +431,7 @@ export function TournamentFinishesChart({
   const accessibleSummary = safeData
     .map(
       (point) =>
-        `${point.tournament}: ${ordinal(point.placement)} of ${point.fieldSize}`,
+        `${point.tournament}: ${formatTournamentPlacement(point.placement)} of ${point.fieldSize}`,
     )
     .join("; ");
 
@@ -495,9 +495,9 @@ export function TournamentFinishesChart({
               <Cell
                 key={`${point.tournament}-${point.date ?? index}`}
                 fill={
-                  point.placement === 1
+                  point.sortValue === 1
                     ? POSITIVE
-                    : point.placement <= 3
+                    : point.rank <= 3
                       ? POSITIVE_LIGHT
                       : "#86a38c"
                 }

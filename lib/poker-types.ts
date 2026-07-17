@@ -9,6 +9,7 @@
 export type ISODate = string;
 export type EventStatus = "completed" | "upcoming";
 export type PlayerName = string;
+export type TournamentPlacement = number | `T-${number}`;
 
 export interface TournamentBase {
   id: string;
@@ -24,7 +25,7 @@ export interface CompletedTournamentPlayer {
   name: PlayerName;
   /** Initial entry plus every rebuy. */
   totalBuyIn: number;
-  placement: number;
+  placement: TournamentPlacement;
   eliminationRound: string;
   placementPayout: number;
   bonusPayout: number;
@@ -103,8 +104,8 @@ export interface TournamentStanding {
   netProfit: number;
   averagePayout: number;
   averageFinish: number | null;
-  highestFinish: number | null;
-  lowestFinish: number | null;
+  highestFinish: TournamentPlacement | null;
+  lowestFinish: TournamentPlacement | null;
   returnOnInvestment: number;
 }
 
@@ -140,7 +141,7 @@ export interface TournamentHistoryItem {
   title: string;
   date: ISODate;
   host: PlayerName;
-  placement: number;
+  placement: TournamentPlacement;
   totalBuyIn: number;
   totalPayout: number;
   netProfit: number;

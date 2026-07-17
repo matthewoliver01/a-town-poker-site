@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDate, formatMoney, formatSignedMoney, ordinal } from "@/lib/format";
+import { formatDate, formatMoney, formatSignedMoney } from "@/lib/format";
+import { compareTournamentPlacements, formatTournamentPlacement } from "@/lib/poker-placement";
 import type { Tournament } from "@/lib/poker-types";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +42,13 @@ export default async function TournamentDetailPage({ params }: { params: Promise
   if (!tournament) notFound();
 
   const prizePool = tournament.players.reduce((total, player) => total + player.totalBuyIn, 0);
+  const sortedCompletedPlayers = tournament.status === "completed"
+    ? tournament.players.toSorted((a, b) => compareTournamentPlacements(a.placement, b.placement))
+    : [];
+  const topFinisher = sortedCompletedPlayers[0];
+  const topFinishers = topFinisher
+    ? sortedCompletedPlayers.filter((player) => compareTournamentPlacements(player.placement, topFinisher.placement) === 0)
+    : [];
 
   return (
     <div className="page-shell py-8 sm:py-12">
@@ -60,11 +68,10 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             </div>
           </div>
           {tournament.status === "completed" ? (() => {
-            const champion = tournament.players.find((player) => player.placement === 1);
-            return champion ? (
+            return topFinishers.length > 0 ? (
               <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
                 <span className="grid size-11 place-items-center rounded-xl bg-[#d4ad56] text-[#2e2512]"><Crown className="size-5" /></span>
-                <div><p className="text-xs font-medium text-white/60">Champion</p><p className="mt-1 font-semibold">{champion.name}</p></div>
+                <div><p className="text-xs font-medium text-white/60">{topFinishers.length > 1 ? "Co-champions" : "Champion"}</p><p className="mt-1 font-semibold">{topFinishers.map((player) => player.name).join(", ")}</p></div>
               </div>
             ) : null;
           })() : null}
@@ -90,12 +97,15 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {tournament.players.toSorted((a, b) => a.placement - b.placement).map((player) => {
+                  {sortedCompletedPlayers.map((player) => {
                     const payout = player.placementPayout + player.bonusPayout;
                     const net = payout - player.totalBuyIn;
+                    const isTopFinisher = topFinisher
+                      ? compareTournamentPlacements(player.placement, topFinisher.placement) === 0
+                      : false;
                     return (
-                      <TableRow key={player.name} className={player.placement === 1 ? "bg-[#fbf8ef] hover:bg-[#f8f2e2]" : undefined}>
-                        <TableCell className="numeric text-center font-semibold">{player.placement === 1 ? <span className="inline-flex items-center gap-1 text-[#8b671e]"><Crown className="size-3.5" /> 1st</span> : ordinal(player.placement)}</TableCell>
+                      <TableRow key={player.name} className={isTopFinisher ? "bg-[#fbf8ef] hover:bg-[#f8f2e2]" : undefined}>
+                        <TableCell className="numeric text-center font-semibold">{isTopFinisher ? <span className="inline-flex items-center gap-1 text-[#8b671e]"><Crown className="size-3.5" /> {formatTournamentPlacement(player.placement)}</span> : formatTournamentPlacement(player.placement)}</TableCell>
                         <TableCell><div className="flex min-w-40 items-center gap-3"><PlayerAvatar name={player.name} className="size-9" /><span className="font-semibold">{player.name}</span></div></TableCell>
                         <TableCell className="whitespace-nowrap text-muted-foreground">{player.eliminationRound}</TableCell>
                         <TableCell className="numeric text-right">{formatMoney(player.totalBuyIn)}</TableCell>

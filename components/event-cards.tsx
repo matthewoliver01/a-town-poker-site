@@ -3,6 +3,7 @@ import { ArrowUpRight, CalendarDays, CircleDollarSign, Crown, MapPin, Users } fr
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatDate, formatMoney, formatSignedMoney } from "@/lib/format";
+import { compareTournamentPlacements } from "@/lib/poker-placement";
 import type { CashGame, Tournament } from "@/lib/poker-types";
 
 function Meta({ icon: Icon, children }: { icon: typeof CalendarDays; children: React.ReactNode }) {
@@ -16,7 +17,13 @@ function Meta({ icon: Icon, children }: { icon: typeof CalendarDays; children: R
 
 export function TournamentCard({ tournament }: { tournament: Tournament }) {
   const completed = tournament.status === "completed";
-  const champion = completed ? tournament.players.find((player) => player.placement === 1) : undefined;
+  const rankedPlayers = completed
+    ? tournament.players.toSorted((a, b) => compareTournamentPlacements(a.placement, b.placement))
+    : [];
+  const bestPlacement = rankedPlayers[0]?.placement;
+  const champions = bestPlacement === undefined
+    ? []
+    : rankedPlayers.filter((player) => compareTournamentPlacements(player.placement, bestPlacement) === 0);
   const prizePool = tournament.players.reduce((total, player) => total + player.totalBuyIn, 0);
 
   return (
@@ -51,10 +58,10 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
           </div>
         </CardContent>
         <CardFooter className="border-t py-4 text-sm">
-          {champion ? (
+          {champions.length > 0 ? (
             <div className="flex items-center gap-2">
               <span className="grid size-7 place-items-center rounded-full bg-[#f4ead2] text-[#86621c]"><Crown className="size-3.5" /></span>
-              <span><span className="text-muted-foreground">Champion</span> <span className="ml-1 font-semibold">{champion.name}</span></span>
+              <span className="min-w-0"><span className="text-muted-foreground">{champions.length > 1 ? "Co-champions" : "Champion"}</span> <span className="ml-1 font-semibold">{champions.map((player) => player.name).join(", ")}</span></span>
             </div>
           ) : (
             <span className="font-medium text-primary">Registration open · {"startTime" in tournament ? tournament.startTime : "TBD"}</span>

@@ -13,10 +13,16 @@ import type {
   RecentTournamentActivity,
   Tournament,
   TournamentHistoryItem,
+  TournamentPlacement,
   TournamentStanding,
   UpcomingCashGame,
   UpcomingTournament,
 } from "./poker-types";
+import {
+  compareTournamentPlacements,
+  placementRank,
+  placementSortValue,
+} from "./poker-placement";
 
 const round = (value: number, digits = 2): number => {
   const multiplier = 10 ** digits;
@@ -161,7 +167,7 @@ interface TournamentAccumulator {
   totalBuyIn: number;
   placementWinnings: number;
   bonusWinnings: number;
-  placements: number[];
+  placements: TournamentPlacement[];
 }
 
 export const getTournamentStandings = (
@@ -184,8 +190,8 @@ export const getTournamentStandings = (
       };
 
       stats.tournamentsPlayed += 1;
-      stats.wins += player.placement === 1 ? 1 : 0;
-      stats.topThreeFinishes += player.placement <= 3 ? 1 : 0;
+      stats.wins += placementRank(player.placement) === 1 ? 1 : 0;
+      stats.topThreeFinishes += placementRank(player.placement) <= 3 ? 1 : 0;
       stats.inTheMoneyFinishes += player.placementPayout > 0 ? 1 : 0;
       stats.totalBuyIn += player.totalBuyIn;
       stats.placementWinnings += player.placementPayout;
@@ -217,11 +223,16 @@ export const getTournamentStandings = (
         netProfit,
         averagePayout: round(amountWon / stats.tournamentsPlayed),
         averageFinish: round(
-          total(stats.placements) / stats.tournamentsPlayed,
+          total(stats.placements.map(placementSortValue)) /
+            stats.tournamentsPlayed,
           1,
         ),
-        highestFinish: Math.min(...stats.placements),
-        lowestFinish: Math.max(...stats.placements),
+        highestFinish: [...stats.placements].sort(
+          compareTournamentPlacements,
+        )[0],
+        lowestFinish: [...stats.placements].sort(
+          compareTournamentPlacements,
+        )[stats.placements.length - 1],
         returnOnInvestment: round((netProfit / stats.totalBuyIn) * 100, 1),
       };
     })

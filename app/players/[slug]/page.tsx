@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarCheck, CircleDollarSign, Crown, HandCoins, House, Target, TrendingUp, Trophy } from "lucide-react";
+import { ArrowLeft, CalendarCheck, CircleDollarSign, Crown, HandCoins, Target, TrendingUp, Trophy } from "lucide-react";
 import cashGamesJson from "@/data/cash-games.json";
 import tournamentsJson from "@/data/tournaments.json";
 import { MonthlyProfitChart, TournamentFinishesChart } from "@/components/poker-charts";
@@ -9,8 +9,9 @@ import { PlayerAvatar } from "@/components/player-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDate, formatMoney, formatSignedMoney, ordinal } from "@/lib/format";
+import { formatDate, formatMoney, formatSignedMoney } from "@/lib/format";
 import { getPlayerProfileBySlug, getPlayerProfiles, getTournamentBySlug } from "@/lib/poker-data";
+import { formatTournamentPlacement } from "@/lib/poker-placement";
 import type { CashGame, Tournament } from "@/lib/poker-types";
 import { cn } from "@/lib/utils";
 
@@ -87,7 +88,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ s
       <section className="mt-6 grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader><div className="flex items-center gap-3"><span className="grid size-9 place-items-center rounded-xl bg-accent text-primary"><Crown className="size-4" /></span><div><CardTitle className="text-lg">Tournament snapshot</CardTitle><p className="text-sm text-muted-foreground">{profile.tournaments.tournamentsPlayed} events played</p></div></div></CardHeader>
-          <CardContent className="grid grid-cols-2 gap-x-8 gap-y-5 border-t pt-5 sm:grid-cols-3"><div><p className="text-xs text-muted-foreground">Net profit</p><p className={cn("numeric mt-1 font-semibold", profile.tournaments.netProfit >= 0 ? "text-positive" : "text-negative")}>{formatSignedMoney(profile.tournaments.netProfit)}</p></div><div><p className="text-xs text-muted-foreground">Total payouts</p><p className="numeric mt-1 font-semibold">{formatMoney(profile.tournaments.amountWon)}</p></div><div><p className="text-xs text-muted-foreground">Average finish</p><p className="numeric mt-1 font-semibold">{profile.tournaments.averageFinish === null ? "—" : profile.tournaments.averageFinish.toFixed(1)}</p></div><div><p className="text-xs text-muted-foreground">Best finish</p><p className="numeric mt-1 font-semibold">{profile.tournaments.highestFinish === null ? "—" : ordinal(profile.tournaments.highestFinish)}</p></div><div><p className="text-xs text-muted-foreground">In the money</p><p className="numeric mt-1 font-semibold">{profile.tournaments.cashRate.toFixed(0)}%</p></div><div><p className="text-xs text-muted-foreground">ROI</p><p className="numeric mt-1 font-semibold">{profile.tournaments.returnOnInvestment.toFixed(1)}%</p></div></CardContent>
+          <CardContent className="grid grid-cols-2 gap-x-8 gap-y-5 border-t pt-5 sm:grid-cols-3"><div><p className="text-xs text-muted-foreground">Net profit</p><p className={cn("numeric mt-1 font-semibold", profile.tournaments.netProfit >= 0 ? "text-positive" : "text-negative")}>{formatSignedMoney(profile.tournaments.netProfit)}</p></div><div><p className="text-xs text-muted-foreground">Total payouts</p><p className="numeric mt-1 font-semibold">{formatMoney(profile.tournaments.amountWon)}</p></div><div><p className="text-xs text-muted-foreground">Average finish</p><p className="numeric mt-1 font-semibold">{profile.tournaments.averageFinish === null ? "—" : profile.tournaments.averageFinish.toFixed(1)}</p></div><div><p className="text-xs text-muted-foreground">Best finish</p><p className="numeric mt-1 font-semibold">{profile.tournaments.highestFinish === null ? "—" : formatTournamentPlacement(profile.tournaments.highestFinish)}</p></div><div><p className="text-xs text-muted-foreground">In the money</p><p className="numeric mt-1 font-semibold">{profile.tournaments.cashRate.toFixed(0)}%</p></div><div><p className="text-xs text-muted-foreground">ROI</p><p className="numeric mt-1 font-semibold">{profile.tournaments.returnOnInvestment.toFixed(1)}%</p></div></CardContent>
         </Card>
         <Card>
           <CardHeader><div className="flex items-center gap-3"><span className="grid size-9 place-items-center rounded-xl bg-accent text-primary"><HandCoins className="size-4" /></span><div><CardTitle className="text-lg">Cash-game snapshot</CardTitle><p className="text-sm text-muted-foreground">{profile.cashGames.gamesPlayed} sessions played</p></div></div></CardHeader>
@@ -106,7 +107,7 @@ export default async function PlayerDetailPage({ params }: { params: Promise<{ s
                   <TableCell className="whitespace-nowrap text-muted-foreground">{formatDate(event.date)}</TableCell>
                   <TableCell><Link href={event.eventType === "tournament" ? `/tournaments/${event.slug}` : `/cash-games/${event.slug}`} className="font-semibold hover:text-primary hover:underline">{event.title}</Link><p className="mt-1 text-xs text-muted-foreground">Hosted by {event.host}</p></TableCell>
                   <TableCell><Badge variant="secondary">{event.eventType === "tournament" ? "Tournament" : "Cash game"}</Badge></TableCell>
-                  <TableCell className="numeric text-right">{event.eventType === "tournament" ? ordinal(event.placement) : formatMoney(event.amountAtEnd)}</TableCell>
+                  <TableCell className="numeric text-right">{event.eventType === "tournament" ? formatTournamentPlacement(event.placement) : formatMoney(event.amountAtEnd)}</TableCell>
                   <TableCell className={cn("numeric text-right font-semibold", event.netProfit > 0 ? "text-positive" : event.netProfit < 0 ? "text-negative" : "")}>{formatSignedMoney(event.netProfit)}</TableCell>
                 </TableRow>
               ))}
