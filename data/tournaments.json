@@ -1,502 +1,273 @@
 [
   {
-    "id": "tournament-2026-01",
-    "slug": "winter-kickoff-2026",
-    "title": "Winter Kickoff",
-    "date": "2026-01-10",
-    "host": "Alex Morgan",
-    "venue": "Alex's Loft",
+    "id": "tournament-2026-03-28",
+    "slug": "tournament-2026-03-28",
+    "title": "March 2026 Tournament",
+    "date": "2026-03-28",
+    "host": "Nate F",
+    "venue": "Nate's House",
     "status": "completed",
-    "initialBuyIn": 40,
+    "initialBuyIn": 20,
     "players": [
       {
-        "name": "Brooke Chen",
-        "totalBuyIn": 40,
+        "name": "Ben H.",
+        "totalBuyIn": 60,
         "placement": 1,
         "eliminationRound": "Champion",
         "placementPayout": 200,
-        "bonusPayout": 20
+        "bonusPayout": 0
       },
       {
-        "name": "Alex Morgan",
-        "totalBuyIn": 80,
+        "name": "Briant T.",
+        "totalBuyIn": 20,
         "placement": 2,
         "eliminationRound": "Heads-up",
-        "placementPayout": 120,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Jordan Lee",
-        "totalBuyIn": 80,
-        "placement": 3,
-        "eliminationRound": "Three-handed",
         "placementPayout": 60,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Dana Patel",
-        "totalBuyIn": 40,
-        "placement": 4,
-        "eliminationRound": "Level 9",
-        "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Sam Taylor",
-        "totalBuyIn": 40,
-        "placement": 5,
-        "eliminationRound": "Level 8",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      },
-      {
-        "name": "Chris Rivera",
-        "totalBuyIn": 80,
-        "placement": 6,
-        "eliminationRound": "Level 7",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      },
-      {
-        "name": "Morgan Reed",
-        "totalBuyIn": 40,
-        "placement": 7,
-        "eliminationRound": "Level 6",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      },
-      {
-        "name": "Ethan Brooks",
-        "totalBuyIn": 40,
-        "placement": 8,
-        "eliminationRound": "Level 5",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      }
-    ]
-  },
-  {
-    "id": "tournament-2026-02",
-    "slug": "hearts-and-spades-2026",
-    "title": "Hearts & Spades Classic",
-    "date": "2026-02-14",
-    "host": "Brooke Chen",
-    "venue": "Brooke's Game Room",
-    "status": "completed",
-    "initialBuyIn": 50,
-    "players": [
-      {
-        "name": "Dana Patel",
-        "totalBuyIn": 100,
-        "placement": 1,
-        "eliminationRound": "Champion",
-        "placementPayout": 245,
-        "bonusPayout": 30
-      },
-      {
-        "name": "Chris Rivera",
-        "totalBuyIn": 50,
-        "placement": 2,
-        "eliminationRound": "Heads-up",
-        "placementPayout": 140,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Morgan Reed",
-        "totalBuyIn": 100,
+        "name": "Nate F.",
+        "totalBuyIn": 20,
         "placement": 3,
-        "eliminationRound": "Three-handed",
-        "placementPayout": 85,
-        "bonusPayout": 10
+        "eliminationRound": "N/A",
+        "placementPayout": 40,
+        "bonusPayout": 0
       },
       {
-        "name": "Sam Taylor",
-        "totalBuyIn": 50,
+        "name": "Sofia M.",
+        "totalBuyIn": 20,
         "placement": 4,
-        "eliminationRound": "Level 10",
-        "placementPayout": 0,
-        "bonusPayout": 20
+        "eliminationRound": "N/A",
+        "placementPayout": 20,
+        "bonusPayout": 0
       },
       {
-        "name": "Alex Morgan",
-        "totalBuyIn": 50,
+        "name": "Tony P.",
+        "totalBuyIn": 20,
         "placement": 5,
-        "eliminationRound": "Level 9",
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Brooke Chen",
-        "totalBuyIn": 100,
+        "name": "Luke K.",
+        "totalBuyIn": 20,
         "placement": 6,
-        "eliminationRound": "Level 8",
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Ethan Brooks",
-        "totalBuyIn": 50,
+        "name": "Noah S.",
+        "totalBuyIn": 20,
         "placement": 7,
-        "eliminationRound": "Level 7",
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Jordan Lee",
-        "totalBuyIn": 50,
+        "name": "Adam B.",
+        "totalBuyIn": 20,
         "placement": 8,
-        "eliminationRound": "Level 6",
+        "eliminationRound": "N/A",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Justin A.",
+        "totalBuyIn": 20,
+        "placement": 9,
+        "eliminationRound": "N/A",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Kyser E.",
+        "totalBuyIn": 20,
+        "placement": 10,
+        "eliminationRound": "N/A",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Matt O.",
+        "totalBuyIn": 20,
+        "placement": 11,
+        "eliminationRound": "N/A",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Sammy A.",
+        "totalBuyIn": 20,
+        "placement": 12,
+        "eliminationRound": "N/A",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "David P.",
+        "totalBuyIn": 20,
+        "placement": 13,
+        "eliminationRound": "N/A",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Liam M.",
+        "totalBuyIn": 20,
+        "placement": 14,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       }
     ]
   },
   {
-    "id": "tournament-2026-03",
-    "slug": "spring-showdown-2026",
-    "title": "Spring Showdown",
-    "date": "2026-03-21",
-    "host": "Chris Rivera",
-    "venue": "Rivera Residence",
+    "id": "tournament-2025-09-13",
+    "slug": "tournament-2025-09-13",
+    "title": "A-Town Poker Inaugural Tournament",
+    "date": "2025-09-13",
+    "host": "Nate F",
+    "venue": "Nate's House",
     "status": "completed",
-    "initialBuyIn": 40,
+    "initialBuyIn": 20,
     "players": [
       {
-        "name": "Ethan Brooks",
-        "totalBuyIn": 120,
-        "placement": 1,
-        "eliminationRound": "Champion",
-        "placementPayout": 220,
-        "bonusPayout": 40
-      },
-      {
-        "name": "Morgan Reed",
+        "name": "Max A.",
         "totalBuyIn": 40,
-        "placement": 2,
-        "eliminationRound": "Heads-up",
-        "placementPayout": 140,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Brooke Chen",
-        "totalBuyIn": 80,
-        "placement": 3,
-        "eliminationRound": "Three-handed",
-        "placementPayout": 80,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Alex Morgan",
-        "totalBuyIn": 40,
-        "placement": 4,
-        "eliminationRound": "Level 9",
-        "placementPayout": 0,
+        "placement": "T-1",
+        "eliminationRound": "N/A",
+        "placementPayout": 100,
         "bonusPayout": 0
       },
       {
-        "name": "Jordan Lee",
-        "totalBuyIn": 40,
+        "name": "Joey E.",
+        "totalBuyIn": 20,
+        "placement": "T-1",
+        "eliminationRound": "N/A",
+        "placementPayout": 100,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Kyser E.",
+        "totalBuyIn": 20,
+        "placement": "T-1",
+        "eliminationRound": "N/A",
+        "placementPayout": 100,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Matt O.",
+        "totalBuyIn": 20,
+        "placement": "T-1",
+        "eliminationRound": "N/A",
+        "placementPayout": 100,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Sofia M.",
+        "totalBuyIn": 20,
         "placement": 5,
-        "eliminationRound": "Level 8",
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Sam Taylor",
-        "totalBuyIn": 80,
+        "name": "Tony P.",
+        "totalBuyIn": 20,
         "placement": 6,
-        "eliminationRound": "Level 7",
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Dana Patel",
-        "totalBuyIn": 80,
+        "name": "Noah S.",
+        "totalBuyIn": 20,
         "placement": 7,
-        "eliminationRound": "Level 6",
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Chris Rivera",
+        "name": "Chase C.",
         "totalBuyIn": 40,
         "placement": 8,
-        "eliminationRound": "Level 5",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      }
-    ]
-  },
-  {
-    "id": "tournament-2026-04",
-    "slug": "tax-day-turbo-2026",
-    "title": "Tax Day Turbo",
-    "date": "2026-04-18",
-    "host": "Dana Patel",
-    "venue": "Dana's Den",
-    "status": "completed",
-    "initialBuyIn": 50,
-    "players": [
-      {
-        "name": "Jordan Lee",
-        "totalBuyIn": 100,
-        "placement": 1,
-        "eliminationRound": "Champion",
-        "placementPayout": 260,
-        "bonusPayout": 40
-      },
-      {
-        "name": "Alex Morgan",
-        "totalBuyIn": 100,
-        "placement": 2,
-        "eliminationRound": "Heads-up",
-        "placementPayout": 170,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Dana Patel",
-        "totalBuyIn": 50,
-        "placement": 3,
-        "eliminationRound": "Three-handed",
-        "placementPayout": 90,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Chris Rivera",
-        "totalBuyIn": 100,
-        "placement": 4,
-        "eliminationRound": "Level 10",
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Morgan Reed",
-        "totalBuyIn": 50,
-        "placement": 5,
-        "eliminationRound": "Level 9",
+        "name": "Liam M.",
+        "totalBuyIn": 20,
+        "placement": 9,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Brooke Chen",
-        "totalBuyIn": 50,
-        "placement": 6,
-        "eliminationRound": "Level 8",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      },
-      {
-        "name": "Sam Taylor",
-        "totalBuyIn": 100,
-        "placement": 7,
-        "eliminationRound": "Level 7",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      },
-      {
-        "name": "Ethan Brooks",
-        "totalBuyIn": 50,
-        "placement": 8,
-        "eliminationRound": "Level 6",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      }
-    ]
-  },
-  {
-    "id": "tournament-2026-05",
-    "slug": "memorial-main-event-2026",
-    "title": "Memorial Main Event",
-    "date": "2026-05-23",
-    "host": "Ethan Brooks",
-    "venue": "Brooks Basement Club",
-    "status": "completed",
-    "initialBuyIn": 40,
-    "players": [
-      {
-        "name": "Sam Taylor",
+        "name": "TBD 2",
         "totalBuyIn": 40,
-        "placement": 1,
-        "eliminationRound": "Champion",
-        "placementPayout": 220,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Brooke Chen",
-        "totalBuyIn": 120,
-        "placement": 2,
-        "eliminationRound": "Heads-up",
-        "placementPayout": 140,
-        "bonusPayout": 40
-      },
-      {
-        "name": "Chris Rivera",
-        "totalBuyIn": 80,
-        "placement": 3,
-        "eliminationRound": "Three-handed",
-        "placementPayout": 80,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Ethan Brooks",
-        "totalBuyIn": 80,
-        "placement": 4,
-        "eliminationRound": "Level 9",
+        "placement": 10,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Alex Morgan",
-        "totalBuyIn": 40,
-        "placement": 5,
-        "eliminationRound": "Level 8",
+        "name": "TBD 1",
+        "totalBuyIn": 20,
+        "placement": 11,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Morgan Reed",
-        "totalBuyIn": 80,
-        "placement": 6,
-        "eliminationRound": "Level 7",
+        "name": "Justin A.",
+        "totalBuyIn": 20,
+        "placement": 12,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Jordan Lee",
-        "totalBuyIn": 40,
-        "placement": 7,
-        "eliminationRound": "Level 6",
+        "name": "Nathan C.",
+        "totalBuyIn": 20,
+        "placement": 13,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Dana Patel",
-        "totalBuyIn": 40,
-        "placement": 8,
-        "eliminationRound": "Level 5",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      }
-    ]
-  },
-  {
-    "id": "tournament-2026-06",
-    "slug": "summer-deepstack-2026",
-    "title": "Summer Deepstack",
-    "date": "2026-06-20",
-    "host": "Jordan Lee",
-    "venue": "Lee Family Patio",
-    "status": "completed",
-    "initialBuyIn": 50,
-    "players": [
-      {
-        "name": "Alex Morgan",
-        "totalBuyIn": 100,
-        "placement": 1,
-        "eliminationRound": "Champion",
-        "placementPayout": 260,
-        "bonusPayout": 40
-      },
-      {
-        "name": "Ethan Brooks",
-        "totalBuyIn": 50,
-        "placement": 2,
-        "eliminationRound": "Heads-up",
-        "placementPayout": 170,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Dana Patel",
-        "totalBuyIn": 100,
-        "placement": 3,
-        "eliminationRound": "Three-handed",
-        "placementPayout": 90,
-        "bonusPayout": 20
-      },
-      {
-        "name": "Morgan Reed",
-        "totalBuyIn": 100,
-        "placement": 4,
-        "eliminationRound": "Level 10",
+        "name": "Luke K.",
+        "totalBuyIn": 20,
+        "placement": 14,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Chris Rivera",
-        "totalBuyIn": 50,
-        "placement": 5,
-        "eliminationRound": "Level 9",
+        "name": "Adam B.",
+        "totalBuyIn": 20,
+        "placement": 15,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Jordan Lee",
-        "totalBuyIn": 100,
-        "placement": 6,
-        "eliminationRound": "Level 8",
+        "name": "Sammy A.",
+        "totalBuyIn": 20,
+        "placement": 16,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
-        "name": "Brooke Chen",
-        "totalBuyIn": 50,
-        "placement": 7,
-        "eliminationRound": "Level 7",
+        "name": "David P.",
+        "totalBuyIn": 20,
+        "placement": 17,
+        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
-      },
-      {
-        "name": "Sam Taylor",
-        "totalBuyIn": 50,
-        "placement": 8,
-        "eliminationRound": "Level 6",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      }
-    ]
-  },
-  {
-    "id": "tournament-2026-08",
-    "slug": "late-summer-freezeout-2026",
-    "title": "Late Summer Freezeout",
-    "date": "2026-08-15",
-    "host": "Morgan Reed",
-    "venue": "Reed Rooftop",
-    "status": "upcoming",
-    "startTime": "18:30",
-    "initialBuyIn": 50,
-    "players": [
-      {
-        "name": "Alex Morgan",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Brooke Chen",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Chris Rivera",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Dana Patel",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Ethan Brooks",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Jordan Lee",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Morgan Reed",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Sam Taylor",
-        "totalBuyIn": 50
       }
     ]
   }

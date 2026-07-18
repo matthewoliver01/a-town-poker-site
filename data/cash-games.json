@@ -4,54 +4,54 @@
     "slug": "cash-game-2026-07-15",
     "title": "Wednesday 7/15/26",
     "date": "2026-07-15",
-    "host": "Matthew Oliver",
+    "host": "Matt O.",
     "venue": "Arrakis",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
     "players": [
       {
-        "name": "Matthew Oliver",
+        "name": "Matt O.",
         "amountBuyIn": 40,
         "amountAtEnd": 65
       },
       {
-        "name": "Luke Kadingo",
+        "name": "Luke K.",
         "amountBuyIn": 40,
         "amountAtEnd": 41.25
       },
       {
-        "name": "Kyser Ehrhardt",
+        "name": "Kyser E.",
         "amountBuyIn": 20,
         "amountAtEnd": 42.75
       },
       {
-        "name": "Tony Puciloski",
+        "name": "Tony P.",
         "amountBuyIn": 40,
         "amountAtEnd": 48.55
       },
       {
-        "name": "Sofia Medillin",
+        "name": "Sofia M.",
         "amountBuyIn": 60,
         "amountAtEnd": 23.25
       },
       {
-        "name": "Adam Blair",
+        "name": "Adam B.",
         "amountBuyIn": 60,
         "amountAtEnd": 23.3
       },
       {
-        "name": "Nate Feldman",
+        "name": "Nate F.",
         "amountBuyIn": 20,
         "amountAtEnd": 11.7
       },
       {
-        "name": "Liam Mayhew",
+        "name": "Liam M.",
         "amountBuyIn": 20,
         "amountAtEnd": 33.5
       },
       {
-        "name": "Justin Ahmuty",
+        "name": "Justin A.",
         "amountBuyIn": 20,
         "amountAtEnd": 30.05
       }

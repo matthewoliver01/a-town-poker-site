@@ -122,7 +122,7 @@ function cardMetrics(
 
   return {
     hasResults: player.eventsPlayed > 0,
-    meta: `${countLabel(player.eventsPlayed, "event")} · ${player.eventsHosted} hosted`,
+    meta: `${countLabel(player.eventsPlayed, "event")} `,
     netLabel: "Net",
     netValue: player.combinedNetProfit,
     firstLabel: "Tournament wins",
@@ -152,11 +152,7 @@ export function PlayerDirectory({
   }
 
   return (
-    <Tabs
-      value={mode}
-      onValueChange={handleModeChange}
-      className="mt-8 gap-0"
-    >
+    <Tabs value={mode} onValueChange={handleModeChange} className="mt-8 gap-0">
       <TabsList className="w-full sm:w-fit" aria-label="Player statistics type">
         {PLAYER_VIEW_MODES.map((viewMode) => (
           <TabsTrigger key={viewMode.value} value={viewMode.value}>
@@ -166,7 +162,11 @@ export function PlayerDirectory({
       </TabsList>
 
       {PLAYER_VIEW_MODES.map((viewMode) => (
-        <TabsContent key={viewMode.value} value={viewMode.value} className="pt-6">
+        <TabsContent
+          key={viewMode.value}
+          value={viewMode.value}
+          className="pt-6"
+        >
           {mode === viewMode.value ? (
             <section aria-label={`${viewMode.label} players`}>
               <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
