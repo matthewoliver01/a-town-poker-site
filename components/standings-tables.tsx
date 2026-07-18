@@ -1,7 +1,5 @@
 "use client";
 
-import { Trophy } from "lucide-react";
-import { PlayerAvatar } from "@/components/player-avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatMoney, formatSignedMoney, formatTournamentWins } from "@/lib/format";
@@ -50,13 +48,10 @@ export function StandingsTables({
               {tournamentStandings.map((player, index) => (
                 <TableRow key={player.name}>
                   <TableCell className="text-center">
-                    {index === 0 ? <Trophy className="mx-auto size-4 text-[#a77921]" aria-label="First place" /> : <span className="numeric text-muted-foreground">{index + 1}</span>}
+                    <span className="numeric text-muted-foreground">{index + 1}</span>
                   </TableCell>
                   <TableCell>
-                    <div className="flex min-w-40 items-center gap-3">
-                      <PlayerAvatar name={player.name} className="size-9" />
-                      <span className="font-semibold">{player.name}</span>
-                    </div>
+                    <span className="font-semibold">{player.name}</span>
                   </TableCell>
                   <TableCell className="text-right"><Value value={player.netProfit} signed /></TableCell>
                   <TableCell className="numeric text-right">{formatMoney(player.amountWon)}</TableCell>
@@ -70,7 +65,7 @@ export function StandingsTables({
             </TableBody>
           </Table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Ranked by net tournament profit. Tied wins are divided evenly among co-winners. ITM = finished in the money.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Ranked by net. Split wins are divided evenly among co-winners. ITM = in the money.</p>
       </TabsContent>
 
       <TabsContent value="cash-games">
@@ -93,13 +88,10 @@ export function StandingsTables({
               {cashGameStandings.map((player, index) => (
                 <TableRow key={player.name}>
                   <TableCell className="text-center">
-                    {index === 0 ? <Trophy className="mx-auto size-4 text-[#a77921]" aria-label="First place" /> : <span className="numeric text-muted-foreground">{index + 1}</span>}
+                    <span className="numeric text-muted-foreground">{index + 1}</span>
                   </TableCell>
                   <TableCell>
-                    <div className="flex min-w-40 items-center gap-3">
-                      <PlayerAvatar name={player.name} className="size-9" />
-                      <span className="font-semibold">{player.name}</span>
-                    </div>
+                    <span className="font-semibold">{player.name}</span>
                   </TableCell>
                   <TableCell className="text-right"><Value value={player.netProfit} signed /></TableCell>
                   <TableCell className="numeric text-center">{player.gamesPlayed}</TableCell>
@@ -113,7 +105,7 @@ export function StandingsTables({
             </TableBody>
           </Table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Ranked by net cash-game profit across completed sessions.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Ranked by net.</p>
       </TabsContent>
     </Tabs>
   );

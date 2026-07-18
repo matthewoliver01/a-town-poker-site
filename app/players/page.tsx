@@ -27,11 +27,7 @@ export default async function PlayersPage({ searchParams }: PlayersPageProps) {
 
   return (
     <div className="page-shell py-10 sm:py-14">
-      <PageIntro
-        eyebrow="Player profiles"
-        title="Everyone has a story in the stats."
-        description="Open any profile for monthly profit trends, tournament finishes, cash-game form, and a complete event history."
-      />
+      <PageIntro title="Players" />
 
       <PlayerDirectory
         key={initialMode}

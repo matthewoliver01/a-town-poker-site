@@ -107,7 +107,9 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
 
   const html = await response.text();
   assert.match(html, /<title>A-Town Poker(?: · A-Town Poker)?<\/title>/i);
-  assert.match(html, /The ledger behind/);
+  assert.match(html, /<h1[^>]*>A-Town Poker<\/h1>/i);
+  assert.doesNotMatch(html, /The ledger behind|Good hands|Better stories/i);
+  assert.doesNotMatch(html, /<footer\b/i);
   assert.ok(html.includes(latestCompletedTournament.title));
   assert.ok(html.includes(latestCompletedCashGame.title));
   assert.doesNotMatch(html, /Your site is taking shape|Codex is working/i);
@@ -159,12 +161,12 @@ test("server-renders player mode controls and selects modes from the query strin
     tournamentPlayersResponse.text(),
   ]);
   assertPlayerModeTabs(playersHtml, "Overall");
-  assert.match(playersHtml, /All players/i);
-  assert.match(playersHtml, /Combined net/i);
+  assert.match(playersHtml, /<h1[^>]*>Players<\/h1>/i);
+  assert.match(playersHtml, /Tournament wins/i);
 
   assertPlayerModeTabs(tournamentPlayersHtml, "Tournaments");
-  assert.match(tournamentPlayersHtml, /All players/i);
-  assert.match(tournamentPlayersHtml, /Tournament (?:net|wins)/i);
+  assert.match(tournamentPlayersHtml, /<h1[^>]*>Players<\/h1>/i);
+  assert.match(tournamentPlayersHtml, /top 3/i);
 });
 
 test("server-renders a mixed-format player with overall and cash-game views", async () => {
@@ -182,13 +184,13 @@ test("server-renders a mixed-format player with overall and cash-game views", as
   ]);
   assertPlayerModeTabs(overallHtml, "Overall");
   assert.ok(overallHtml.includes(mixedFormatPlayerName));
-  assert.match(overallHtml, /Complete event history/i);
+  assert.match(overallHtml, /Event history/i);
 
   assertPlayerModeTabs(cashGameHtml, "Cash games");
   assert.ok(cashGameHtml.includes(mixedFormatPlayerName));
-  assert.match(cashGameHtml, /Cash[- ]game snapshot/i);
+  assert.match(cashGameHtml, /Cash game stats/i);
   assert.match(cashGameHtml, /Cash[- ]game history/i);
   assert.ok(cashGameHtml.includes(mixedPlayerCashGame.title));
-  assert.doesNotMatch(cashGameHtml, /Tournament snapshot/i);
+  assert.doesNotMatch(cashGameHtml, /Tournament stats/i);
   assert.doesNotMatch(cashGameHtml, /Tournament history/i);
 });

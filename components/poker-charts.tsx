@@ -175,7 +175,7 @@ function ProfitTooltip({
       </div>
       {typeof point.games === "number" ? (
         <div className="mt-1 flex items-center justify-between gap-5">
-          <span className="text-slate-500 dark:text-slate-400">Games played</span>
+          <span className="text-slate-500 dark:text-slate-400">Events</span>
           <span className="font-medium tabular-nums text-slate-700 dark:text-slate-300">
             {point.games}
           </span>
@@ -487,7 +487,7 @@ export function TournamentFinishesChart({
           />
           <Bar
             dataKey="performance"
-            name="Field beaten"
+            name="Finish percentile"
             radius={[5, 5, 2, 2]}
             maxBarSize={44}
             isAnimationActive="auto"

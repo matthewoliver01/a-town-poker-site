@@ -1,24 +1,14 @@
 "use client";
 
-import { useMemo, useState, type ComponentType } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  CalendarCheck,
-  CircleDollarSign,
-  Crown,
-  HandCoins,
-  Target,
-  TrendingUp,
-  Trophy,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import {
   MonthlyProfitChart,
   TournamentFinishesChart,
   type TournamentFinishPoint,
 } from "@/components/poker-charts";
 import { PlayerAvatar } from "@/components/player-avatar";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -63,24 +53,22 @@ type PlayerProfileViewProps = {
 };
 
 type StatCardProps = {
-  icon: ComponentType<{ className?: string }>;
   label: string;
   value: string;
   note?: string;
 };
 
-function StatCard({ icon: Icon, label, value, note }: StatCardProps) {
+function StatCard({ label, value, note }: StatCardProps) {
   return (
     <Card>
-      <CardContent className="flex gap-3 p-4 sm:p-5">
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-accent text-primary">
-          <Icon className="size-4" />
-        </span>
-        <div className="min-w-0">
-          <p className="text-xs font-medium text-muted-foreground">{label}</p>
-          <p className="numeric mt-1 truncate text-lg font-semibold">{value}</p>
-          {note ? <p className="mt-0.5 truncate text-xs text-muted-foreground">{note}</p> : null}
-        </div>
+      <CardContent className="p-4">
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <p className="numeric mt-1 truncate text-lg font-semibold">{value}</p>
+        {note ? (
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            {note}
+          </p>
+        ) : null}
       </CardContent>
     </Card>
   );
@@ -106,21 +94,14 @@ function TournamentSnapshot({ stats }: { stats: TournamentStanding }) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center gap-3">
-          <span className="grid size-9 place-items-center rounded-xl bg-accent text-primary">
-            <Crown className="size-4" />
-          </span>
-          <div>
-            <CardTitle className="text-lg">Tournament snapshot</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {pluralize(stats.tournamentsPlayed, "event")} played
-            </p>
-          </div>
-        </div>
+        <CardTitle className="text-lg">Tournament stats</CardTitle>
+        <p className="text-sm text-muted-foreground">
+          {pluralize(stats.tournamentsPlayed, "tournament")} played
+        </p>
       </CardHeader>
       {hasResults ? (
         <CardContent className="grid grid-cols-2 gap-x-8 gap-y-5 border-t pt-5 sm:grid-cols-3">
-          <div><p className="text-xs text-muted-foreground">Net profit</p><p className={cn("numeric mt-1 font-semibold", stats.netProfit >= 0 ? "text-positive" : "text-negative")}>{formatSignedMoney(stats.netProfit)}</p></div>
+          <div><p className="text-xs text-muted-foreground">Net</p><p className={cn("numeric mt-1 font-semibold", stats.netProfit >= 0 ? "text-positive" : "text-negative")}>{formatSignedMoney(stats.netProfit)}</p></div>
           <div><p className="text-xs text-muted-foreground">Total payouts</p><p className="numeric mt-1 font-semibold">{formatMoney(stats.amountWon)}</p></div>
           <div><p className="text-xs text-muted-foreground">Average finish</p><p className="numeric mt-1 font-semibold">{stats.averageFinish === null ? "—" : stats.averageFinish.toFixed(1)}</p></div>
           <div><p className="text-xs text-muted-foreground">Best finish</p><p className="numeric mt-1 font-semibold">{stats.highestFinish === null ? "—" : formatTournamentPlacement(stats.highestFinish)}</p></div>
@@ -129,7 +110,7 @@ function TournamentSnapshot({ stats }: { stats: TournamentStanding }) {
         </CardContent>
       ) : (
         <CardContent className="border-t py-8 text-center text-sm text-muted-foreground">
-          No completed tournament results yet.
+          No tournament results.
         </CardContent>
       )}
     </Card>
@@ -142,21 +123,14 @@ function CashGameSnapshot({ stats }: { stats: CashGameStanding }) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center gap-3">
-          <span className="grid size-9 place-items-center rounded-xl bg-accent text-primary">
-            <HandCoins className="size-4" />
-          </span>
-          <div>
-            <CardTitle className="text-lg">Cash-game snapshot</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {pluralize(stats.gamesPlayed, "session")} played
-            </p>
-          </div>
-        </div>
+        <CardTitle className="text-lg">Cash game stats</CardTitle>
+        <p className="text-sm text-muted-foreground">
+          {pluralize(stats.gamesPlayed, "session")} played
+        </p>
       </CardHeader>
       {hasResults ? (
         <CardContent className="grid grid-cols-2 gap-x-8 gap-y-5 border-t pt-5 sm:grid-cols-3">
-          <div><p className="text-xs text-muted-foreground">Net profit</p><p className={cn("numeric mt-1 font-semibold", stats.netProfit >= 0 ? "text-positive" : "text-negative")}>{formatSignedMoney(stats.netProfit)}</p></div>
+          <div><p className="text-xs text-muted-foreground">Net</p><p className={cn("numeric mt-1 font-semibold", stats.netProfit >= 0 ? "text-positive" : "text-negative")}>{formatSignedMoney(stats.netProfit)}</p></div>
           <div><p className="text-xs text-muted-foreground">Average P/L</p><p className="numeric mt-1 font-semibold">{formatSignedMoney(stats.averageProfitLoss)}</p></div>
           <div><p className="text-xs text-muted-foreground">Win rate</p><p className="numeric mt-1 font-semibold">{stats.winRate.toFixed(0)}%</p></div>
           <div><p className="text-xs text-muted-foreground">Biggest win</p><p className="numeric mt-1 font-semibold text-positive">{stats.biggestWin === null ? "—" : formatSignedMoney(stats.biggestWin)}</p></div>
@@ -165,7 +139,7 @@ function CashGameSnapshot({ stats }: { stats: CashGameStanding }) {
         </CardContent>
       ) : (
         <CardContent className="border-t py-8 text-center text-sm text-muted-foreground">
-          No completed cash-game results yet.
+          No cash game results.
         </CardContent>
       )}
     </Card>
@@ -173,8 +147,10 @@ function CashGameSnapshot({ stats }: { stats: CashGameStanding }) {
 }
 
 function EventHistory({ history, mode }: { history: PlayerHistoryItem[]; mode: PlayerViewMode }) {
-  const title = mode === "overall" ? "Complete event history" : mode === "tournaments" ? "Tournament history" : "Cash-game history";
-  const emptyLabel = mode === "tournaments" ? "No completed tournaments for this player yet." : mode === "cash-games" ? "No completed cash games for this player yet." : "No completed events for this player yet.";
+  const title = mode === "overall" ? "Event history" : mode === "tournaments" ? "Tournament history" : "Cash game history";
+  const emptyLabel = mode === "tournaments" ? "No tournament results." : mode === "cash-games" ? "No cash game results." : "No event results.";
+  const showType = mode === "overall";
+  const resultLabel = mode === "tournaments" ? "Finish" : mode === "cash-games" ? "Amount at end" : "Result";
 
   return (
     <Card className="mt-6 overflow-hidden">
@@ -187,8 +163,8 @@ function EventHistory({ history, mode }: { history: PlayerHistoryItem[]; mode: P
             <TableRow className="hover:bg-transparent">
               <TableHead>Date</TableHead>
               <TableHead>Event</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead className="text-right">Result</TableHead>
+              {showType ? <TableHead>Type</TableHead> : null}
+              <TableHead className="text-right">{resultLabel}</TableHead>
               <TableHead className="text-right">Net</TableHead>
             </TableRow>
           </TableHeader>
@@ -202,13 +178,17 @@ function EventHistory({ history, mode }: { history: PlayerHistoryItem[]; mode: P
                   </Link>
                   <p className="mt-1 text-xs text-muted-foreground">Hosted by {event.host}</p>
                 </TableCell>
-                <TableCell><Badge variant="secondary">{event.eventType === "tournament" ? "Tournament" : "Cash game"}</Badge></TableCell>
+                {showType ? (
+                  <TableCell className="text-muted-foreground">
+                    {event.eventType === "tournament" ? "Tournament" : "Cash game"}
+                  </TableCell>
+                ) : null}
                 <TableCell className="numeric text-right">{event.eventType === "tournament" ? formatTournamentPlacement(event.placement) : formatMoney(event.amountAtEnd)}</TableCell>
                 <TableCell className={cn("numeric text-right font-semibold", event.netProfit > 0 ? "text-positive" : event.netProfit < 0 ? "text-negative" : "")}>{formatSignedMoney(event.netProfit)}</TableCell>
               </TableRow>
             )) : (
               <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={5} className="h-28 text-center text-muted-foreground">{emptyLabel}</TableCell>
+                <TableCell colSpan={showType ? 5 : 4} className="h-28 text-center text-muted-foreground">{emptyLabel}</TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -261,63 +241,50 @@ function PlayerModeContent({
     ? {
         netLabel: "Combined net",
         net: profile.combinedNetProfit,
-        subtitle: `${pluralize(profile.eventsPlayed, "event")} played · ${pluralize(profile.eventsHosted, "event")} hosted`,
-        profitDescription: "Tournament and cash-game results combined",
-        profitBadge: "Net P/L",
       }
     : tournamentMode
       ? {
           netLabel: "Tournament net",
           net: profile.tournaments.netProfit,
-          subtitle: `${pluralize(profile.tournaments.tournamentsPlayed, "tournament")} played · ${pluralize(hostedCounts.tournaments, "tournament")} hosted`,
-          profitDescription: "Tournament results only",
-          profitBadge: "Tournament P/L",
         }
       : {
-          netLabel: "Cash-game net",
+          netLabel: "Cash game net",
           net: profile.cashGames.netProfit,
-          subtitle: `${pluralize(profile.cashGames.gamesPlayed, "cash session")} played · ${pluralize(hostedCounts.cashGames, "cash session")} hosted`,
-          profitDescription: "Cash-game results only",
-          profitBadge: "Cash P/L",
         };
 
   const summaryCards: StatCardProps[] = mode === "overall"
     ? [
-        { icon: CalendarCheck, label: "Events played", value: String(profile.eventsPlayed), note: `${profile.eventsHosted} hosted` },
-        { icon: Trophy, label: "Tournament wins", value: formatTournamentWins(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
-        { icon: Target, label: "Cash win rate", value: profile.cashGames.gamesPlayed ? `${profile.cashGames.winRate.toFixed(0)}%` : "—", note: profile.cashGames.gamesPlayed ? pluralize(profile.cashGames.winningSessions, "winning session") : "No completed sessions" },
-        { icon: CircleDollarSign, label: "Total buy-ins", value: formatMoney(profile.combinedBuyIn), note: "All tracked events" },
+        { label: "Events played", value: String(profile.eventsPlayed), note: `${profile.eventsHosted} hosted` },
+        { label: "Tournament wins", value: formatTournamentWins(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
+        { label: "Cash win rate", value: profile.cashGames.gamesPlayed ? `${profile.cashGames.winRate.toFixed(0)}%` : "—", note: profile.cashGames.gamesPlayed ? pluralize(profile.cashGames.winningSessions, "winning session") : "No completed sessions" },
+        { label: "Total buy-ins", value: formatMoney(profile.combinedBuyIn) },
       ]
     : tournamentMode
       ? [
-          { icon: CalendarCheck, label: "Tournaments played", value: String(profile.tournaments.tournamentsPlayed), note: `${hostedCounts.tournaments} hosted` },
-          { icon: Trophy, label: "Tournament wins", value: formatTournamentWins(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
-          { icon: Target, label: "In the money", value: profile.tournaments.tournamentsPlayed ? `${profile.tournaments.cashRate.toFixed(0)}%` : "—", note: profile.tournaments.tournamentsPlayed ? pluralize(profile.tournaments.inTheMoneyFinishes, "paid finish", "paid finishes") : "No completed tournaments" },
-          { icon: CircleDollarSign, label: "Total buy-ins", value: formatMoney(profile.tournaments.totalBuyIn), note: `${formatMoney(profile.tournaments.amountWon)} paid out` },
+          { label: "Tournaments played", value: String(profile.tournaments.tournamentsPlayed), note: `${hostedCounts.tournaments} hosted` },
+          { label: "Tournament wins", value: formatTournamentWins(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
+          { label: "In the money", value: profile.tournaments.tournamentsPlayed ? `${profile.tournaments.cashRate.toFixed(0)}%` : "—", note: profile.tournaments.tournamentsPlayed ? pluralize(profile.tournaments.inTheMoneyFinishes, "paid finish", "paid finishes") : "No completed tournaments" },
+          { label: "Total buy-ins", value: formatMoney(profile.tournaments.totalBuyIn), note: `${formatMoney(profile.tournaments.amountWon)} paid out` },
         ]
       : [
-          { icon: CalendarCheck, label: "Cash sessions", value: String(profile.cashGames.gamesPlayed), note: `${hostedCounts.cashGames} hosted` },
-          { icon: Target, label: "Cash win rate", value: profile.cashGames.gamesPlayed ? `${profile.cashGames.winRate.toFixed(0)}%` : "—", note: profile.cashGames.gamesPlayed ? pluralize(profile.cashGames.winningSessions, "winning session") : "No completed sessions" },
-          { icon: TrendingUp, label: "Average P/L", value: profile.cashGames.gamesPlayed ? formatSignedMoney(profile.cashGames.averageProfitLoss) : "—", note: profile.cashGames.gamesPlayed ? "Per completed session" : "No completed sessions" },
-          { icon: CircleDollarSign, label: "Total buy-ins", value: formatMoney(profile.cashGames.totalBuyIn), note: `${formatMoney(profile.cashGames.totalCashedOut)} cashed out` },
+          { label: "Cash sessions", value: String(profile.cashGames.gamesPlayed), note: `${hostedCounts.cashGames} hosted` },
+          { label: "Cash win rate", value: profile.cashGames.gamesPlayed ? `${profile.cashGames.winRate.toFixed(0)}%` : "—", note: profile.cashGames.gamesPlayed ? pluralize(profile.cashGames.winningSessions, "winning session") : "No completed sessions" },
+          { label: "Average P/L", value: profile.cashGames.gamesPlayed ? formatSignedMoney(profile.cashGames.averageProfitLoss) : "—", note: profile.cashGames.gamesPlayed ? undefined : "No completed sessions" },
+          { label: "Total buy-ins", value: formatMoney(profile.cashGames.totalBuyIn), note: `${formatMoney(profile.cashGames.totalCashedOut)} at end` },
         ];
 
   return (
     <>
-      <header className="relative overflow-hidden rounded-3xl border bg-primary px-6 py-8 text-primary-foreground shadow-xl shadow-primary/10 subtle-grid sm:px-10 sm:py-10">
-        <div className="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-5">
-            <PlayerAvatar name={profile.name} className="size-16 border-4 border-white/10 text-lg sm:size-20" />
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/50">Player profile</p>
-              <h1 className="mt-2 text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">{profile.name}</h1>
-              <p className="mt-3 text-sm text-white/65">{view.subtitle}</p>
-            </div>
+      <header className="flex flex-col gap-5 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4">
+          <PlayerAvatar name={profile.name} className="size-12 text-sm sm:size-14" />
+          <div>
+            <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{profile.name}</h1>
           </div>
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-4 sm:text-right">
-            <p className="text-xs text-white/55">{view.netLabel}</p>
-            <p className={cn("numeric mt-1 text-3xl font-semibold", !hasResults ? "text-white/65" : view.net >= 0 ? "text-[#bfe0cc]" : "text-[#f2b8b2]")}>{hasResults ? formatSignedMoney(view.net) : "—"}</p>
-          </div>
+        </div>
+        <div className="sm:text-right">
+          <p className="text-xs text-muted-foreground">{view.netLabel}</p>
+          <p className={cn("numeric mt-1 text-2xl font-semibold", !hasResults ? "text-muted-foreground" : view.net > 0 ? "text-positive" : view.net < 0 ? "text-negative" : "")}>{hasResults ? formatSignedMoney(view.net) : "—"}</p>
         </div>
       </header>
 
@@ -328,19 +295,16 @@ function PlayerModeContent({
       <section className={cn("mt-10 grid gap-6", showTournamentChart && "xl:grid-cols-[1.25fr_0.75fr]")}>
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between gap-3">
-              <div><CardTitle className="text-lg">Profit by month</CardTitle><p className="mt-1 text-sm text-muted-foreground">{view.profitDescription}</p></div>
-              <Badge variant="secondary"><TrendingUp /> {view.profitBadge}</Badge>
-            </div>
+            <CardTitle className="text-lg">Net by month</CardTitle>
           </CardHeader>
           <CardContent>
-            <MonthlyProfitChart data={monthlyChartData} height={300} ariaLabel={`${profile.name}'s ${mode} monthly profit and loss`} emptyLabel={`Monthly ${mode === "overall" ? "results" : mode === "tournaments" ? "tournament results" : "cash-game results"} will appear here.`} />
+            <MonthlyProfitChart data={monthlyChartData} height={300} ariaLabel={`${profile.name}'s ${mode} monthly profit and loss`} emptyLabel="No monthly results." />
           </CardContent>
         </Card>
         {showTournamentChart ? (
           <Card>
-            <CardHeader><CardTitle className="text-lg">Tournament form</CardTitle><p className="text-sm text-muted-foreground">Finish strength across each field</p></CardHeader>
-            <CardContent><TournamentFinishesChart data={tournamentChartData} height={300} ariaLabel={`${profile.name}'s tournament finishes`} emptyLabel="Tournament finishes will appear after a completed event." /></CardContent>
+            <CardHeader><CardTitle className="text-lg">Finish percentile</CardTitle></CardHeader>
+            <CardContent><TournamentFinishesChart data={tournamentChartData} height={300} ariaLabel={`${profile.name}'s tournament finishes`} emptyLabel="No tournament results." /></CardContent>
           </Card>
         ) : null}
       </section>

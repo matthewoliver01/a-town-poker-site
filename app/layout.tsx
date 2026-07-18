@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
-import Link from "next/link";
-import { Club } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
@@ -21,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const host = requestHeaders.get("host") ?? "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
   const metadataBase = new URL(`${protocol}://${host}`);
-  const description = "Cash games, tournament results, player stats, and friendly rivalries—all in one place.";
+  const description = "Tournament and cash-game results for A-Town Poker.";
 
   return {
     metadataBase,
@@ -34,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       title: "A-Town Poker",
       description,
-      images: [{ url: "/og.png", width: 1728, height: 909, alt: "A-Town Poker — The ledger behind the legend." }],
+      images: [{ url: "/og.png", width: 1728, height: 909, alt: "A-Town Poker results and standings." }],
     },
     twitter: {
       card: "summary_large_image",
@@ -51,21 +49,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SiteHeader />
         <main>{children}</main>
-        <footer className="mt-20 border-t bg-card/70">
-          <div className="page-shell flex flex-col gap-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2 text-foreground">
-              <span className="grid size-7 place-items-center rounded-lg bg-primary text-primary-foreground">
-                <Club className="size-3.5 fill-current" aria-hidden="true" />
-              </span>
-              <span className="font-semibold">A-Town Poker</span>
-            </div>
-            <p>Good hands. Better stories. Tracked since 2025.</p>
-            <div className="flex gap-4">
-              <Link href="/standings" className="hover:text-foreground">Standings</Link>
-              <Link href="/players" className="hover:text-foreground">Players</Link>
-            </div>
-          </div>
-        </footer>
       </body>
     </html>
   );
