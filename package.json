@@ -10,45 +10,35 @@
     "data:generate": "node scripts/generate-poker-data.mjs",
     "data:check": "node scripts/generate-poker-data.mjs --check",
     "predev": "npm run data:generate",
-    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
+    "dev": "next dev",
     "prebuild": "npm run data:generate",
-    "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
-    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
+    "build": "next build",
+    "start": "next start",
     "test": "npm run build && node --import tsx --test tests/*.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "drizzle-kit generate"
+    "lint": "eslint . --ignore-pattern .next"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "drizzle-orm": "0.45.2",
     "lucide-react": "^1.25.0",
-    "next": "16.2.6",
+    "next": "15.5.20",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "recharts": "^3.9.2",
-    "tailwind-merge": "^3.6.0",
-    "zod": "^4.4.3"
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
+    "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
-    "drizzle-kit": "0.31.10",
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
-    "react-server-dom-webpack": "19.2.6",
+    "eslint-config-next": "15.5.20",
     "read-excel-file": "^9.3.2",
     "tailwindcss": "4.2.1",
     "tsx": "^4.21.0",
-    "typescript": "5.9.3",
-    "vinext": "0.0.50",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0"
+    "typescript": "5.9.3"
   },
   "type": "module"
 }

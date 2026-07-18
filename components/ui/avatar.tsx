@@ -23,7 +23,7 @@ Avatar.displayName = "Avatar";
 const AvatarImage = React.forwardRef<
   HTMLImageElement,
   React.ComponentPropsWithoutRef<"img">
->(({ className, onError, src, ...props }, ref) => {
+>(({ alt = "", className, onError, src, ...props }, ref) => {
   const [hasError, setHasError] = React.useState(false);
 
   React.useEffect(() => setHasError(false), [src]);
@@ -35,6 +35,7 @@ const AvatarImage = React.forwardRef<
     // eslint-disable-next-line @next/next/no-img-element
     <img
       ref={ref}
+      alt={alt}
       src={src}
       data-slot="avatar-image"
       className={cn("relative z-10 aspect-square size-full object-cover", className)}

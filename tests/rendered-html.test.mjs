@@ -1,6 +1,87 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { once } from "node:events";
 import { readFile } from "node:fs/promises";
-import test from "node:test";
+import { createServer } from "node:net";
+import { after, before, test } from "node:test";
+import { fileURLToPath } from "node:url";
+
+const projectRoot = fileURLToPath(new URL("..", import.meta.url));
+const nextCli = fileURLToPath(
+  new URL("../node_modules/next/dist/bin/next", import.meta.url),
+);
+let appServer;
+let origin;
+let serverLogs = "";
+
+function reservePort() {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.unref();
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") {
+        server.close();
+        reject(new Error("Could not reserve a local test port"));
+        return;
+      }
+
+      server.close((error) => {
+        if (error) reject(error);
+        else resolve(address.port);
+      });
+    });
+  });
+}
+
+function recordServerLog(chunk) {
+  serverLogs = `${serverLogs}${chunk}`.slice(-12_000);
+}
+
+before(async () => {
+  const port = await reservePort();
+  origin = `http://127.0.0.1:${port}`;
+  appServer = spawn(
+    process.execPath,
+    [nextCli, "start", "-H", "127.0.0.1", "-p", String(port)],
+    {
+      cwd: projectRoot,
+      env: { ...process.env, NODE_ENV: "production" },
+      stdio: ["ignore", "pipe", "pipe"],
+    },
+  );
+  appServer.stdout.on("data", recordServerLog);
+  appServer.stderr.on("data", recordServerLog);
+
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    if (appServer.exitCode !== null) {
+      throw new Error(`Next.js exited before becoming ready.\n${serverLogs}`);
+    }
+
+    try {
+      const response = await fetch(origin);
+      if (response.ok) return;
+    } catch {
+      // The server is still starting.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+
+  throw new Error(`Next.js did not become ready in time.\n${serverLogs}`);
+}, { timeout: 40_000 });
+
+after(async () => {
+  if (!appServer || appServer.exitCode !== null) return;
+
+  appServer.kill("SIGTERM");
+  await Promise.race([
+    once(appServer, "exit"),
+    new Promise((resolve) => setTimeout(resolve, 5_000)),
+  ]);
+  if (appServer.exitCode === null) appServer.kill("SIGKILL");
+});
 
 const [tournaments, cashGames] = await Promise.all([
   readFile(new URL("../data/tournaments.json", import.meta.url), "utf8").then(
@@ -77,27 +158,9 @@ function assertPlayerModeTabs(html, selectedLabel) {
 }
 
 async function render(pathname = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set(
-    "test",
-    `${process.pid}-${Date.now()}-${Math.random()}`,
-  );
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+  return fetch(new URL(pathname, origin), {
+    headers: { accept: "text/html" },
+  });
 }
 
 test("server-renders the A-Town Poker home page with generated event data", async () => {
