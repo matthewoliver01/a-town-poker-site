@@ -95,6 +95,7 @@ export type CashGame = CompletedCashGame | UpcomingCashGame;
 export interface TournamentStanding {
   name: PlayerName;
   tournamentsPlayed: number;
+  /** One win per tournament, divided evenly among every first-place finisher. */
   wins: number;
   topThreeFinishes: number;
   inTheMoneyFinishes: number;

@@ -29,7 +29,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate, formatMoney, formatSignedMoney } from "@/lib/format";
+import {
+  formatDate,
+  formatMoney,
+  formatSignedMoney,
+  formatTournamentWins,
+} from "@/lib/format";
 import {
   isPlayerViewMode,
   PLAYER_VIEW_MODES,
@@ -279,14 +284,14 @@ function PlayerModeContent({
   const summaryCards: StatCardProps[] = mode === "overall"
     ? [
         { icon: CalendarCheck, label: "Events played", value: String(profile.eventsPlayed), note: `${profile.eventsHosted} hosted` },
-        { icon: Trophy, label: "Tournament titles", value: String(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
+        { icon: Trophy, label: "Tournament wins", value: formatTournamentWins(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
         { icon: Target, label: "Cash win rate", value: profile.cashGames.gamesPlayed ? `${profile.cashGames.winRate.toFixed(0)}%` : "—", note: profile.cashGames.gamesPlayed ? pluralize(profile.cashGames.winningSessions, "winning session") : "No completed sessions" },
         { icon: CircleDollarSign, label: "Total buy-ins", value: formatMoney(profile.combinedBuyIn), note: "All tracked events" },
       ]
     : tournamentMode
       ? [
           { icon: CalendarCheck, label: "Tournaments played", value: String(profile.tournaments.tournamentsPlayed), note: `${hostedCounts.tournaments} hosted` },
-          { icon: Trophy, label: "Tournament titles", value: String(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
+          { icon: Trophy, label: "Tournament wins", value: formatTournamentWins(profile.tournaments.wins), note: pluralize(profile.tournaments.topThreeFinishes, "top-three finish", "top-three finishes") },
           { icon: Target, label: "In the money", value: profile.tournaments.tournamentsPlayed ? `${profile.tournaments.cashRate.toFixed(0)}%` : "—", note: profile.tournaments.tournamentsPlayed ? pluralize(profile.tournaments.inTheMoneyFinishes, "paid finish", "paid finishes") : "No completed tournaments" },
           { icon: CircleDollarSign, label: "Total buy-ins", value: formatMoney(profile.tournaments.totalBuyIn), note: `${formatMoney(profile.tournaments.amountWon)} paid out` },
         ]

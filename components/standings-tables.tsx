@@ -4,7 +4,7 @@ import { Trophy } from "lucide-react";
 import { PlayerAvatar } from "@/components/player-avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatMoney, formatSignedMoney } from "@/lib/format";
+import { formatMoney, formatSignedMoney, formatTournamentWins } from "@/lib/format";
 import type { CashGameStanding, TournamentStanding } from "@/lib/poker-types";
 import { cn } from "@/lib/utils";
 
@@ -61,7 +61,7 @@ export function StandingsTables({
                   <TableCell className="text-right"><Value value={player.netProfit} signed /></TableCell>
                   <TableCell className="numeric text-right">{formatMoney(player.amountWon)}</TableCell>
                   <TableCell className="numeric text-center">{player.tournamentsPlayed}</TableCell>
-                  <TableCell className="numeric text-center font-medium">{player.wins}</TableCell>
+                  <TableCell className="numeric text-center font-medium">{formatTournamentWins(player.wins)}</TableCell>
                   <TableCell className="numeric text-center">{player.cashRate.toFixed(0)}%</TableCell>
                   <TableCell className="numeric text-center">{player.averageFinish === null ? "—" : player.averageFinish.toFixed(1)}</TableCell>
                   <TableCell className={cn("numeric text-right font-medium", player.returnOnInvestment >= 0 ? "text-positive" : "text-negative")}>{player.returnOnInvestment.toFixed(1)}%</TableCell>
@@ -70,7 +70,7 @@ export function StandingsTables({
             </TableBody>
           </Table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Ranked by net tournament profit. ITM = finished in the money.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Ranked by net tournament profit. Tied wins are divided evenly among co-winners. ITM = finished in the money.</p>
       </TabsContent>
 
       <TabsContent value="cash-games">

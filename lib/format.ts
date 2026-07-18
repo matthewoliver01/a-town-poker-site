@@ -20,6 +20,11 @@ const compactMoney = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 1,
 });
 
+const tournamentWins = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+});
+
 export function formatMoney(value: number) {
   return money.format(value);
 }
@@ -30,6 +35,14 @@ export function formatSignedMoney(value: number) {
 
 export function formatCompactMoney(value: number) {
   return compactMoney.format(value);
+}
+
+export function formatTournamentWins(value: number) {
+  return tournamentWins.format(value);
+}
+
+export function formatTournamentWinLabel(value: number) {
+  return `${formatTournamentWins(value)} ${value === 1 ? "win" : "wins"}`;
 }
 
 export function formatDate(value: string, options?: Intl.DateTimeFormatOptions) {

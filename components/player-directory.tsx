@@ -16,7 +16,11 @@ import { PlayerAvatar } from "@/components/player-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatSignedMoney } from "@/lib/format";
+import {
+  formatSignedMoney,
+  formatTournamentWinLabel,
+  formatTournamentWins,
+} from "@/lib/format";
 import type { PlayerProfile } from "@/lib/poker-types";
 import {
   isPlayerViewMode,
@@ -112,7 +116,7 @@ function cardMetrics(
       netLabel: "Tournament net",
       netValue: player.tournaments.netProfit,
       firstLabel: "Tournament wins",
-      firstValue: String(player.tournaments.wins),
+      firstValue: formatTournamentWins(player.tournaments.wins),
       secondLabel: "Tournament ROI",
       secondValue: player.tournaments.tournamentsPlayed
         ? `${player.tournaments.returnOnInvestment.toFixed(0)}%`
@@ -143,7 +147,7 @@ function cardMetrics(
     netLabel: "Combined net",
     netValue: player.combinedNetProfit,
     firstLabel: "Tournament wins",
-    firstValue: String(player.tournaments.wins),
+    firstValue: formatTournamentWins(player.tournaments.wins),
     secondLabel: "Cash win rate",
     secondValue: player.cashGames.gamesPlayed
       ? `${player.cashGames.winRate.toFixed(0)}%`
@@ -216,7 +220,7 @@ export function PlayerDirectory({
       netForMode(b, mode) - netForMode(a, mode) ||
       a.name.localeCompare(b.name),
   )[0];
-  const mostTitles = players
+  const mostTournamentWins = players
     .filter((player) => player.tournaments.tournamentsPlayed > 0)
     .toSorted(
       (a, b) =>
@@ -266,11 +270,11 @@ export function PlayerDirectory({
         }
       : {
           icon: Crown,
-          label: "Most titles",
-          player: mostTitles,
-          note: `${mostTitles?.tournaments.wins ?? 0} tournament win${
-            mostTitles?.tournaments.wins === 1 ? "" : "s"
-          }`,
+          label: "Most tournament wins",
+          player: mostTournamentWins,
+          note: formatTournamentWinLabel(
+            mostTournamentWins?.tournaments.wins ?? 0,
+          ),
         };
 
   function handleModeChange(value: string) {

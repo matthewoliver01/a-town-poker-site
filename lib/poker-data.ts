@@ -178,6 +178,11 @@ export const getTournamentStandings = (
   const accumulators = new Map<PlayerName, TournamentAccumulator>();
 
   for (const tournament of tournaments.filter(isCompletedTournament)) {
+    const winnerCount = tournament.players.filter(
+      (player) => placementRank(player.placement) === 1,
+    ).length;
+    const winShare = winnerCount > 0 ? 1 / winnerCount : 0;
+
     for (const player of tournament.players) {
       const stats = accumulators.get(player.name) ?? {
         name: player.name,
@@ -192,7 +197,7 @@ export const getTournamentStandings = (
       };
 
       stats.tournamentsPlayed += 1;
-      stats.wins += placementRank(player.placement) === 1 ? 1 : 0;
+      stats.wins += placementRank(player.placement) === 1 ? winShare : 0;
       stats.topThreeFinishes += placementRank(player.placement) <= 3 ? 1 : 0;
       stats.inTheMoneyFinishes += player.placementPayout > 0 ? 1 : 0;
       stats.totalBuyIn += player.totalBuyIn;

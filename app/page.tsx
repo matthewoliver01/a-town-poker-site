@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CalendarDays, CircleDollarSign, Club, Crown, Sparkles, Trophy, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, Club, Sparkles, Trophy, Users } from "lucide-react";
 import cashGamesJson from "@/data/cash-games.json";
 import tournamentsJson from "@/data/tournaments.json";
 import { CashGameCard, TournamentCard } from "@/components/event-cards";
@@ -8,7 +8,7 @@ import { PlayerAvatar } from "@/components/player-avatar";
 import { SectionHeading } from "@/components/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatDate, formatMoney, formatSignedMoney } from "@/lib/format";
+import { formatDate, formatMoney, formatSignedMoney, formatTournamentWinLabel } from "@/lib/format";
 import { getCashGameStandings, getCompletedCashGames, getCompletedTournaments, getPlayerProfiles, getRecentCashGames, getRecentTournaments, getTournamentStandings, getUpcomingTournaments } from "@/lib/poker-data";
 import type { CashGame, Tournament } from "@/lib/poker-types";
 import { cn } from "@/lib/utils";
@@ -73,7 +73,7 @@ export default function Home() {
             <div className="relative z-10">
               <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/50">Current leaders</p><h2 className="mt-2 text-2xl font-semibold tracking-tight">Top of the table</h2></div><span className="grid size-11 place-items-center rounded-2xl bg-white/10"><Trophy className="size-5 text-[#e6c879]" /></span></div>
               <div className="mt-6 space-y-2.5">
-                {tournamentLeaders.slice(0, 3).map((leader, index) => <LeaderRow key={leader.name} rank={index + 1} name={leader.name} note={`${leader.wins} win${leader.wins === 1 ? "" : "s"} · ${leader.tournamentsPlayed} played`} value={formatSignedMoney(leader.netProfit)} />)}
+                {tournamentLeaders.slice(0, 3).map((leader, index) => <LeaderRow key={leader.name} rank={index + 1} name={leader.name} note={`${formatTournamentWinLabel(leader.wins)} · ${leader.tournamentsPlayed} played`} value={formatSignedMoney(leader.netProfit)} />)}
               </div>
               {cashLeaders[0] ? <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-5 text-sm"><span className="text-white/55">Cash-game leader</span><span className="font-semibold">{cashLeaders[0].name} <span className="numeric ml-1 text-[#bfe0cc]">{formatSignedMoney(cashLeaders[0].netProfit)}</span></span></div> : null}
             </div>

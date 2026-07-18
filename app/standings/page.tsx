@@ -5,7 +5,7 @@ import tournamentsJson from "@/data/tournaments.json";
 import { PageIntro } from "@/components/page-intro";
 import { StandingsTables } from "@/components/standings-tables";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatSignedMoney } from "@/lib/format";
+import { formatSignedMoney, formatTournamentWinLabel } from "@/lib/format";
 import { getCashGameStandings, getTournamentStandings } from "@/lib/poker-data";
 import type { CashGame, Tournament } from "@/lib/poker-types";
 
@@ -36,7 +36,7 @@ export default function StandingsPage() {
       <section className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Standings highlights">
         <FeatureStat icon={Trophy} label="Tournament leader" value={tournamentStandings[0]?.name ?? "—"} note={tournamentStandings[0] ? `${formatSignedMoney(tournamentStandings[0].netProfit)} net` : "No results"} />
         <FeatureStat icon={TrendingUp} label="Cash-game leader" value={cashGameStandings[0]?.name ?? "—"} note={cashGameStandings[0] ? `${formatSignedMoney(cashGameStandings[0].netProfit)} net` : "No results"} />
-        <FeatureStat icon={Medal} label="Most tournament wins" value={mostWins?.name ?? "—"} note={mostWins ? `${mostWins.wins} title${mostWins.wins === 1 ? "" : "s"}` : "No results"} />
+        <FeatureStat icon={Medal} label="Most tournament wins" value={mostWins?.name ?? "—"} note={mostWins ? formatTournamentWinLabel(mostWins.wins) : "No results"} />
         <FeatureStat icon={Target} label="Best cash average" value={bestCashAverage?.name ?? "—"} note={bestCashAverage ? `${formatSignedMoney(bestCashAverage.averageProfitLoss)} per session` : "No results"} />
       </section>
 
