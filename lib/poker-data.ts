@@ -498,9 +498,12 @@ export const getPlayerProfiles = (
       cashGames: cashStats,
       eventsPlayed: tournamentStats.tournamentsPlayed + cashStats.gamesPlayed,
       eventsHosted:
-        completedTournaments.filter((tournament) => tournament.host === name)
-          .length +
-        completedCashGames.filter((cashGame) => cashGame.host === name).length,
+        completedTournaments.filter(
+          (tournament) => toPlayerSlug(tournament.host) === toPlayerSlug(name),
+        ).length +
+        completedCashGames.filter(
+          (cashGame) => toPlayerSlug(cashGame.host) === toPlayerSlug(name),
+        ).length,
       combinedBuyIn: tournamentStats.totalBuyIn + cashStats.totalBuyIn,
       combinedWinnings:
         tournamentStats.amountWon + cashStats.totalCashedOut,

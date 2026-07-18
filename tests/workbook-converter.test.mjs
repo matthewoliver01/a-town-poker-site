@@ -31,10 +31,13 @@ test("the workbook round-trips to the committed tournament and cash-game JSON", 
 test("the converter preserves tied placements from Excel as T-n strings", async () => {
   const sheets = structuredClone(await loadWorkbookSheets());
   const results = sheets.find((sheet) => sheet.sheet === "Tournament Results");
+  const [tournamentId, playerName] = results.data[4];
   results.data[4][3] = "T-1";
 
   const parsed = parsePokerSheets(sheets);
-  assert.equal(parsed.tournaments[0].players[0].placement, "T-1");
+  const tournament = parsed.tournaments.find((event) => event.id === tournamentId);
+  const player = tournament?.players.find((entry) => entry.name === playerName);
+  assert.equal(player?.placement, "T-1");
   assert.equal(parseTournamentPlacementCell("T-2"), "T-2");
   assert.equal(parseTournamentPlacementCell("3"), 3);
 });
