@@ -5,7 +5,7 @@
     "title": "Wednesday 7/15/26",
     "date": "2026-07-15",
     "host": "Matt O.",
-    "venue": "Arrakis",
+    "venue": "Matt's House",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
@@ -54,6 +54,59 @@
         "name": "Justin A.",
         "amountBuyIn": 20,
         "amountAtEnd": 30.05
+      }
+    ]
+  },
+  {
+    "id": "cash-game-2026-07-18",
+    "slug": "cash-game-2026-07-18",
+    "title": "Saturday 7/18/26",
+    "date": "2026-07-18",
+    "host": "Nate F.",
+    "venue": "Nate's House",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 22.5
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 100,
+        "amountAtEnd": 40.6
+      },
+      {
+        "name": "Ethan N.",
+        "amountBuyIn": 50,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 53
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 143.9
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 31.3
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 60,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 120,
+        "amountAtEnd": 148.9
       }
     ]
   }
