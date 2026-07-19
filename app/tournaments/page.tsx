@@ -29,9 +29,11 @@ export default function TournamentsPage() {
 
   return (
     <div className="page-shell py-10 sm:py-14">
-      <PageIntro title="Tournaments" />
+      <div className="[&>div]:border-b-0 [&>div]:pb-4">
+        <PageIntro title="Tournaments" />
+      </div>
 
-      <section className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-y py-4 sm:grid-cols-4" aria-label="Tournament summary">
+      <section className="grid grid-cols-2 gap-x-6 gap-y-4 border-y py-4 sm:grid-cols-4" aria-label="Tournament summary">
         <SummaryStat label="Completed" value={String(completed.length)} />
         <SummaryStat label="Upcoming" value={String(upcoming.length)} />
         <SummaryStat label="Players" value={String(uniquePlayers)} />

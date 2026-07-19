@@ -1,14 +1,29 @@
-const money = new Intl.NumberFormat("en-US", {
+const wholeMoney = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
+const decimalMoney = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
 
-const signedMoney = new Intl.NumberFormat("en-US", {
+const signedWholeMoney = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
   minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+  signDisplay: "always",
+});
+
+const signedDecimalMoney = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
   maximumFractionDigits: 2,
   signDisplay: "always",
 });
@@ -25,12 +40,17 @@ const tournamentWins = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
+function hasFractionalDollars(value: number) {
+  return Math.abs(Math.round(value * 100)) % 100 !== 0;
+}
+
 export function formatMoney(value: number) {
-  return money.format(value);
+  return (hasFractionalDollars(value) ? decimalMoney : wholeMoney).format(value);
 }
 
 export function formatSignedMoney(value: number) {
-  return value === 0 ? money.format(0) : signedMoney.format(value);
+  if (value === 0) return wholeMoney.format(0);
+  return (hasFractionalDollars(value) ? signedDecimalMoney : signedWholeMoney).format(value);
 }
 
 export function formatCompactMoney(value: number) {

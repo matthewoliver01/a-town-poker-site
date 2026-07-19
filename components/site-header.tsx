@@ -7,6 +7,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
+  { label: "Home", href: "/" },
   { label: "Tournaments", href: "/tournaments" },
   { label: "Cash games", href: "/cash-games" },
   { label: "Standings", href: "/standings" },
@@ -17,7 +18,8 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const isActive = (href: string) => pathname.startsWith(href);
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">

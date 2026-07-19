@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
   MonthlyProfitChart,
+  ProfitOverTimeChart,
   TournamentFinishesChart,
   type TournamentFinishPoint,
 } from "@/components/poker-charts";
@@ -26,6 +27,7 @@ import {
   formatTournamentWins,
 } from "@/lib/format";
 import {
+  buildProfitTimeline,
   isPlayerViewMode,
   PLAYER_VIEW_MODES,
   playerViewHref,
@@ -236,6 +238,7 @@ function PlayerModeContent({
           .length,
       }));
   }, [cashMode, hasResults, history, profile.monthlyProfit, tournamentMode]);
+  const timelineData = useMemo(() => buildProfitTimeline(history), [history]);
 
   const view = mode === "overall"
     ? {
@@ -292,7 +295,20 @@ function PlayerModeContent({
         {summaryCards.map((card) => <StatCard key={card.label} {...card} />)}
       </section>
 
-      <section className={cn("mt-10 grid gap-6", showTournamentChart && "xl:grid-cols-[1.25fr_0.75fr]")}>
+      <section className="mt-10 grid gap-6 xl:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Net over time</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProfitOverTimeChart
+              data={timelineData}
+              height={300}
+              ariaLabel={`${profile.name}'s ${mode} cumulative profit over time`}
+              emptyLabel="No dated results."
+            />
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Net by month</CardTitle>
@@ -302,7 +318,7 @@ function PlayerModeContent({
           </CardContent>
         </Card>
         {showTournamentChart ? (
-          <Card>
+          <Card className="xl:col-span-2">
             <CardHeader><CardTitle className="text-lg">Finish percentile</CardTitle></CardHeader>
             <CardContent><TournamentFinishesChart data={tournamentChartData} height={300} ariaLabel={`${profile.name}'s tournament finishes`} emptyLabel="No tournament results." /></CardContent>
           </Card>
@@ -334,7 +350,7 @@ export function PlayerProfileView({ profile, tournamentChartData, initialMode, h
         className="gap-0"
       >
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <Link href={playerViewHref("/players", mode)} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+          <Link href={playerViewHref("/players", mode, "cash-games")} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
             <ArrowLeft className="size-4" /> All players
           </Link>
           <TabsList className="w-full sm:w-fit" aria-label="Player results type">

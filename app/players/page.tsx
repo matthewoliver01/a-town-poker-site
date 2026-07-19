@@ -23,7 +23,7 @@ interface PlayersPageProps {
 export default async function PlayersPage({ searchParams }: PlayersPageProps) {
   const params = await searchParams;
   const players = getPlayerProfiles(tournaments, cashGames);
-  const initialMode = parsePlayerViewMode(params.mode);
+  const initialMode = parsePlayerViewMode(params.mode, "cash-games");
 
   return (
     <div className="page-shell py-10 sm:py-14">

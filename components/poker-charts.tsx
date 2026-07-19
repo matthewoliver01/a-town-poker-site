@@ -7,6 +7,7 @@ import {
   placementRank,
   placementSortValue,
 } from "@/lib/poker-placement";
+import type { ProfitTimelinePoint } from "@/lib/player-view";
 import type { TournamentPlacement } from "@/lib/poker-types";
 import {
   Area,
@@ -69,6 +70,18 @@ export type TournamentFinishesChartProps = {
   emptyLabel?: string;
 };
 
+export type ProfitOverTimeChartProps = {
+  data: readonly ProfitTimelinePoint[];
+  className?: string;
+  height?: number;
+  currency?: string;
+  locale?: string;
+  ariaLabel?: string;
+  emptyLabel?: string;
+  /** Condenses the chart for use inside a player card. */
+  compact?: boolean;
+};
+
 type ProfitTooltipProps = TooltipContentProps<number, string> & {
   currency: string;
   locale: string;
@@ -86,22 +99,42 @@ type TournamentTooltipProps = TooltipContentProps<number, string> & {
   locale: string;
 };
 
+type TimelineChartPoint = ProfitTimelinePoint & {
+  timestamp: number;
+};
+
+type TimelineTooltipProps = TooltipContentProps<number, string> & {
+  currency: string;
+  locale: string;
+};
+
 function formatMoney(value: number, currency: string, locale: string) {
+  const normalizedValue = Object.is(value, -0) ? 0 : value;
+  const fractionDigits = Number.isInteger(normalizedValue) ? 0 : 2;
+
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(value);
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(normalizedValue);
 }
 
-function formatCompactMoney(value: number, currency: string, locale: string) {
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
-    notation: Math.abs(value) >= 1_000 ? "compact" : "standard",
-    maximumFractionDigits: Math.abs(value) >= 1_000 ? 1 : 2,
-  }).format(value);
+function toTimestamp(date: string): number {
+  return Date.parse(`${date}T00:00:00Z`);
+}
+
+function formatChartDate(
+  value: number,
+  locale: string,
+  compact = false,
+): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    year: compact ? undefined : "2-digit",
+    timeZone: "UTC",
+  }).format(new Date(value));
 }
 
 function chartClassName(className?: string) {
@@ -214,6 +247,14 @@ function TournamentTooltip({
           {point.fieldSize ? ` of ${point.fieldSize}` : ""}
         </span>
       </div>
+      <div className="mt-1 flex items-center justify-between gap-5">
+        <span className="text-slate-500 dark:text-slate-400">
+          Finish percentile
+        </span>
+        <span className="font-semibold tabular-nums text-slate-800 dark:text-slate-200">
+          {point.performance.toFixed(point.performance % 1 === 0 ? 0 : 1)}%
+        </span>
+      </div>
       {typeof point.payout === "number" ? (
         <div className="mt-1 flex items-center justify-between gap-5">
           <span className="text-slate-500 dark:text-slate-400">Payout</span>
@@ -222,6 +263,62 @@ function TournamentTooltip({
           </span>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function TimelineTooltip({
+  active,
+  payload,
+  currency,
+  locale,
+}: TimelineTooltipProps) {
+  if (!active || !payload.length) return null;
+
+  const point = payload[0]?.payload as TimelineChartPoint | undefined;
+  if (!point) return null;
+
+  const cumulativePositive = point.cumulativeProfit >= 0;
+  const eventPositive = point.eventProfit >= 0;
+
+  return (
+    <div className="min-w-40 rounded-lg border border-slate-200/80 bg-white/95 px-3 py-2 text-xs shadow-lg backdrop-blur-sm dark:border-slate-800 dark:bg-slate-950/95">
+      <p className="font-medium text-slate-900 dark:text-slate-100">
+        {new Intl.DateTimeFormat(locale, {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+          timeZone: "UTC",
+        }).format(new Date(point.timestamp))}
+      </p>
+      <div className="mt-2 flex items-center justify-between gap-5">
+        <span className="text-slate-500 dark:text-slate-400">Running net</span>
+        <span
+          className={
+            cumulativePositive
+              ? "font-semibold tabular-nums text-green-700 dark:text-green-400"
+              : "font-semibold tabular-nums text-red-600 dark:text-red-400"
+          }
+        >
+          {cumulativePositive ? "+" : ""}
+          {formatMoney(point.cumulativeProfit, currency, locale)}
+        </span>
+      </div>
+      <div className="mt-1 flex items-center justify-between gap-5">
+        <span className="text-slate-500 dark:text-slate-400">
+          {point.eventCount === 1 ? "Event result" : "Events result"}
+        </span>
+        <span
+          className={
+            eventPositive
+              ? "font-medium tabular-nums text-green-700 dark:text-green-400"
+              : "font-medium tabular-nums text-red-600 dark:text-red-400"
+          }
+        >
+          {eventPositive ? "+" : ""}
+          {formatMoney(point.eventProfit, currency, locale)}
+        </span>
+      </div>
     </div>
   );
 }
@@ -331,7 +428,7 @@ export function MonthlyProfitChart({
             tickLine={false}
             tick={{ fill: MUTED, fontSize: 11 }}
             tickFormatter={(value: number) =>
-              formatCompactMoney(value, currency, locale)
+              formatMoney(value, currency, locale)
             }
             domain={domain}
             tickMargin={8}
@@ -361,6 +458,176 @@ export function MonthlyProfitChart({
             fill={`url(#${fillId})`}
             activeDot={{ r: 4, strokeWidth: 2, fill: "white" }}
             dot={safeData.length === 1 ? { r: 3, fill: POSITIVE } : false}
+            isAnimationActive="auto"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+/** Running net profit plotted against the actual dates of recorded events. */
+export function ProfitOverTimeChart({
+  data,
+  className,
+  height = 280,
+  currency = "USD",
+  locale = "en-US",
+  ariaLabel = "Cumulative poker profit over time",
+  emptyLabel = "A profit timeline will appear after results are recorded.",
+  compact = false,
+}: ProfitOverTimeChartProps) {
+  const rawId = useId();
+  const gradientId = `timeline-gradient-${rawId.replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const fillId = `${gradientId}-fill`;
+  const safeData = useMemo(
+    () =>
+      data
+        .flatMap((point) => {
+          const timestamp = toTimestamp(point.date);
+          return Number.isFinite(timestamp) &&
+            Number.isFinite(point.eventProfit) &&
+            Number.isFinite(point.cumulativeProfit)
+            ? [{ ...point, timestamp }]
+            : [];
+        })
+        .toSorted((a, b) => a.timestamp - b.timestamp),
+    [data],
+  );
+
+  if (!safeData.length) {
+    return (
+      <div className={chartClassName(className)}>
+        <ChartEmptyState label={emptyLabel} height={height} />
+      </div>
+    );
+  }
+
+  const values = safeData.map((point) => point.cumulativeProfit);
+  const domain = axisDomain(values);
+  const max = Math.max(0, ...values);
+  const min = Math.min(0, ...values);
+  const zeroOffset = max === min ? 0.5 : max / (max - min);
+  const firstTimestamp = safeData[0].timestamp;
+  const lastTimestamp = safeData.at(-1)?.timestamp ?? firstTimestamp;
+  const oneDay = 86_400_000;
+  const dateDomain: [number, number] =
+    firstTimestamp === lastTimestamp
+      ? [firstTimestamp - oneDay, lastTimestamp + oneDay]
+      : [firstTimestamp, lastTimestamp];
+  const compactTicks =
+    firstTimestamp === lastTimestamp
+      ? [firstTimestamp]
+      : [firstTimestamp, lastTimestamp];
+  const endingProfit = safeData.at(-1)?.cumulativeProfit ?? 0;
+  const accessibleSummary = `${safeData.length} dated result${safeData.length === 1 ? "" : "s"} from ${formatChartDate(firstTimestamp, locale)} to ${formatChartDate(lastTimestamp, locale)}, ending at ${formatMoney(endingProfit, currency, locale)}`;
+  const chartHeight = compact ? Math.max(height, 64) : Math.max(height, 180);
+
+  return (
+    <div
+      className={chartClassName(className)}
+      style={{ height: chartHeight }}
+      role="img"
+      aria-label={`${ariaLabel}. ${accessibleSummary}`}
+    >
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+        <AreaChart
+          data={safeData}
+          margin={
+            compact
+              ? { top: 5, right: 2, bottom: 0, left: 2 }
+              : { top: 12, right: 8, bottom: 2, left: 0 }
+          }
+          accessibilityLayer
+        >
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={POSITIVE} />
+              <stop offset={zeroOffset} stopColor={POSITIVE} />
+              <stop offset={zeroOffset} stopColor={NEGATIVE} />
+              <stop offset="1" stopColor={NEGATIVE} />
+            </linearGradient>
+            <linearGradient id={fillId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor={POSITIVE_LIGHT} stopOpacity={0.2} />
+              <stop
+                offset={zeroOffset}
+                stopColor={POSITIVE_LIGHT}
+                stopOpacity={0.04}
+              />
+              <stop
+                offset={zeroOffset}
+                stopColor={NEGATIVE}
+                stopOpacity={0.04}
+              />
+              <stop offset="1" stopColor={NEGATIVE} stopOpacity={0.15} />
+            </linearGradient>
+          </defs>
+          {!compact ? (
+            <CartesianGrid
+              vertical={false}
+              stroke={GRID}
+              strokeDasharray="3 3"
+              opacity={0.75}
+            />
+          ) : null}
+          <XAxis
+            dataKey="timestamp"
+            type="number"
+            scale="time"
+            domain={dateDomain}
+            ticks={compact ? compactTicks : undefined}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: MUTED, fontSize: compact ? 9 : 11 }}
+            tickFormatter={(value: number) =>
+              formatChartDate(value, locale, compact)
+            }
+            minTickGap={compact ? 36 : 42}
+            interval="preserveStartEnd"
+            tickMargin={compact ? 4 : 10}
+            height={compact ? 18 : 30}
+          />
+          <YAxis
+            hide={compact}
+            width={54}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: MUTED, fontSize: 11 }}
+            tickFormatter={(value: number) =>
+              formatMoney(value, currency, locale)
+            }
+            domain={domain}
+            tickMargin={8}
+          />
+          <ReferenceLine
+            y={0}
+            stroke={MUTED}
+            strokeDasharray={compact ? "2 3" : "4 4"}
+            strokeOpacity={compact ? 0.35 : 0.55}
+          />
+          <Tooltip
+            cursor={{ stroke: GRID, strokeWidth: 1 }}
+            content={(tooltipProps) => (
+              <TimelineTooltip
+                {...(tooltipProps as TooltipContentProps<number, string>)}
+                currency={currency}
+                locale={locale}
+              />
+            )}
+          />
+          <Area
+            type="monotone"
+            dataKey="cumulativeProfit"
+            name="Running net"
+            stroke={`url(#${gradientId})`}
+            strokeWidth={compact ? 1.75 : 2.25}
+            fill={`url(#${fillId})`}
+            activeDot={compact ? { r: 2.5 } : { r: 4, strokeWidth: 2, fill: "white" }}
+            dot={
+              safeData.length === 1
+                ? { r: compact ? 2 : 3, fill: endingProfit >= 0 ? POSITIVE : NEGATIVE }
+                : false
+            }
             isAnimationActive="auto"
           />
         </AreaChart>

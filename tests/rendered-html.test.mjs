@@ -111,6 +111,9 @@ const cashGamePlayerNames = new Set(
     event.players.map((player) => player.name),
   ),
 );
+const tournamentOnlyPlayerName = completedTournaments
+  .flatMap((event) => event.players)
+  .find((player) => !cashGamePlayerNames.has(player.name))?.name;
 const mixedFormatPlayerName = completedTournaments
   .flatMap((event) => event.players)
   .find((player) => cashGamePlayerNames.has(player.name))?.name;
@@ -157,6 +160,23 @@ function assertPlayerModeTabs(html, selectedLabel) {
   assert.deepEqual(selectedLabels, [selectedLabel]);
 }
 
+function assertSelectedTabs(html, labels, selectedLabel) {
+  const tabs = [
+    ...html.matchAll(
+      /<button\b(?=[^>]*role="tab")([^>]*)>([\s\S]*?)<\/button>/g,
+    ),
+  ];
+  const renderedLabels = tabs.map((match) => textContent(match[2]));
+  const selectedLabels = tabs
+    .filter((match) => /aria-selected="true"/.test(match[1]))
+    .map((match) => textContent(match[2]));
+
+  for (const label of labels) {
+    assert.ok(renderedLabels.includes(label), `Expected a ${label} tab`);
+  }
+  assert.deepEqual(selectedLabels, [selectedLabel]);
+}
+
 async function render(pathname = "/") {
   return fetch(new URL(pathname, origin), {
     headers: { accept: "text/html" },
@@ -175,7 +195,31 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
   assert.doesNotMatch(html, /<footer\b/i);
   assert.ok(html.includes(latestCompletedTournament.title));
   assert.ok(html.includes(latestCompletedCashGame.title));
+  assert.match(html, /Upcoming tournament/i);
+  assert.match(html, /Cash specialist/i);
+  assert.match(html, /Tournament king/i);
   assert.doesNotMatch(html, /Your site is taking shape|Codex is working/i);
+});
+
+test("defaults standings to cash games and honors the tournament query", async () => {
+  const [cashResponse, tournamentResponse] = await Promise.all([
+    render("/standings"),
+    render("/standings?mode=tournaments"),
+  ]);
+
+  assert.equal(cashResponse.status, 200);
+  assert.equal(tournamentResponse.status, 200);
+
+  const [cashHtml, tournamentHtml] = await Promise.all([
+    cashResponse.text(),
+    tournamentResponse.text(),
+  ]);
+  assertSelectedTabs(cashHtml, ["Cash games", "Tournaments"], "Cash games");
+  assertSelectedTabs(
+    tournamentHtml,
+    ["Cash games", "Tournaments"],
+    "Tournaments",
+  );
 });
 
 test("server-renders generated tournament and cash-game detail routes", async () => {
@@ -223,9 +267,18 @@ test("server-renders player mode controls and selects modes from the query strin
     playersResponse.text(),
     tournamentPlayersResponse.text(),
   ]);
-  assertPlayerModeTabs(playersHtml, "Overall");
+  assertPlayerModeTabs(playersHtml, "Cash games");
   assert.match(playersHtml, /<h1[^>]*>Players<\/h1>/i);
-  assert.match(playersHtml, /Tournament wins/i);
+  assert.match(playersHtml, /Average P\/L/i);
+  if (tournamentOnlyPlayerName) {
+    const visiblePlayerNames = [
+      ...playersHtml.matchAll(/<h3\b[^>]*>([\s\S]*?)<\/h3>/g),
+    ].map((match) => textContent(match[1]));
+    assert.ok(
+      !visiblePlayerNames.includes(tournamentOnlyPlayerName),
+      "Cash-game mode should hide players without cash-game results",
+    );
+  }
 
   assertPlayerModeTabs(tournamentPlayersHtml, "Tournaments");
   assert.match(tournamentPlayersHtml, /<h1[^>]*>Players<\/h1>/i);
@@ -248,12 +301,18 @@ test("server-renders a mixed-format player with overall and cash-game views", as
   assertPlayerModeTabs(overallHtml, "Overall");
   assert.ok(overallHtml.includes(mixedFormatPlayerName));
   assert.match(overallHtml, /Event history/i);
+  assert.match(overallHtml, /Net over time/i);
+  assert.match(overallHtml, /Net by month/i);
+  assert.match(overallHtml, /Finish percentile/i);
 
   assertPlayerModeTabs(cashGameHtml, "Cash games");
   assert.ok(cashGameHtml.includes(mixedFormatPlayerName));
   assert.match(cashGameHtml, /Cash game stats/i);
   assert.match(cashGameHtml, /Cash[- ]game history/i);
+  assert.match(cashGameHtml, /Net over time/i);
+  assert.match(cashGameHtml, /Net by month/i);
   assert.ok(cashGameHtml.includes(mixedPlayerCashGame.title));
   assert.doesNotMatch(cashGameHtml, /Tournament stats/i);
   assert.doesNotMatch(cashGameHtml, /Tournament history/i);
+  assert.doesNotMatch(cashGameHtml, /Finish percentile/i);
 });

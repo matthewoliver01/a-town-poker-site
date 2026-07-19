@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import cashGamesJson from "@/data/cash-games.json";
 import tournamentsJson from "@/data/tournaments.json";
 import { PageIntro } from "@/components/page-intro";
-import { StandingsTables } from "@/components/standings-tables";
+import { StandingsTables, type StandingsMode } from "@/components/standings-tables";
 import { getCashGameStandings, getTournamentStandings } from "@/lib/poker-data";
 import type { CashGame, Tournament } from "@/lib/poker-types";
 
@@ -14,16 +14,32 @@ export const metadata: Metadata = {
 const tournaments = tournamentsJson as Tournament[];
 const cashGames = cashGamesJson as CashGame[];
 
-export default function StandingsPage() {
+interface StandingsPageProps {
+  searchParams: Promise<{ mode?: string | string[] }>;
+}
+
+function parseStandingsMode(value: string | string[] | undefined): StandingsMode {
+  const mode = Array.isArray(value) ? value[0] : value;
+  return mode === "tournaments" ? "tournaments" : "cash-games";
+}
+
+export default async function StandingsPage({ searchParams }: StandingsPageProps) {
+  const query = await searchParams;
   const tournamentStandings = getTournamentStandings(tournaments);
   const cashGameStandings = getCashGameStandings(cashGames);
+  const initialMode = parseStandingsMode(query.mode);
 
   return (
     <div className="page-shell py-10 sm:py-14">
       <PageIntro title="Standings" />
 
       <section className="mt-8">
-        <StandingsTables tournamentStandings={tournamentStandings} cashGameStandings={cashGameStandings} />
+        <StandingsTables
+          key={initialMode}
+          tournamentStandings={tournamentStandings}
+          cashGameStandings={cashGameStandings}
+          initialMode={initialMode}
+        />
       </section>
     </div>
   );

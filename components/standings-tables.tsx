@@ -1,10 +1,16 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatMoney, formatSignedMoney, formatTournamentWins } from "@/lib/format";
+import { playerViewHref, type PlayerViewMode } from "@/lib/player-view";
+import { toPlayerSlug } from "@/lib/poker-data";
 import type { CashGameStanding, TournamentStanding } from "@/lib/poker-types";
 import { cn } from "@/lib/utils";
+
+export type StandingsMode = "cash-games" | "tournaments";
 
 function Value({ value, signed = false }: { value: number; signed?: boolean }) {
   return (
@@ -14,21 +20,41 @@ function Value({ value, signed = false }: { value: number; signed?: boolean }) {
   );
 }
 
+function PlayerLink({ name, mode }: { name: string; mode: PlayerViewMode }) {
+  return (
+    <Link
+      href={playerViewHref(`/players/${toPlayerSlug(name)}`, mode)}
+      className="font-semibold underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      {name}
+    </Link>
+  );
+}
+
 export function StandingsTables({
   tournamentStandings,
   cashGameStandings,
+  initialMode = "cash-games",
 }: {
   tournamentStandings: TournamentStanding[];
   cashGameStandings: CashGameStanding[];
+  initialMode?: StandingsMode;
 }) {
+  const router = useRouter();
+
+  function handleModeChange(value: string) {
+    if (value !== "cash-games" && value !== "tournaments") return;
+    router.replace(value === "cash-games" ? "/standings" : `/standings?mode=${value}`, { scroll: false });
+  }
+
   return (
-    <Tabs defaultValue="tournaments" className="gap-6">
+    <Tabs defaultValue={initialMode} onValueChange={handleModeChange} className="gap-0">
       <TabsList className="w-full sm:w-fit" aria-label="Standings type">
-        <TabsTrigger value="tournaments">Tournaments</TabsTrigger>
         <TabsTrigger value="cash-games">Cash games</TabsTrigger>
+        <TabsTrigger value="tournaments">Tournaments</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="tournaments">
+      <TabsContent value="tournaments" className="pt-6">
         <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
           <Table>
             <TableHeader className="bg-muted/55">
@@ -51,7 +77,7 @@ export function StandingsTables({
                     <span className="numeric text-muted-foreground">{index + 1}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="font-semibold">{player.name}</span>
+                    <PlayerLink name={player.name} mode="tournaments" />
                   </TableCell>
                   <TableCell className="text-right"><Value value={player.netProfit} signed /></TableCell>
                   <TableCell className="numeric text-right">{formatMoney(player.amountWon)}</TableCell>
@@ -68,7 +94,7 @@ export function StandingsTables({
         <p className="mt-3 text-xs text-muted-foreground">Ranked by net. Split wins are divided evenly among co-winners. ITM = in the money.</p>
       </TabsContent>
 
-      <TabsContent value="cash-games">
+      <TabsContent value="cash-games" className="pt-6">
         <div className="overflow-hidden rounded-2xl border bg-card shadow-sm">
           <Table>
             <TableHeader className="bg-muted/55">
@@ -91,7 +117,7 @@ export function StandingsTables({
                     <span className="numeric text-muted-foreground">{index + 1}</span>
                   </TableCell>
                   <TableCell>
-                    <span className="font-semibold">{player.name}</span>
+                    <PlayerLink name={player.name} mode="cash-games" />
                   </TableCell>
                   <TableCell className="text-right"><Value value={player.netProfit} signed /></TableCell>
                   <TableCell className="numeric text-center">{player.gamesPlayed}</TableCell>
