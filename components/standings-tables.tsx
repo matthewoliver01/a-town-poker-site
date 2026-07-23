@@ -105,6 +105,7 @@ export function StandingsTables({
                 <TableHead className="text-center">Sessions</TableHead>
                 <TableHead className="text-center">Win rate</TableHead>
                 <TableHead className="text-right">Avg. P/L</TableHead>
+                <TableHead className="text-right">Variance</TableHead>
                 <TableHead className="text-right">Biggest win</TableHead>
                 <TableHead className="text-right">Biggest loss</TableHead>
                 <TableHead className="text-right">ROI</TableHead>
@@ -123,6 +124,7 @@ export function StandingsTables({
                   <TableCell className="numeric text-center">{player.gamesPlayed}</TableCell>
                   <TableCell className="numeric text-center">{player.winRate.toFixed(0)}%</TableCell>
                   <TableCell className="text-right"><Value value={player.averageProfitLoss} signed /></TableCell>
+                  <TableCell className="numeric text-right">{player.profitLossStandardDeviation === null ? "—" : formatMoney(player.profitLossStandardDeviation)}</TableCell>
                   <TableCell className="numeric text-right text-positive">{player.biggestWin === null ? "—" : formatSignedMoney(player.biggestWin)}</TableCell>
                   <TableCell className="numeric text-right text-negative">{player.biggestLoss === null ? "—" : formatSignedMoney(player.biggestLoss)}</TableCell>
                   <TableCell className={cn("numeric text-right font-medium", player.returnOnInvestment >= 0 ? "text-positive" : "text-negative")}>{player.returnOnInvestment.toFixed(1)}%</TableCell>
@@ -131,7 +133,7 @@ export function StandingsTables({
             </TableBody>
           </Table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Ranked by net.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Ranked by net. Variance is the standard deviation of session P/L; at least two sessions are required.</p>
       </TabsContent>
     </Tabs>
   );

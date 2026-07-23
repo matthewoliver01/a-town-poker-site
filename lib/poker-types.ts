@@ -122,6 +122,8 @@ export interface CashGameStanding {
   netProfit: number;
   averageBuyIn: number;
   averageProfitLoss: number;
+  /** Population standard deviation of session profit/loss, in dollars. */
+  profitLossStandardDeviation: number | null;
   biggestWin: number | null;
   biggestLoss: number | null;
   returnOnInvestment: number;

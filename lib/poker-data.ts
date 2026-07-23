@@ -291,6 +291,17 @@ export const getCashGameStandings = (
   return [...accumulators.values()]
     .map((stats): CashGameStanding => {
       const netProfit = stats.totalCashedOut - stats.totalBuyIn;
+      const averageProfitLoss = netProfit / stats.gamesPlayed;
+      const profitLossStandardDeviation =
+        stats.gamesPlayed < 2
+          ? null
+          : Math.sqrt(
+              total(
+                stats.sessionProfits.map(
+                  (profit) => (profit - averageProfitLoss) ** 2,
+                ),
+              ) / stats.gamesPlayed,
+            );
 
       return {
         name: stats.name,
@@ -301,7 +312,8 @@ export const getCashGameStandings = (
         totalCashedOut: stats.totalCashedOut,
         netProfit,
         averageBuyIn: round(stats.totalBuyIn / stats.gamesPlayed),
-        averageProfitLoss: round(netProfit / stats.gamesPlayed),
+        averageProfitLoss: round(averageProfitLoss),
+        profitLossStandardDeviation,
         biggestWin: Math.max(...stats.sessionProfits),
         biggestLoss: Math.min(...stats.sessionProfits),
         returnOnInvestment: round((netProfit / stats.totalBuyIn) * 100, 1),
@@ -415,6 +427,7 @@ const emptyCashGameStanding = (name: PlayerName): CashGameStanding => ({
   netProfit: 0,
   averageBuyIn: 0,
   averageProfitLoss: 0,
+  profitLossStandardDeviation: null,
   biggestWin: null,
   biggestLoss: null,
   returnOnInvestment: 0,

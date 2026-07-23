@@ -240,6 +240,33 @@ export default function Home() {
       b.netProfit - a.netProfit ||
       a.name.localeCompare(b.name),
   )[0];
+  const volatilityLeaders = cashLeaders
+    .filter((player) => player.profitLossStandardDeviation !== null)
+    .toSorted(
+      (a, b) =>
+        (b.profitLossStandardDeviation ?? 0) -
+          (a.profitLossStandardDeviation ?? 0) ||
+        b.gamesPlayed - a.gamesPlayed ||
+        a.name.localeCompare(b.name),
+    );
+  const mostVolatile =
+    volatilityLeaders.length >= 2 ? volatilityLeaders[0] : undefined;
+  const leastVolatile =
+    volatilityLeaders.length >= 2
+      ? volatilityLeaders.toSorted(
+          (a, b) =>
+            (a.profitLossStandardDeviation ?? Number.POSITIVE_INFINITY) -
+              (b.profitLossStandardDeviation ?? Number.POSITIVE_INFINITY) ||
+            b.gamesPlayed - a.gamesPlayed ||
+            a.name.localeCompare(b.name),
+        )[0]
+      : undefined;
+  const mostAverage = cashLeaders.toSorted(
+    (a, b) =>
+      Math.abs(a.netProfit) - Math.abs(b.netProfit) ||
+      b.gamesPlayed - a.gamesPlayed ||
+      a.name.localeCompare(b.name),
+  )[0];
   const mostActive = players.toSorted(
     (a, b) =>
       b.eventsPlayed - a.eventsPlayed ||
@@ -247,9 +274,6 @@ export default function Home() {
       a.name.localeCompare(b.name),
   )[0];
 
-  const highRoller = players.toSorted(
-    (a, b) => b.combinedBuyIn - a.combinedBuyIn || a.name.localeCompare(b.name),
-  )[0];
   const bestNight = [
     ...completedTournaments.flatMap((event) =>
       event.players.map((player) => ({
@@ -311,6 +335,33 @@ export default function Home() {
           },
         ]
       : []),
+    ...(typeof mostVolatile?.profitLossStandardDeviation === "number"
+      ? [
+          {
+            label: "Most volatile",
+            name: mostVolatile.name,
+            value: `${formatMoney(mostVolatile.profitLossStandardDeviation)} variance`,
+          },
+        ]
+      : []),
+    ...(typeof leastVolatile?.profitLossStandardDeviation === "number"
+      ? [
+          {
+            label: "Least volatile",
+            name: leastVolatile.name,
+            value: `${formatMoney(leastVolatile.profitLossStandardDeviation)} variance`,
+          },
+        ]
+      : []),
+    ...(mostAverage
+      ? [
+          {
+            label: "Most average",
+            name: mostAverage.name,
+            value: `${formatSignedMoney(mostAverage.netProfit)} cash net`,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -355,7 +406,7 @@ export default function Home() {
           >
             Superlatives
           </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {superlatives.map((item) => (
               <SuperlativeCard key={item.label} {...item} />
             ))}

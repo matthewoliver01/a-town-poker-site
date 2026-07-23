@@ -198,6 +198,9 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
   assert.match(html, /Upcoming tournament/i);
   assert.match(html, /Cash specialist/i);
   assert.match(html, /Tournament king/i);
+  assert.match(html, /Most volatile/i);
+  assert.match(html, /Least volatile/i);
+  assert.match(html, /Most average/i);
   assert.doesNotMatch(html, /Your site is taking shape|Codex is working/i);
 });
 
@@ -215,6 +218,8 @@ test("defaults standings to cash games and honors the tournament query", async (
     tournamentResponse.text(),
   ]);
   assertSelectedTabs(cashHtml, ["Cash games", "Tournaments"], "Cash games");
+  assert.match(cashHtml, /Variance/i);
+  assert.match(cashHtml, /standard deviation of session P\/L/i);
   assertSelectedTabs(
     tournamentHtml,
     ["Cash games", "Tournaments"],
