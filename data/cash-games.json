@@ -109,5 +109,63 @@
         "amountAtEnd": 148.9
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-07-22",
+    "slug": "cash-game-2026-07-22",
+    "title": "Wednesday 7/22/26",
+    "date": "2026-07-22",
+    "host": "Matt O.",
+    "venue": "Matt's House",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 73.75
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 60,
+        "amountAtEnd": 19
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 74.5
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 100,
+        "amountAtEnd": 15.75
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 23.25
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 21.75
+      },
+      {
+        "name": "Justin A.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 30.25
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 34.25
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 47.5
+      }
+    ]
   }
 ]
