@@ -3,16 +3,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import tournamentsJson from "@/data/tournaments.json";
+import siteContentJson from "@/data/site-content.json";
+import { EventDetailContent } from "@/components/event-detail-content";
 import { PlayerAvatar } from "@/components/player-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDate, formatMoney, formatSignedMoney } from "@/lib/format";
+import { formatDate, formatMoney, formatSignedMoney, formatTime } from "@/lib/format";
 import { compareTournamentPlacements, formatTournamentPlacement } from "@/lib/poker-placement";
-import type { Tournament } from "@/lib/poker-types";
+import type { SiteContent, Tournament } from "@/lib/poker-types";
+import { isAnnouncementActive } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
 
 const tournaments = tournamentsJson as Tournament[];
+const siteContent = siteContentJson as SiteContent;
 
 export function generateStaticParams() {
   return tournaments.map((tournament) => ({ slug: tournament.slug }));
@@ -50,6 +54,11 @@ export default async function TournamentDetailPage({ params }: { params: Promise
   const totalPaidOut = tournament.status === "completed"
     ? tournament.players.reduce((sum, player) => sum + player.placementPayout + player.bonusPayout, 0)
     : 0;
+  const announcements = siteContent.announcements.filter(
+    (announcement) =>
+      announcement.eventId === tournament.id &&
+      isAnnouncementActive(announcement),
+  );
 
   return (
     <div className="page-shell py-8 sm:py-12">
@@ -63,7 +72,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             </Badge>
             <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{tournament.title}</h1>
             <p className="mt-3 text-sm text-muted-foreground">
-              {formatDate(tournament.date)} · {tournament.venue}{tournament.startTime ? ` · ${tournament.startTime}` : ""}
+              {formatDate(tournament.date)} · {tournament.venue}{tournament.startTime ? ` · ${formatTime(tournament.startTime)}` : ""}
             </p>
           </div>
           {tournament.status === "completed" && topFinishers.length > 0 ? (
@@ -83,14 +92,38 @@ export default async function TournamentDetailPage({ params }: { params: Promise
         {tournament.status === "completed" ? <SummaryStat label="Total paid out" value={formatMoney(totalPaidOut)} /> : null}
       </section>
 
+      <EventDetailContent
+        eventTitle={tournament.title}
+        notes={tournament.notes}
+        photos={tournament.photos}
+        announcements={announcements}
+      />
+
       {tournament.status === "completed" ? (
         <Card className="mt-8 overflow-hidden">
             <CardHeader className="border-b"><CardTitle className="text-lg">Results</CardTitle></CardHeader>
             <CardContent className="p-0">
-              <Table>
+              <Table className="table-fixed min-w-[820px] [&_td]:px-2.5 [&_th]:px-2.5">
+                <colgroup>
+                  <col className="w-[8%]" />
+                  <col className="w-[17%]" />
+                  <col className="w-[14%]" />
+                  <col className="w-[13%]" />
+                  <col className="w-[12%]" />
+                  <col className="w-[10%]" />
+                  <col className="w-[12%]" />
+                  <col className="w-[14%]" />
+                </colgroup>
                 <TableHeader className="bg-muted/40">
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-16 text-center">Place</TableHead><TableHead>Player</TableHead><TableHead>Eliminated</TableHead><TableHead className="text-right">Bought in</TableHead><TableHead className="text-right">Placement payout</TableHead><TableHead className="text-right">Bonuses</TableHead><TableHead className="text-right">Net</TableHead>
+                    <TableHead>Place</TableHead>
+                    <TableHead>Player</TableHead>
+                    <TableHead>Payout</TableHead>
+                    <TableHead>Bought in</TableHead>
+                    <TableHead>Net</TableHead>
+                    <TableHead title="Elimination level">Level</TableHead>
+                    <TableHead title="Elimination time">Out at</TableHead>
+                    <TableHead title="Eliminated by">By</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -99,13 +132,17 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                     const net = payout - player.totalBuyIn;
                     return (
                       <TableRow key={player.name}>
-                        <TableCell className="numeric text-center font-semibold">{formatTournamentPlacement(player.placement)}</TableCell>
-                        <TableCell><div className="flex min-w-40 items-center gap-3"><PlayerAvatar name={player.name} className="size-9" /><span className="font-semibold">{player.name}</span></div></TableCell>
-                        <TableCell className="whitespace-nowrap text-muted-foreground">{player.eliminationRound}</TableCell>
-                        <TableCell className="numeric text-right">{formatMoney(player.totalBuyIn)}</TableCell>
-                        <TableCell className="numeric text-right">{formatMoney(player.placementPayout)}</TableCell>
-                        <TableCell className="numeric text-right">{formatMoney(player.bonusPayout)}</TableCell>
-                        <TableCell className={cn("numeric text-right font-semibold", net > 0 ? "text-positive" : net < 0 ? "text-negative" : "")}>{formatSignedMoney(net)}</TableCell>
+                        <TableCell className="numeric font-semibold">{formatTournamentPlacement(player.placement)}</TableCell>
+                        <TableCell className="min-w-0"><div className="flex min-w-0 items-center gap-2"><PlayerAvatar name={player.name} className="size-8" /><span className="truncate font-semibold">{player.name}</span></div></TableCell>
+                        <TableCell className="numeric font-medium">
+                          {formatMoney(payout)}
+                          {player.bonusPayout > 0 ? <span className="block whitespace-nowrap text-[11px] font-normal text-muted-foreground">Includes {formatMoney(player.bonusPayout)} bonus</span> : null}
+                        </TableCell>
+                        <TableCell className="numeric">{formatMoney(player.totalBuyIn)}</TableCell>
+                        <TableCell className={cn("numeric font-semibold", net > 0 ? "text-positive" : net < 0 ? "text-negative" : "")}>{formatSignedMoney(net)}</TableCell>
+                        <TableCell className="numeric">{player.eliminationLevel ?? <span className="text-muted-foreground">—</span>}</TableCell>
+                        <TableCell className="numeric whitespace-nowrap">{player.eliminatedAt ? formatTime(player.eliminatedAt) : <span className="text-muted-foreground">—</span>}</TableCell>
+                        <TableCell className="whitespace-nowrap">{player.eliminatedBy ?? <span className="text-muted-foreground">—</span>}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -117,7 +154,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
         <Card className="mt-8 overflow-hidden">
           <CardHeader className="border-b"><CardTitle className="text-lg">Registered players</CardTitle></CardHeader>
           <CardContent className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
-            {tournament.players.map((player) => <div key={player.name} className="flex items-center gap-3 rounded-xl border p-3"><PlayerAvatar name={player.name} /><div><p className="font-semibold">{player.name}</p><p className="numeric mt-1 text-xs text-muted-foreground">Buy-in: {formatMoney(player.totalBuyIn)}</p></div></div>)}
+            {tournament.players.length > 0 ? tournament.players.map((player) => <div key={player.name} className="flex items-center gap-3 rounded-xl border p-3"><PlayerAvatar name={player.name} /><div><p className="font-semibold">{player.name}</p><p className="numeric mt-1 text-xs text-muted-foreground">Buy-in: {formatMoney(player.totalBuyIn)}</p></div></div>) : <p className="text-sm text-muted-foreground sm:col-span-2 lg:col-span-3">No players registered yet.</p>}
           </CardContent>
         </Card>
       )}

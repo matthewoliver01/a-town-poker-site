@@ -4,48 +4,49 @@
     "slug": "tournament-2026-03-28",
     "title": "March 2026 Tournament",
     "date": "2026-03-28",
-    "host": "Nate F",
+    "host": "Nate F.",
     "venue": "Nate's House",
     "status": "completed",
     "initialBuyIn": 20,
+    "photos": [
+      {
+        "src": "/photos/march2026tourney.jpg",
+        "caption": "March 2026 tourament winner: Ben H."
+      }
+    ],
     "players": [
       {
         "name": "Ben H.",
         "totalBuyIn": 60,
         "placement": 1,
-        "eliminationRound": "Champion",
-        "placementPayout": 200,
+        "placementPayout": 195,
         "bonusPayout": 0
       },
       {
         "name": "Brian T.",
         "totalBuyIn": 20,
         "placement": 2,
-        "eliminationRound": "Heads-up",
-        "placementPayout": 60,
+        "placementPayout": 87.75,
         "bonusPayout": 0
       },
       {
         "name": "Nate F.",
         "totalBuyIn": 20,
         "placement": 3,
-        "eliminationRound": "N/A",
-        "placementPayout": 40,
+        "placementPayout": 58.5,
         "bonusPayout": 0
       },
       {
         "name": "Sofia M.",
         "totalBuyIn": 20,
         "placement": 4,
-        "eliminationRound": "N/A",
-        "placementPayout": 20,
+        "placementPayout": 48.75,
         "bonusPayout": 0
       },
       {
         "name": "Tony P.",
         "totalBuyIn": 20,
         "placement": 5,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -53,7 +54,6 @@
         "name": "Luke K.",
         "totalBuyIn": 20,
         "placement": 6,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -61,7 +61,6 @@
         "name": "Noah S.",
         "totalBuyIn": 20,
         "placement": 7,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -69,7 +68,6 @@
         "name": "Adam B.",
         "totalBuyIn": 20,
         "placement": 8,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -77,15 +75,13 @@
         "name": "Justin A.",
         "totalBuyIn": 20,
         "placement": 9,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Kyser E.",
-        "totalBuyIn": 20,
+        "totalBuyIn": 30,
         "placement": 10,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -93,31 +89,27 @@
         "name": "Matt O.",
         "totalBuyIn": 20,
         "placement": 11,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Sammy A.",
-        "totalBuyIn": 20,
+        "totalBuyIn": 40,
         "placement": 12,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "David P.",
-        "totalBuyIn": 20,
+        "totalBuyIn": 40,
         "placement": 13,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Liam M.",
-        "totalBuyIn": 20,
+        "totalBuyIn": 40,
         "placement": 14,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       }
@@ -126,18 +118,23 @@
   {
     "id": "tournament-2025-09-13",
     "slug": "tournament-2025-09-13",
-    "title": "A-Town Poker Inaugural Tournament",
+    "title": "September 2025 Tournament",
     "date": "2025-09-13",
-    "host": "Nate F",
+    "host": "Nate F.",
     "venue": "Nate's House",
     "status": "completed",
     "initialBuyIn": 20,
+    "photos": [
+      {
+        "src": "/photos/september2025tourney.jpg",
+        "caption": "September 2025 tournament winner: Kyser E., Joey E., Max A., and Matt O."
+      }
+    ],
     "players": [
       {
         "name": "Max A.",
         "totalBuyIn": 40,
         "placement": "T-1",
-        "eliminationRound": "N/A",
         "placementPayout": 100,
         "bonusPayout": 0
       },
@@ -145,15 +142,13 @@
         "name": "Joey E.",
         "totalBuyIn": 20,
         "placement": "T-1",
-        "eliminationRound": "N/A",
         "placementPayout": 100,
         "bonusPayout": 0
       },
       {
         "name": "Kyser E.",
-        "totalBuyIn": 20,
+        "totalBuyIn": 40,
         "placement": "T-1",
-        "eliminationRound": "N/A",
         "placementPayout": 100,
         "bonusPayout": 0
       },
@@ -161,7 +156,6 @@
         "name": "Matt O.",
         "totalBuyIn": 20,
         "placement": "T-1",
-        "eliminationRound": "N/A",
         "placementPayout": 100,
         "bonusPayout": 0
       },
@@ -169,7 +163,6 @@
         "name": "Sofia M.",
         "totalBuyIn": 20,
         "placement": 5,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -177,7 +170,6 @@
         "name": "Tony P.",
         "totalBuyIn": 20,
         "placement": 6,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -185,7 +177,6 @@
         "name": "Noah S.",
         "totalBuyIn": 20,
         "placement": 7,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -193,7 +184,6 @@
         "name": "Chase C.",
         "totalBuyIn": 40,
         "placement": 8,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
@@ -201,71 +191,55 @@
         "name": "Liam M.",
         "totalBuyIn": 20,
         "placement": 9,
-        "eliminationRound": "N/A",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      },
-      {
-        "name": "TBD 2",
-        "totalBuyIn": 40,
-        "placement": 10,
-        "eliminationRound": "N/A",
-        "placementPayout": 0,
-        "bonusPayout": 0
-      },
-      {
-        "name": "TBD 1",
-        "totalBuyIn": 20,
-        "placement": 11,
-        "eliminationRound": "N/A",
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Justin A.",
         "totalBuyIn": 20,
-        "placement": 12,
-        "eliminationRound": "N/A",
+        "placement": 10,
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Nathan C.",
         "totalBuyIn": 20,
-        "placement": 13,
-        "eliminationRound": "N/A",
+        "placement": 11,
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Nate F.",
+        "totalBuyIn": 20,
+        "placement": 12,
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Luke K.",
         "totalBuyIn": 20,
-        "placement": 14,
-        "eliminationRound": "N/A",
+        "placement": 13,
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Adam B.",
         "totalBuyIn": 20,
-        "placement": 15,
-        "eliminationRound": "N/A",
+        "placement": 14,
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "Sammy A.",
         "totalBuyIn": 20,
-        "placement": 16,
-        "eliminationRound": "N/A",
+        "placement": 15,
         "placementPayout": 0,
         "bonusPayout": 0
       },
       {
         "name": "David P.",
-        "totalBuyIn": 20,
-        "placement": 17,
-        "eliminationRound": "N/A",
+        "totalBuyIn": 40,
+        "placement": 16,
         "placementPayout": 0,
         "bonusPayout": 0
       }
@@ -276,20 +250,167 @@
     "slug": "tournament-2026-08-01",
     "title": "August 2026 Tournament",
     "date": "2026-08-01",
-    "host": "Nate F",
+    "host": "Nate F.",
     "venue": "Nate's House",
-    "status": "upcoming",
+    "status": "completed",
     "startTime": "18:30",
     "initialBuyIn": 20,
+    "photos": [
+      {
+        "src": "/photos/august2026tourney.jpg",
+        "caption": "August 2026 tournament winner: Nathan C."
+      }
+    ],
     "players": [
       {
-        "name": "Nate F.",
-        "totalBuyIn": 20
+        "name": "Ethan N.",
+        "totalBuyIn": 40,
+        "placement": 14,
+        "eliminationLevel": "4",
+        "eliminatedAt": "20:15",
+        "eliminatedBy": "Luke K.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Sammy A.",
+        "totalBuyIn": 20,
+        "placement": 13,
+        "eliminationLevel": "5",
+        "eliminatedAt": "20:25",
+        "eliminatedBy": "Ben H.",
+        "placementPayout": 0,
+        "bonusPayout": 0
       },
       {
         "name": "Matt O.",
-        "totalBuyIn": 20
+        "totalBuyIn": 20,
+        "placement": 12,
+        "eliminationLevel": "5",
+        "eliminatedAt": "20:33",
+        "eliminatedBy": "Nathan C.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Tony P.",
+        "totalBuyIn": 40,
+        "placement": 11,
+        "eliminationLevel": "6",
+        "eliminatedAt": "20:54",
+        "eliminatedBy": "Joey E.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Sofia M.",
+        "totalBuyIn": 40,
+        "placement": 10,
+        "eliminationLevel": "6",
+        "eliminatedAt": "20:59",
+        "eliminatedBy": "Chase C.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Ben H.",
+        "totalBuyIn": 60,
+        "placement": 9,
+        "eliminationLevel": "6",
+        "eliminatedAt": "21:07",
+        "eliminatedBy": "Luke K.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Liam M.",
+        "totalBuyIn": 60,
+        "placement": 8,
+        "eliminationLevel": "6",
+        "eliminatedAt": "21:11",
+        "eliminatedBy": "Noah S.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Nate F.",
+        "totalBuyIn": 40,
+        "placement": 7,
+        "eliminationLevel": "7",
+        "eliminatedAt": "21:30",
+        "eliminatedBy": "Nathan C.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Luke K.",
+        "totalBuyIn": 40,
+        "placement": 6,
+        "eliminationLevel": "9",
+        "eliminatedAt": "22:05",
+        "eliminatedBy": "Chase C.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Adam B.",
+        "totalBuyIn": 20,
+        "placement": 5,
+        "eliminationLevel": "10",
+        "eliminatedAt": "22:20",
+        "eliminatedBy": "Joey E.",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Noah S.",
+        "totalBuyIn": 60,
+        "placement": 4,
+        "eliminationLevel": "11",
+        "eliminatedAt": "22:50",
+        "eliminatedBy": "Nathan C.",
+        "placementPayout": 62.5,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Joey E.",
+        "totalBuyIn": 20,
+        "placement": 3,
+        "eliminationLevel": "12",
+        "eliminatedAt": "22:57",
+        "eliminatedBy": "Nathan C.",
+        "placementPayout": 75,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Chase C.",
+        "totalBuyIn": 20,
+        "placement": 2,
+        "eliminationLevel": "13",
+        "eliminatedAt": "23:13",
+        "eliminatedBy": "Nathan C.",
+        "placementPayout": 112.5,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Nathan C.",
+        "totalBuyIn": 20,
+        "placement": 1,
+        "placementPayout": 250,
+        "bonusPayout": 0
       }
     ]
+  },
+  {
+    "id": "tournament-2026-10-10",
+    "slug": "tournament-2026-10-10",
+    "title": "October 2026 High-Stakes",
+    "date": "2026-10-10",
+    "host": "Matt O.",
+    "venue": "Matt's House",
+    "status": "upcoming",
+    "startTime": "18:30",
+    "initialBuyIn": 50,
+    "players": []
   }
 ]

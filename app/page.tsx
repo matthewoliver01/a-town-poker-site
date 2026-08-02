@@ -1,8 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
+import {
+  Activity,
+  CalendarRange,
+  Coins,
+  Flame,
+  Gauge,
+  Scale,
+  Trophy,
+  UsersRound,
+} from "lucide-react";
 import cashGamesJson from "@/data/cash-games.json";
+import siteContentJson from "@/data/site-content.json";
 import tournamentsJson from "@/data/tournaments.json";
 import { CashGameCard, TournamentCard } from "@/components/event-cards";
+import { HomeAnnouncements } from "@/components/home-announcements";
+import { HomeGallery } from "@/components/home-gallery";
 import { SectionHeading } from "@/components/section-heading";
 import { Card } from "@/components/ui/card";
 import {
@@ -16,7 +30,6 @@ import {
 import {
   formatMoney,
   formatSignedMoney,
-  formatTournamentWinLabel,
   formatTournamentWins,
 } from "@/lib/format";
 import {
@@ -33,9 +46,12 @@ import {
 import type {
   CashGame,
   CashGameStanding,
+  SiteContent,
   Tournament,
   TournamentStanding,
 } from "@/lib/poker-types";
+import { currentEasternDate, isAnnouncementActive } from "@/lib/site-content";
+import { getTiedMetricLeaders } from "@/lib/superlatives";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -45,6 +61,7 @@ export const metadata: Metadata = {
 
 const tournaments = tournamentsJson as Tournament[];
 const cashGames = cashGamesJson as CashGame[];
+const siteContent = siteContentJson as SiteContent;
 const standingsLimit = 8;
 
 function NetValue({ value }: { value: number }) {
@@ -177,21 +194,47 @@ function TournamentStandings({
 
 interface Superlative {
   label: string;
-  name: string;
+  names: string[];
   value: string;
+  caption: string;
+  icon: LucideIcon;
 }
 
-function SuperlativeCard({ label, name, value }: Superlative) {
+function SuperlativeCard({
+  label,
+  names,
+  value,
+  caption,
+  icon: Icon,
+}: Superlative) {
   return (
-    <Link href={`/players/${toPlayerSlug(name)}`} className="block h-full">
-      <Card className="h-full p-4 transition-colors hover:border-primary/30">
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
-        <p className="mt-2 truncate font-semibold">{name}</p>
-        <p className="numeric mt-1 text-sm font-semibold text-primary">
-          {value}
+    <Card className="group h-full p-4 transition-all hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-md">
+      <div className="flex items-center gap-2.5">
+        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+          <Icon className="size-4" aria-hidden="true" />
+        </span>
+        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          {label}
         </p>
-      </Card>
-    </Link>
+      </div>
+      <p className="mt-4 font-semibold leading-snug">
+        {names.map((name, index) => (
+          <span key={name}>
+            <Link
+              href={`/players/${toPlayerSlug(name)}`}
+              className="hover:text-primary hover:underline"
+            >
+              {name}
+            </Link>
+            {index < names.length - 1 ? ", " : null}
+          </span>
+        ))}
+      </p>
+      <p className="numeric mt-2 text-2xl font-semibold tracking-tight text-black">
+        {value}
+      </p>
+      <p className="mt-1 text-xs text-muted-foreground">{caption}</p>
+    </Card>
   );
 }
 
@@ -204,6 +247,28 @@ export default function Home() {
   const tournamentLeaders = getTournamentStandings(tournaments);
   const cashLeaders = getCashGameStandings(cashGames);
   const players = getPlayerProfiles(tournaments, cashGames);
+  const today = currentEasternDate();
+  const activeAnnouncements = siteContent.announcements.filter((announcement) =>
+    isAnnouncementActive(announcement, today),
+  );
+  const generalAnnouncements = activeAnnouncements
+    .filter((announcement) => !announcement.eventId)
+    .slice(0, 6);
+  const upcomingAnnouncement = upcoming
+    ? activeAnnouncements.find(
+        (announcement) => announcement.eventId === upcoming.id,
+      )
+    : undefined;
+  const galleryItems = siteContent.slides.map((slide) => ({
+    id: slide.id,
+    src: slide.src,
+    caption: slide.caption,
+    eventLabel: slide.eventTitle,
+    href:
+      slide.eventType === "tournament"
+        ? `/tournaments/${slide.eventSlug}`
+        : `/cash-games/${slide.eventSlug}`,
+  }));
 
   const latestCompletedDate = [
     ...completedTournaments.map((event) => event.date),
@@ -218,102 +283,111 @@ export default function Home() {
         timeZone: "UTC",
       }).format(new Date(`${latestCompletedDate}T12:00:00Z`))
     : "Monthly";
-  const monthlyLeader = latestMonth
-    ? players
-        .filter((player) =>
-          player.history.some((event) => event.date.startsWith(latestMonth)),
-        )
-        .map((player) => ({
-          player,
-          profit:
-            player.monthlyProfit.find((point) => point.month === latestMonth)
-              ?.totalProfit ?? 0,
-        }))
-        .toSorted(
-          (a, b) =>
-            b.profit - a.profit || a.player.name.localeCompare(b.player.name),
-        )[0]
+  const monthlyLeaders = latestMonth
+    ? getTiedMetricLeaders(
+        players
+          .filter((player) =>
+            player.history.some((event) => event.date.startsWith(latestMonth)),
+          )
+          .map((player) => ({
+            name: player.name,
+            value:
+              player.monthlyProfit.find((point) => point.month === latestMonth)
+                ?.totalProfit ?? 0,
+          })),
+      )
     : undefined;
-  const tournamentKing = tournamentLeaders.toSorted(
-    (a, b) =>
-      b.wins - a.wins ||
-      b.netProfit - a.netProfit ||
-      a.name.localeCompare(b.name),
-  )[0];
-  const volatilityLeaders = cashLeaders
-    .filter((player) => player.profitLossStandardDeviation !== null)
-    .toSorted(
-      (a, b) =>
-        (b.profitLossStandardDeviation ?? 0) -
-          (a.profitLossStandardDeviation ?? 0) ||
-        b.gamesPlayed - a.gamesPlayed ||
-        a.name.localeCompare(b.name),
-    );
+  const cashSpecialists = getTiedMetricLeaders(
+    cashLeaders.map((player) => ({
+      name: player.name,
+      value: player.netProfit,
+    })),
+  );
+  const tournamentKings = getTiedMetricLeaders(
+    tournamentLeaders.map((player) => ({
+      name: player.name,
+      value: player.netProfit,
+    })),
+  );
+  const volatilityCandidates = cashLeaders.flatMap((player) =>
+    typeof player.profitLossStandardDeviation === "number"
+      ? [
+          {
+            name: player.name,
+            value: player.profitLossStandardDeviation,
+          },
+        ]
+      : [],
+  );
   const mostVolatile =
-    volatilityLeaders.length >= 2 ? volatilityLeaders[0] : undefined;
-  const leastVolatile =
-    volatilityLeaders.length >= 2
-      ? volatilityLeaders.toSorted(
-          (a, b) =>
-            (a.profitLossStandardDeviation ?? Number.POSITIVE_INFINITY) -
-              (b.profitLossStandardDeviation ?? Number.POSITIVE_INFINITY) ||
-            b.gamesPlayed - a.gamesPlayed ||
-            a.name.localeCompare(b.name),
-        )[0]
+    volatilityCandidates.length >= 2
+      ? getTiedMetricLeaders(volatilityCandidates)
       : undefined;
-  const mostAverage = cashLeaders.toSorted(
-    (a, b) =>
-      Math.abs(a.netProfit) - Math.abs(b.netProfit) ||
-      b.gamesPlayed - a.gamesPlayed ||
-      a.name.localeCompare(b.name),
-  )[0];
-  const mostActive = players.toSorted(
-    (a, b) =>
-      b.eventsPlayed - a.eventsPlayed ||
-      b.combinedNetProfit - a.combinedNetProfit ||
-      a.name.localeCompare(b.name),
-  )[0];
+  const leastVolatile =
+    volatilityCandidates.length >= 2
+      ? getTiedMetricLeaders(volatilityCandidates, "lowest")
+      : undefined;
+  const mostAverage = getTiedMetricLeaders(
+    cashLeaders.map((player) => ({
+      name: player.name,
+      value: Math.abs(player.netProfit),
+    })),
+    "lowest",
+  );
+  const mostActive = getTiedMetricLeaders(
+    players.map((player) => ({
+      name: player.name,
+      value: player.eventsPlayed,
+    })),
+  );
 
-  const bestNight = [
+  const bestNight = getTiedMetricLeaders([
     ...completedTournaments.flatMap((event) =>
       event.players.map((player) => ({
         name: player.name,
-        profit: player.placementPayout + player.bonusPayout - player.totalBuyIn,
+        value:
+          player.placementPayout + player.bonusPayout - player.totalBuyIn,
       })),
     ),
     ...completedCashGames.flatMap((event) =>
       event.players.map((player) => ({
         name: player.name,
-        profit: player.amountAtEnd - player.amountBuyIn,
+        value: player.amountAtEnd - player.amountBuyIn,
       })),
     ),
-  ].toSorted((a, b) => b.profit - a.profit || a.name.localeCompare(b.name))[0];
+  ]);
 
   const superlatives: Superlative[] = [
-    ...(cashLeaders[0]
+    ...(cashSpecialists
       ? [
           {
             label: "Cash specialist",
-            name: cashLeaders[0].name,
-            value: `${formatSignedMoney(cashLeaders[0].netProfit)} all-time`,
+            names: cashSpecialists.names,
+            value: formatSignedMoney(cashSpecialists.value),
+            caption: "All-time cash profit",
+            icon: Coins,
           },
         ]
       : []),
-    ...(monthlyLeader
-      ? [
-          {
-            label: `${latestMonthLabel} leader`,
-            name: monthlyLeader.player.name,
-            value: `${formatSignedMoney(monthlyLeader.profit)} in ${latestMonthLabel}`,
-          },
-        ]
-      : []),
-    ...(tournamentKing
+    ...(tournamentKings
       ? [
           {
             label: "Tournament king",
-            name: tournamentKing.name,
-            value: formatTournamentWinLabel(tournamentKing.wins),
+            names: tournamentKings.names,
+            value: formatSignedMoney(tournamentKings.value),
+            caption: "All-time tournament profit",
+            icon: Trophy,
+          },
+        ]
+      : []),
+    ...(monthlyLeaders
+      ? [
+          {
+            label: `${latestMonthLabel} leader`,
+            names: monthlyLeaders.names,
+            value: formatSignedMoney(monthlyLeaders.value),
+            caption: `Combined profit in ${latestMonthLabel}`,
+            icon: CalendarRange,
           },
         ]
       : []),
@@ -321,8 +395,10 @@ export default function Home() {
       ? [
           {
             label: "Best night",
-            name: bestNight.name,
-            value: formatSignedMoney(bestNight.profit),
+            names: bestNight.names,
+            value: formatSignedMoney(bestNight.value),
+            caption: "Highest single-event profit",
+            icon: Flame,
           },
         ]
       : []),
@@ -330,26 +406,32 @@ export default function Home() {
       ? [
           {
             label: "Biggest Degen",
-            name: mostActive.name,
-            value: `${mostActive.eventsPlayed} events`,
+            names: mostActive.names,
+            value: String(mostActive.value),
+            caption: "Tournaments and cash games played",
+            icon: UsersRound,
           },
         ]
       : []),
-    ...(typeof mostVolatile?.profitLossStandardDeviation === "number"
+    ...(mostVolatile
       ? [
           {
             label: "Most volatile",
-            name: mostVolatile.name,
-            value: `${formatMoney(mostVolatile.profitLossStandardDeviation)} variance`,
+            names: mostVolatile.names,
+            value: formatMoney(mostVolatile.value),
+            caption: "Cash-session profit/loss spread",
+            icon: Activity,
           },
         ]
       : []),
-    ...(typeof leastVolatile?.profitLossStandardDeviation === "number"
+    ...(leastVolatile
       ? [
           {
             label: "Least volatile",
-            name: leastVolatile.name,
-            value: `${formatMoney(leastVolatile.profitLossStandardDeviation)} variance`,
+            names: leastVolatile.names,
+            value: formatMoney(leastVolatile.value),
+            caption: "Cash-session profit/loss spread",
+            icon: Gauge,
           },
         ]
       : []),
@@ -357,8 +439,10 @@ export default function Home() {
       ? [
           {
             label: "Most average",
-            name: mostAverage.name,
-            value: `${formatSignedMoney(mostAverage.netProfit)} cash net`,
+            names: mostAverage.names,
+            value: formatMoney(mostAverage.value),
+            caption: "Distance from $0 cash net",
+            icon: Scale,
           },
         ]
       : []),
@@ -379,9 +463,45 @@ export default function Home() {
             href="/tournaments"
             linkLabel="All tournaments"
           />
-          <div className="max-w-2xl">
-            <TournamentCard tournament={upcoming} />
+          <div className={upcoming.photos?.length ? "max-w-3xl" : "max-w-2xl"}>
+            <TournamentCard
+              tournament={upcoming}
+              announcement={
+                upcomingAnnouncement
+                  ? {
+                      title: upcomingAnnouncement.title,
+                      body: upcomingAnnouncement.body,
+                    }
+                  : undefined
+              }
+            />
           </div>
+        </section>
+      ) : null}
+
+      {galleryItems.length > 0 ? (
+        <section className="mt-14" aria-labelledby="photos-heading">
+          <h2
+            id="photos-heading"
+            className="mb-6 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl"
+          >
+            Photos
+          </h2>
+          <div className="max-w-2xl">
+            <HomeGallery items={galleryItems} />
+          </div>
+        </section>
+      ) : null}
+
+      {generalAnnouncements.length > 0 ? (
+        <section className="mt-14" aria-labelledby="announcements-heading">
+          <h2
+            id="announcements-heading"
+            className="mb-6 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl"
+          >
+            Announcements
+          </h2>
+          <HomeAnnouncements announcements={generalAnnouncements} />
         </section>
       ) : null}
 
@@ -406,7 +526,7 @@ export default function Home() {
           >
             Superlatives
           </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {superlatives.map((item) => (
               <SuperlativeCard key={item.label} {...item} />
             ))}

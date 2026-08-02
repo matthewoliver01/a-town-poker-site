@@ -10,6 +10,13 @@ export type ISODate = string;
 export type EventStatus = "completed" | "upcoming";
 export type PlayerName = string;
 export type TournamentPlacement = number | `T-${number}`;
+export type PokerEventType = "tournament" | "cash-game";
+
+export interface EventPhoto {
+  /** `/photos/...` path from `public/`, or an HTTPS URL. */
+  src: string;
+  caption?: string;
+}
 
 export interface TournamentBase {
   id: string;
@@ -20,6 +27,8 @@ export interface TournamentBase {
   venue: string;
   startTime?: string;
   initialBuyIn: number;
+  notes?: string;
+  photos?: EventPhoto[];
 }
 
 export interface CompletedTournamentPlayer {
@@ -27,7 +36,12 @@ export interface CompletedTournamentPlayer {
   /** Initial entry plus every rebuy. */
   totalBuyIn: number;
   placement: TournamentPlacement;
-  eliminationRound: string;
+  /** Blind level in progress when the player was eliminated. */
+  eliminationLevel?: string;
+  /** Time of day the player was eliminated, stored as 24-hour HH:MM. */
+  eliminatedAt?: string;
+  /** Player credited with the elimination. */
+  eliminatedBy?: PlayerName;
   placementPayout: number;
   bonusPayout: number;
 }
@@ -64,6 +78,8 @@ export interface CashGameBase {
   venue: string;
   startTime?: string;
   initialBuyIn: number;
+  notes?: string;
+  photos?: EventPhoto[];
 }
 
 export interface CompletedCashGamePlayer {
@@ -91,6 +107,39 @@ export interface UpcomingCashGame extends CashGameBase {
 }
 
 export type CashGame = CompletedCashGame | UpcomingCashGame;
+
+export interface SiteSlide extends EventPhoto {
+  id: string;
+  eventId: string;
+  eventType: PokerEventType;
+  eventSlug: string;
+  eventTitle: string;
+  eventDate: ISODate;
+}
+
+export interface SiteAnnouncement {
+  id: string;
+  date: ISODate;
+  title: string;
+  body: string;
+  /** Present when the announcement belongs to a specific event. */
+  eventId?: string;
+  eventType?: PokerEventType;
+  eventSlug?: string;
+  eventTitle?: string;
+  expires?: ISODate;
+  pinned: boolean;
+}
+
+export interface SiteContent {
+  slides: SiteSlide[];
+  announcements: SiteAnnouncement[];
+}
+
+export interface SiteMetadata {
+  /** ISO timestamp recorded after the latest successful workbook conversion. */
+  lastUpdated: string;
+}
 
 export interface TournamentStanding {
   name: PlayerName;

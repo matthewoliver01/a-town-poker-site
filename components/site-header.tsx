@@ -4,7 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Club, Menu, X } from "lucide-react";
 import { useState } from "react";
+import siteMetadata from "@/data/site-metadata.json";
+import { formatUpdatedAt } from "@/lib/format";
+import type { SiteMetadata } from "@/lib/poker-types";
 import { cn } from "@/lib/utils";
+
+const generatedMetadata: SiteMetadata = siteMetadata;
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -23,11 +28,35 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-xl">
-      <div className="page-shell flex h-16 items-center justify-between gap-6">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="A-Town Poker home" onClick={() => setOpen(false)}>
-          <Club className="size-4.5 fill-current text-primary" aria-hidden="true" />
-          <span className="text-sm font-semibold tracking-tight">A-Town Poker</span>
-        </Link>
+      <div className="page-shell flex h-16 items-center justify-between gap-3 sm:gap-6">
+        <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+          <Link
+            href="/"
+            className="flex shrink-0 items-center gap-2.5"
+            aria-label="A-Town Poker home"
+            onClick={() => setOpen(false)}
+          >
+            <Club className="size-4.5 fill-current text-primary" aria-hidden="true" />
+            <span className="text-sm font-semibold tracking-tight">A-Town Poker</span>
+          </Link>
+
+          <div className="shrink-0 border-l pl-2.5 sm:pl-3">
+            <p className="text-[10px] font-medium leading-none text-muted-foreground">
+              Last updated
+            </p>
+            <time
+              dateTime={generatedMetadata.lastUpdated}
+              className="numeric mt-1 block whitespace-nowrap text-[11px] font-medium leading-none text-foreground"
+            >
+              <span className="sm:hidden">
+                {formatUpdatedAt(generatedMetadata.lastUpdated, true)}
+              </span>
+              <span className="hidden sm:inline">
+                {formatUpdatedAt(generatedMetadata.lastUpdated)}
+              </span>
+            </time>
+          </div>
+        </div>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary navigation">
           {navigation.map((item) => (

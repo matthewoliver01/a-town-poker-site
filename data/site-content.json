@@ -1,0 +1,70 @@
+{
+  "slides": [
+    {
+      "id": "tournament-2026-08-01-photo-3",
+      "src": "/photos/august2026tourney.jpg",
+      "caption": "August 2026 tournament winner: Nathan C.",
+      "eventId": "tournament-2026-08-01",
+      "eventType": "tournament",
+      "eventSlug": "tournament-2026-08-01",
+      "eventTitle": "August 2026 Tournament",
+      "eventDate": "2026-08-01"
+    },
+    {
+      "id": "tournament-2026-03-28-photo-2",
+      "src": "/photos/march2026tourney.jpg",
+      "caption": "March 2026 tourament winner: Ben H.",
+      "eventId": "tournament-2026-03-28",
+      "eventType": "tournament",
+      "eventSlug": "tournament-2026-03-28",
+      "eventTitle": "March 2026 Tournament",
+      "eventDate": "2026-03-28"
+    },
+    {
+      "id": "tournament-2025-09-13-photo-1",
+      "src": "/photos/september2025tourney.jpg",
+      "caption": "September 2025 tournament winner: Kyser E., Joey E., Max A., and Matt O.",
+      "eventId": "tournament-2025-09-13",
+      "eventType": "tournament",
+      "eventSlug": "tournament-2025-09-13",
+      "eventTitle": "September 2025 Tournament",
+      "eventDate": "2025-09-13"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "october-tourney-announcement",
+      "date": "2026-08-02",
+      "title": "Save the Date: October 10th High-Stakes Tournamet",
+      "body": "I will be hosting a $50 buy-in tournament on October 10th at 6:30 PM. Stay tuned for a formal invite in the next few weeks, but put it on your calendar now! If we can get 20 players, the total prize pool will be $1,000!",
+      "eventId": "tournament-2026-10-10",
+      "eventType": "tournament",
+      "eventSlug": "tournament-2026-10-10",
+      "eventTitle": "October 2026 High-Stakes",
+      "expires": "2026-10-10",
+      "pinned": true
+    },
+    {
+      "id": "september-tourney-note",
+      "date": "2026-08-02",
+      "title": "Note",
+      "body": "Buy-in amounts and placements are approximate. If you have a more accurate recollection, let me know!",
+      "eventId": "tournament-2025-09-13",
+      "eventType": "tournament",
+      "eventSlug": "tournament-2025-09-13",
+      "eventTitle": "September 2025 Tournament",
+      "pinned": false
+    },
+    {
+      "id": "march-tourney-note",
+      "date": "2026-08-02",
+      "title": "Note",
+      "body": "Buy-in amounts and placements are approximate. If you have a more accurate recollection, let me know!",
+      "eventId": "tournament-2026-03-28",
+      "eventType": "tournament",
+      "eventSlug": "tournament-2026-03-28",
+      "eventTitle": "March 2026 Tournament",
+      "pinned": false
+    }
+  ]
+}

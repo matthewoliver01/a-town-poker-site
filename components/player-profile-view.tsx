@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
-  MonthlyProfitChart,
+  CashSessionProfitChart,
   ProfitOverTimeChart,
   TournamentFinishesChart,
   type TournamentFinishPoint,
@@ -60,6 +60,15 @@ type StatCardProps = {
   note?: string;
 };
 
+type MonthlyResultTile = {
+  eventCount: number;
+  label: string;
+  month: string;
+  profit: number;
+};
+
+const MONTH_TILE_START = "2026-07";
+
 function StatCard({ label, value, note }: StatCardProps) {
   return (
     <Card>
@@ -88,6 +97,160 @@ function historyForMode(history: PlayerHistoryItem[], mode: PlayerViewMode) {
     return history.filter((event) => event.eventType === "cash-game");
   }
   return history;
+}
+
+function currentMonthKey() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    month: "2-digit",
+    timeZone: "America/New_York",
+    year: "numeric",
+  }).formatToParts(new Date());
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+
+  return year && month ? `${year}-${month}` : MONTH_TILE_START;
+}
+
+function monthKeysBetween(start: string, end: string) {
+  if (start > end) return [];
+
+  const [startYear, startMonth] = start.split("-").map(Number);
+  const [endYear, endMonth] = end.split("-").map(Number);
+  const cursor = new Date(Date.UTC(startYear, startMonth - 1, 1));
+  const finalMonth = Date.UTC(endYear, endMonth - 1, 1);
+  const months: string[] = [];
+
+  while (cursor.getTime() <= finalMonth) {
+    months.push(
+      `${cursor.getUTCFullYear()}-${String(cursor.getUTCMonth() + 1).padStart(2, "0")}`,
+    );
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+  }
+
+  return months;
+}
+
+function monthlyResults(history: PlayerHistoryItem[]): MonthlyResultTile[] {
+  const results = new Map<
+    string,
+    {
+      eventCount: number;
+      profit: number;
+    }
+  >();
+
+  for (const event of history) {
+    const month = event.date.slice(0, 7);
+    const current = results.get(month) ?? { eventCount: 0, profit: 0 };
+    results.set(month, {
+      eventCount: current.eventCount + 1,
+      profit: Math.round((current.profit + event.netProfit) * 100) / 100,
+    });
+  }
+
+  return monthKeysBetween(MONTH_TILE_START, currentMonthKey()).map((month) => {
+    const result = results.get(month) ?? { eventCount: 0, profit: 0 };
+    return {
+      month,
+      label: new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        timeZone: "UTC",
+        year: "numeric",
+      }).format(new Date(`${month}-01T00:00:00Z`)),
+      ...result,
+    };
+  });
+}
+
+function tileStyle(
+  tile: MonthlyResultTile,
+  largestMagnitude: number,
+): CSSProperties | undefined {
+  if (!tile.eventCount || tile.profit === 0) return undefined;
+
+  const intensity = Math.min(
+    1,
+    Math.abs(tile.profit) / Math.max(largestMagnitude, 200),
+  );
+  const backgroundOpacity = 0.1 + intensity * 0.68;
+  const borderOpacity = 0.22 + intensity * 0.62;
+  const positive = tile.profit > 0;
+  const color = positive ? "22, 163, 74" : "220, 38, 38";
+
+  return {
+    backgroundColor: `rgba(${color}, ${backgroundOpacity})`,
+    borderColor: `rgba(${color}, ${borderOpacity})`,
+    color:
+      intensity >= 0.72
+        ? "#ffffff"
+        : positive
+          ? "#14532d"
+          : "#7f1d1d",
+  };
+}
+
+function MonthlyResultTiles({
+  data,
+  ariaLabel,
+}: {
+  data: MonthlyResultTile[];
+  ariaLabel: string;
+}) {
+  const largestMagnitude = Math.max(
+    0,
+    ...data
+      .filter((tile) => tile.eventCount > 0)
+      .map((tile) => Math.abs(tile.profit)),
+  );
+
+  if (!data.length) {
+    return (
+      <p className="py-12 text-center text-sm text-muted-foreground">
+        Monthly results begin in July 2026.
+      </p>
+    );
+  }
+
+  return (
+    <div
+      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3"
+      role="list"
+      aria-label={ariaLabel}
+    >
+      {data.map((tile) => {
+        const didPlay = tile.eventCount > 0;
+        const even = didPlay && tile.profit === 0;
+
+        return (
+          <div
+            key={tile.month}
+            role="listitem"
+            className={cn(
+              "min-h-28 rounded-xl border p-3.5 transition-colors",
+              !didPlay && "border-border bg-muted/65 text-muted-foreground",
+              even && "border-border bg-background text-foreground",
+            )}
+            style={tileStyle(tile, largestMagnitude)}
+            aria-label={`${tile.label}: ${
+              didPlay
+                ? `${formatSignedMoney(tile.profit)} across ${pluralize(tile.eventCount, "event")}`
+                : "no events"
+            }`}
+          >
+            <p className="text-xs font-medium opacity-75">{tile.label}</p>
+            <p className="numeric mt-3 text-xl font-semibold tracking-tight">
+              {didPlay ? formatSignedMoney(tile.profit) : "—"}
+            </p>
+            <p className="mt-1 text-[11px] opacity-70">
+              {didPlay
+                ? pluralize(tile.eventCount, "event")
+                : "No events"}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function TournamentSnapshot({ stats }: { stats: TournamentStanding }) {
@@ -214,31 +377,24 @@ function PlayerModeContent({
   const showTournamentSnapshot = !cashMode;
   const showCashSnapshot = !tournamentMode;
 
-  const monthlyChartData = useMemo(() => {
-    if (!hasResults) return [];
-    const firstMonth = history.at(-1)?.date.slice(0, 7);
-    const lastMonth = history[0]?.date.slice(0, 7);
-
-    return profile.monthlyProfit
-      .filter(
-        (point) =>
-          firstMonth &&
-          lastMonth &&
-          point.month >= firstMonth &&
-          point.month <= lastMonth,
-      )
-      .map((point) => ({
-        month: point.label.replace(" 2026", ""),
-        profit: tournamentMode
-          ? point.tournamentProfit
-          : cashMode
-            ? point.cashGameProfit
-            : point.totalProfit,
-        games: history.filter((event) => event.date.startsWith(point.month))
-          .length,
-      }));
-  }, [cashMode, hasResults, history, profile.monthlyProfit, tournamentMode]);
+  const monthlyTileData = useMemo(() => monthlyResults(history), [history]);
   const timelineData = useMemo(() => buildProfitTimeline(history), [history]);
+  const cashSessionData = useMemo(
+    () =>
+      history.flatMap((event) =>
+        event.eventType === "cash-game"
+          ? [
+              {
+                id: event.id,
+                title: event.title,
+                date: event.date,
+                profit: event.netProfit,
+              },
+            ]
+          : [],
+      ),
+    [history],
+  );
 
   const view = mode === "overall"
     ? {
@@ -309,12 +465,30 @@ function PlayerModeContent({
             />
           </CardContent>
         </Card>
-        <Card>
+        {cashMode ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Session P/L</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CashSessionProfitChart
+                data={cashSessionData}
+                height={260}
+                ariaLabel={`${profile.name}'s cash game profit and loss by session`}
+                emptyLabel="No cash game sessions."
+              />
+            </CardContent>
+          </Card>
+        ) : null}
+        <Card className={cn(cashMode && "xl:col-span-2")}>
           <CardHeader>
-            <CardTitle className="text-lg">Net by month</CardTitle>
+            <CardTitle className="text-lg">Monthly results</CardTitle>
           </CardHeader>
           <CardContent>
-            <MonthlyProfitChart data={monthlyChartData} height={300} ariaLabel={`${profile.name}'s ${mode} monthly profit and loss`} emptyLabel="No monthly results." />
+            <MonthlyResultTiles
+              data={monthlyTileData}
+              ariaLabel={`${profile.name}'s ${mode} results by month`}
+            />
           </CardContent>
         </Card>
         {showTournamentChart ? (

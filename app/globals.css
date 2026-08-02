@@ -1,31 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f7f4;
-  --foreground: #18231d;
+  --background: #fbfdfb;
+  --foreground: #132019;
   --card: #ffffff;
-  --card-foreground: #18231d;
+  --card-foreground: #132019;
   --popover: #ffffff;
-  --popover-foreground: #18231d;
-  --primary: #123e2f;
+  --popover-foreground: #132019;
+  --primary: #078a47;
   --primary-foreground: #ffffff;
-  --secondary: #edf1ed;
-  --secondary-foreground: #264036;
-  --muted: #eef1ee;
-  --muted-foreground: #68766f;
-  --accent: #e2eee7;
-  --accent-foreground: #123e2f;
+  --secondary: #f1f6f2;
+  --secondary-foreground: #1e3929;
+  --muted: #f3f6f4;
+  --muted-foreground: #617068;
+  --accent: #e7f7ed;
+  --accent-foreground: #056b38;
   --destructive: #b42318;
   --destructive-foreground: #ffffff;
-  --border: #dfe5e0;
-  --input: #dfe5e0;
-  --ring: #1e6a4d;
-  --positive: #16734e;
-  --negative: #b5473c;
-  --chart-1: #1f6b4e;
-  --chart-2: #8fb8a2;
-  --chart-3: #d2a64f;
-  --chart-4: #697c72;
+  --border: #dfe8e1;
+  --input: #d9e4dc;
+  --ring: #0aa357;
+  --positive: #078a47;
+  --negative: #c43d35;
+  --chart-1: #078a47;
+  --chart-2: #55b77e;
+  --chart-3: #e2a72d;
+  --chart-4: #688078;
   --radius: 0.9rem;
 }
 
@@ -76,8 +76,8 @@ body {
 }
 
 ::selection {
-  background: #c8e0d2;
-  color: #0c2d22;
+  background: #bdecca;
+  color: #063c21;
 }
 
 a,

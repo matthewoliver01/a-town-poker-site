@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 import { createServer } from "node:net";
 import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
+import { formatTime, formatUpdatedAt } from "../lib/format.ts";
 
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 const nextCli = fileURLToPath(
@@ -83,11 +84,14 @@ after(async () => {
   if (appServer.exitCode === null) appServer.kill("SIGKILL");
 });
 
-const [tournaments, cashGames] = await Promise.all([
+const [tournaments, cashGames, siteMetadata] = await Promise.all([
   readFile(new URL("../data/tournaments.json", import.meta.url), "utf8").then(
     JSON.parse,
   ),
   readFile(new URL("../data/cash-games.json", import.meta.url), "utf8").then(
+    JSON.parse,
+  ),
+  readFile(new URL("../data/site-metadata.json", import.meta.url), "utf8").then(
     JSON.parse,
   ),
 ]);
@@ -102,6 +106,14 @@ const latestCompletedCashGame = cashGames
   .sort((a, b) => b.date.localeCompare(a.date))[0];
 const completedTournaments = tournaments.filter(
   (event) => event.status === "completed",
+);
+const incompleteTournament = completedTournaments.find((event) =>
+  event.players.some(
+    (player) =>
+      !player.eliminationLevel &&
+      !player.eliminatedAt &&
+      !player.eliminatedBy,
+  ),
 );
 const completedCashGames = cashGames.filter(
   (event) => event.status === "completed",
@@ -191,6 +203,8 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
   const html = await response.text();
   assert.match(html, /<title>A-Town Poker(?: · A-Town Poker)?<\/title>/i);
   assert.match(html, /<h1[^>]*>A-Town Poker<\/h1>/i);
+  assert.match(html, /Last updated/i);
+  assert.ok(html.includes(formatUpdatedAt(siteMetadata.lastUpdated)));
   assert.doesNotMatch(html, /The ledger behind|Good hands|Better stories/i);
   assert.doesNotMatch(html, /<footer\b/i);
   assert.ok(html.includes(latestCompletedTournament.title));
@@ -242,7 +256,7 @@ test("server-renders generated tournament and cash-game detail routes", async ()
   ]);
   assert.ok(tournamentHtml.includes(detailTournament.title));
   if (detailTournament.startTime) {
-    assert.ok(tournamentHtml.includes(detailTournament.startTime));
+    assert.ok(tournamentHtml.includes(formatTime(detailTournament.startTime)));
   }
   assert.ok(cashGameHtml.includes(latestCompletedCashGame.title));
   assert.ok(cashGameHtml.includes(latestCompletedCashGame.players[0].name));
@@ -257,6 +271,34 @@ test("server-renders generated tournament and cash-game detail routes", async ()
   if (Math.round(buyInTotal * 100) !== Math.round(endingTotal * 100)) {
     assert.match(cashGameHtml, /Review needed/);
   }
+});
+
+test("tournament results place financials first and split optional elimination details", async () => {
+  assert.ok(incompleteTournament);
+  const response = await render(`/tournaments/${incompleteTournament.slug}`);
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  const headers = [...html.matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/g)].map(
+    (match) => textContent(match[1]),
+  );
+  assert.deepEqual(headers, [
+    "Place",
+    "Player",
+    "Payout",
+    "Bought in",
+    "Net",
+    "Level",
+    "Out at",
+    "By",
+  ]);
+  const resultsTable = html.match(/<table\b[\s\S]*?<\/table>/i);
+  assert.ok(resultsTable);
+  assert.match(resultsTable[0], /<colgroup>/i);
+  assert.doesNotMatch(resultsTable[0], /\btext-(?:right|center)\b/);
+  assert.doesNotMatch(html, /Elimination details/i);
+  assert.doesNotMatch(html, /<th[^>]*>Round<\/th>/i);
+  assert.match(html, /—/);
 });
 
 test("server-renders player mode controls and selects modes from the query string", async () => {
@@ -307,7 +349,7 @@ test("server-renders a mixed-format player with overall and cash-game views", as
   assert.ok(overallHtml.includes(mixedFormatPlayerName));
   assert.match(overallHtml, /Event history/i);
   assert.match(overallHtml, /Net over time/i);
-  assert.match(overallHtml, /Net by month/i);
+  assert.match(overallHtml, /Monthly results/i);
   assert.match(overallHtml, /Finish percentile/i);
 
   assertPlayerModeTabs(cashGameHtml, "Cash games");
@@ -315,7 +357,9 @@ test("server-renders a mixed-format player with overall and cash-game views", as
   assert.match(cashGameHtml, /Cash game stats/i);
   assert.match(cashGameHtml, /Cash[- ]game history/i);
   assert.match(cashGameHtml, /Net over time/i);
-  assert.match(cashGameHtml, /Net by month/i);
+  assert.match(cashGameHtml, /Session P\/L/i);
+  assert.match(cashGameHtml, /Last 10/i);
+  assert.match(cashGameHtml, /Monthly results/i);
   assert.ok(cashGameHtml.includes(mixedPlayerCashGame.title));
   assert.doesNotMatch(cashGameHtml, /Tournament stats/i);
   assert.doesNotMatch(cashGameHtml, /Tournament history/i);

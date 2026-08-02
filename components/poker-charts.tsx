@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo } from "react";
+import { useId, useMemo, useState } from "react";
 import { ChartNoAxesColumnIncreasing } from "lucide-react";
 import {
   formatTournamentPlacement,
@@ -24,8 +24,8 @@ import {
   type TooltipContentProps,
 } from "recharts";
 
-const POSITIVE = "#166534";
-const POSITIVE_LIGHT = "#22c55e";
+const POSITIVE = "#16a34a";
+const POSITIVE_LIGHT = "#4ade80";
 const NEGATIVE = "#dc2626";
 const GRID = "var(--border, #e5e7eb)";
 const MUTED = "var(--muted-foreground, #64748b)";
@@ -82,6 +82,23 @@ export type ProfitOverTimeChartProps = {
   compact?: boolean;
 };
 
+export type CashSessionProfitPoint = {
+  id: string;
+  title: string;
+  date: string;
+  profit: number;
+};
+
+export type CashSessionProfitChartProps = {
+  data: readonly CashSessionProfitPoint[];
+  className?: string;
+  height?: number;
+  currency?: string;
+  locale?: string;
+  ariaLabel?: string;
+  emptyLabel?: string;
+};
+
 type ProfitTooltipProps = TooltipContentProps<number, string> & {
   currency: string;
   locale: string;
@@ -104,6 +121,16 @@ type TimelineChartPoint = ProfitTimelinePoint & {
 };
 
 type TimelineTooltipProps = TooltipContentProps<number, string> & {
+  currency: string;
+  locale: string;
+};
+
+type CashSessionChartPoint = CashSessionProfitPoint & {
+  axisKey: string;
+  timestamp: number;
+};
+
+type CashSessionTooltipProps = TooltipContentProps<number, string> & {
   currency: string;
   locale: string;
 };
@@ -323,6 +350,47 @@ function TimelineTooltip({
   );
 }
 
+function CashSessionTooltip({
+  active,
+  payload,
+  currency,
+  locale,
+}: CashSessionTooltipProps) {
+  if (!active || !payload.length) return null;
+
+  const point = payload[0]?.payload as CashSessionChartPoint | undefined;
+  if (!point) return null;
+
+  return (
+    <div className="min-w-40 rounded-lg border border-slate-200/80 bg-white/95 px-3 py-2 text-xs shadow-lg backdrop-blur-sm dark:border-slate-800 dark:bg-slate-950/95">
+      <p className="font-medium text-slate-900 dark:text-slate-100">
+        {point.title}
+      </p>
+      <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
+        {new Intl.DateTimeFormat(locale, {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+          timeZone: "UTC",
+        }).format(new Date(point.timestamp))}
+      </p>
+      <div className="mt-2 flex items-center justify-between gap-5">
+        <span className="text-slate-500 dark:text-slate-400">Session P/L</span>
+        <span
+          className={
+            point.profit >= 0
+              ? "font-semibold tabular-nums text-green-700 dark:text-green-400"
+              : "font-semibold tabular-nums text-red-600 dark:text-red-400"
+          }
+        >
+          {point.profit > 0 ? "+" : ""}
+          {formatMoney(point.profit, currency, locale)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 /**
  * Monthly net poker results. The line and area switch from green to red at zero,
  * so profitable and losing months remain legible without a separate legend.
@@ -450,7 +518,7 @@ export function MonthlyProfitChart({
             )}
           />
           <Area
-            type="monotone"
+            type="linear"
             dataKey="profit"
             name="Net result"
             stroke={`url(#${gradientId})`}
@@ -616,7 +684,7 @@ export function ProfitOverTimeChart({
             )}
           />
           <Area
-            type="monotone"
+            type="linear"
             dataKey="cumulativeProfit"
             name="Running net"
             stroke={`url(#${gradientId})`}
@@ -632,6 +700,188 @@ export function ProfitOverTimeChart({
           />
         </AreaChart>
       </ResponsiveContainer>
+    </div>
+  );
+}
+
+/**
+ * Cash-game results plotted as individual sessions around a true zero line.
+ * The range control keeps dense player histories readable without hiding the
+ * full record.
+ */
+export function CashSessionProfitChart({
+  data,
+  className,
+  height = 300,
+  currency = "USD",
+  locale = "en-US",
+  ariaLabel = "Cash game profit and loss by session",
+  emptyLabel = "Session results will appear after cash games are recorded.",
+}: CashSessionProfitChartProps) {
+  const [range, setRange] = useState<10 | 20 | "all">(10);
+  const safeData = useMemo(
+    () =>
+      data
+        .flatMap((point, index) => {
+          const timestamp = toTimestamp(point.date);
+          return point.id.trim().length > 0 &&
+            point.title.trim().length > 0 &&
+            Number.isFinite(timestamp) &&
+            Number.isFinite(point.profit)
+            ? [
+                {
+                  ...point,
+                  axisKey: `${point.date}-${point.id}-${index}`,
+                  timestamp,
+                },
+              ]
+            : [];
+        })
+        .toSorted(
+          (a, b) =>
+            a.timestamp - b.timestamp || a.axisKey.localeCompare(b.axisKey),
+        ),
+    [data],
+  );
+  const visibleData = useMemo(
+    () => (range === "all" ? safeData : safeData.slice(-range)),
+    [range, safeData],
+  );
+
+  if (!safeData.length) {
+    return (
+      <div className={chartClassName(className)}>
+        <ChartEmptyState label={emptyLabel} height={height} />
+      </div>
+    );
+  }
+
+  const domain = axisDomain(visibleData.map((point) => point.profit));
+  const dateLabels = new Map(
+    visibleData.map((point) => [
+      point.axisKey,
+      formatChartDate(point.timestamp, locale, true),
+    ]),
+  );
+  const accessibleSummary = visibleData
+    .map(
+      (point) =>
+        `${formatChartDate(point.timestamp, locale)}: ${
+          point.profit >= 0 ? "profit" : "loss"
+        } ${formatMoney(Math.abs(point.profit), currency, locale)}`,
+    )
+    .join("; ");
+  const rangeOptions = [
+    { value: 10 as const, label: "Last 10" },
+    { value: 20 as const, label: "Last 20" },
+    { value: "all" as const, label: "All" },
+  ];
+
+  return (
+    <div className={chartClassName(className)}>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-muted-foreground">
+          Showing {visibleData.length} of {safeData.length}{" "}
+          {safeData.length === 1 ? "session" : "sessions"}
+        </p>
+        <div
+          className="inline-flex rounded-lg bg-muted p-1"
+          role="group"
+          aria-label="Cash session range"
+        >
+          {rangeOptions.map((option) => {
+            const active = range === option.value;
+            return (
+              <button
+                key={option.label}
+                type="button"
+                aria-pressed={active}
+                className={[
+                  "h-7 rounded-md border-0 px-2.5 text-xs font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                  active
+                    ? "bg-background text-foreground shadow-sm"
+                    : "bg-transparent text-muted-foreground hover:text-foreground",
+                ].join(" ")}
+                onClick={() => setRange(option.value)}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div
+        style={{ height: Math.max(height, 200) }}
+        role="img"
+        aria-label={`${ariaLabel}. ${accessibleSummary}`}
+      >
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+          <BarChart
+            data={visibleData}
+            margin={{ top: 12, right: 8, bottom: 2, left: 0 }}
+            accessibilityLayer
+            barCategoryGap={visibleData.length < 5 ? "46%" : "24%"}
+          >
+            <CartesianGrid
+              vertical={false}
+              stroke={GRID}
+              strokeDasharray="3 3"
+              opacity={0.75}
+            />
+            <XAxis
+              dataKey="axisKey"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: MUTED, fontSize: 11 }}
+              tickFormatter={(value: string) => dateLabels.get(value) ?? ""}
+              minTickGap={28}
+              interval="preserveStartEnd"
+              tickMargin={10}
+            />
+            <YAxis
+              width={54}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: MUTED, fontSize: 11 }}
+              tickFormatter={(value: number) =>
+                formatMoney(value, currency, locale)
+              }
+              domain={domain}
+              tickMargin={8}
+            />
+            <ReferenceLine
+              y={0}
+              stroke={MUTED}
+              strokeWidth={1.25}
+              strokeOpacity={0.7}
+            />
+            <Tooltip
+              cursor={{ fill: "var(--muted, #f1f5f9)", opacity: 0.55 }}
+              content={(tooltipProps) => (
+                <CashSessionTooltip
+                  {...(tooltipProps as TooltipContentProps<number, string>)}
+                  currency={currency}
+                  locale={locale}
+                />
+              )}
+            />
+            <Bar
+              dataKey="profit"
+              name="Session P/L"
+              maxBarSize={42}
+              radius={[4, 4, 4, 4]}
+              isAnimationActive="auto"
+            >
+              {visibleData.map((point) => (
+                <Cell
+                  key={point.axisKey}
+                  fill={point.profit >= 0 ? POSITIVE : NEGATIVE}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

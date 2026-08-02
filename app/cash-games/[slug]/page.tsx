@@ -3,15 +3,19 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import cashGamesJson from "@/data/cash-games.json";
+import siteContentJson from "@/data/site-content.json";
+import { EventDetailContent } from "@/components/event-detail-content";
 import { PlayerAvatar } from "@/components/player-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDate, formatMoney, formatSignedMoney } from "@/lib/format";
-import type { CashGame } from "@/lib/poker-types";
+import { formatDate, formatMoney, formatSignedMoney, formatTime } from "@/lib/format";
+import type { CashGame, SiteContent } from "@/lib/poker-types";
+import { isAnnouncementActive } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
 
 const cashGames = cashGamesJson as CashGame[];
+const siteContent = siteContentJson as SiteContent;
 
 export function generateStaticParams() {
   return cashGames.map((game) => ({ slug: game.slug }));
@@ -39,6 +43,10 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
   if (!game) notFound();
 
   const totalBuyIn = game.players.reduce((total, player) => total + player.amountBuyIn, 0);
+  const announcements = siteContent.announcements.filter(
+    (announcement) =>
+      announcement.eventId === game.id && isAnnouncementActive(announcement),
+  );
 
   if (game.status === "upcoming") {
     return (
@@ -47,7 +55,7 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
         <header className="border-b pb-6">
           <Badge variant="secondary" className="mb-3">Upcoming</Badge>
           <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{game.title}</h1>
-          <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)} · {game.venue} · {game.startTime}</p>
+          <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)} · {game.venue} · {formatTime(game.startTime)}</p>
         </header>
         <section className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4 border-y py-4 sm:grid-cols-4" aria-label="Cash game details">
           <SummaryStat label="Host" value={game.host} />
@@ -55,6 +63,12 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
           <SummaryStat label="Players" value={String(game.players.length)} />
           <SummaryStat label="Total buy-ins" value={formatMoney(totalBuyIn)} />
         </section>
+        <EventDetailContent
+          eventTitle={game.title}
+          notes={game.notes}
+          photos={game.photos}
+          announcements={announcements}
+        />
         <Card className="mt-8">
           <CardHeader className="border-b"><CardTitle>Registered players</CardTitle></CardHeader>
           <CardContent className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -80,7 +94,7 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
           <div>
             <Badge variant="secondary" className="mb-3">Completed</Badge>
             <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{game.title}</h1>
-            <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)} · {game.venue}{game.startTime ? ` · ${game.startTime}` : ""}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)} · {game.venue}{game.startTime ? ` · ${formatTime(game.startTime)}` : ""}</p>
           </div>
           {biggestWinner ? (
             <div className="lg:text-right">
@@ -97,6 +111,13 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
         <SummaryStat label="Total buy-ins" value={formatMoney(totalBuyIn)} subvalue={`Average: ${formatMoney(averageBuyIn)}`} />
         <SummaryStat label="Ledger" value={ledgerBalanced ? "Balanced" : "Review needed"} subvalue={`Total at end: ${formatMoney(totalCashedOut)}`} />
       </section>
+
+      <EventDetailContent
+        eventTitle={game.title}
+        notes={game.notes}
+        photos={game.photos}
+        announcements={announcements}
+      />
 
       <Card className="mt-8 overflow-hidden">
         <CardHeader className="border-b"><CardTitle className="text-lg">Results</CardTitle></CardHeader>
