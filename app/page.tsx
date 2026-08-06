@@ -270,30 +270,32 @@ export default function Home() {
         : `/cash-games/${slide.eventSlug}`,
   }));
 
-  const latestCompletedDate = [
-    ...completedTournaments.map((event) => event.date),
-    ...completedCashGames.map((event) => event.date),
-  ]
+  const latestCompletedCashGameDate = completedCashGames
+    .map((event) => event.date)
     .sort()
     .at(-1);
-  const latestMonth = latestCompletedDate?.slice(0, 7);
-  const latestMonthLabel = latestCompletedDate
+  const latestMonth = latestCompletedCashGameDate?.slice(0, 7);
+  const latestMonthLabel = latestCompletedCashGameDate
     ? new Intl.DateTimeFormat("en-US", {
         month: "long",
         timeZone: "UTC",
-      }).format(new Date(`${latestCompletedDate}T12:00:00Z`))
+      }).format(new Date(`${latestCompletedCashGameDate}T12:00:00Z`))
     : "Monthly";
   const monthlyLeaders = latestMonth
     ? getTiedMetricLeaders(
         players
           .filter((player) =>
-            player.history.some((event) => event.date.startsWith(latestMonth)),
+            player.history.some(
+              (event) =>
+                event.eventType === "cash-game" &&
+                event.date.startsWith(latestMonth),
+            ),
           )
           .map((player) => ({
             name: player.name,
             value:
               player.monthlyProfit.find((point) => point.month === latestMonth)
-                ?.totalProfit ?? 0,
+                ?.cashGameProfit ?? 0,
           })),
       )
     : undefined;
@@ -386,7 +388,7 @@ export default function Home() {
             label: `${latestMonthLabel} leader`,
             names: monthlyLeaders.names,
             value: formatSignedMoney(monthlyLeaders.value),
-            caption: `Combined profit in ${latestMonthLabel}`,
+            caption: `Cash-game profit in ${latestMonthLabel}`,
             icon: CalendarRange,
           },
         ]

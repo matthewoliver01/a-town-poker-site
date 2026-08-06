@@ -11,6 +11,9 @@ const { default: Home } = await import("../app/page.tsx");
 const tournaments = JSON.parse(
   await readFile(new URL("../data/tournaments.json", import.meta.url), "utf8"),
 );
+const cashGames = JSON.parse(
+  await readFile(new URL("../data/cash-games.json", import.meta.url), "utf8"),
+);
 
 function collectSuperlativeCards(node, cards = []) {
   if (Array.isArray(node)) {
@@ -47,4 +50,51 @@ test("homepage orders the leading superlatives and uses tournament net for Tourn
   assert.deepEqual(tournamentKing.names, expectedNames);
   assert.equal(tournamentKing.value, formatSignedMoney(winningNet));
   assert.equal(tournamentKing.caption, "All-time tournament profit");
+});
+
+test("monthly leader uses only the latest month of completed cash games", () => {
+  const cards = collectSuperlativeCards(Home());
+  const completedCashGames = cashGames.filter((game) => game.status === "completed");
+  const latestCashGameDate = completedCashGames
+    .map((game) => game.date)
+    .sort()
+    .at(-1);
+
+  assert.ok(latestCashGameDate);
+  const latestMonth = latestCashGameDate.slice(0, 7);
+  const latestMonthLabel = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    timeZone: "UTC",
+  }).format(new Date(`${latestCashGameDate}T12:00:00Z`));
+  const playerTotals = new Map();
+
+  for (const game of completedCashGames.filter((event) =>
+    event.date.startsWith(latestMonth),
+  )) {
+    for (const player of game.players) {
+      playerTotals.set(
+        player.name,
+        (playerTotals.get(player.name) ?? 0) +
+          player.amountAtEnd -
+          player.amountBuyIn,
+      );
+    }
+  }
+
+  const winningProfit = Math.max(...playerTotals.values());
+  const expectedNames = [...playerTotals]
+    .filter(([, profit]) => profit === winningProfit)
+    .map(([name]) => name)
+    .sort((a, b) => a.localeCompare(b));
+  const monthlyLeader = cards.find(
+    (card) => card.label === `${latestMonthLabel} leader`,
+  );
+
+  assert.ok(monthlyLeader);
+  assert.deepEqual(monthlyLeader.names, expectedNames);
+  assert.equal(monthlyLeader.value, formatSignedMoney(winningProfit));
+  assert.equal(
+    monthlyLeader.caption,
+    `Cash-game profit in ${latestMonthLabel}`,
+  );
 });

@@ -220,5 +220,68 @@
         "amountAtEnd": 73.25
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-08-05",
+    "slug": "cash-game-2026-08-05",
+    "title": "Wednesday 8/5/26",
+    "date": "2026-08-05",
+    "host": "Matt O.",
+    "venue": "Matt's House",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 30.75
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 61.5
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 70,
+        "amountAtEnd": 29.25
+      },
+      {
+        "name": "Max M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 23.75
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 70,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 42.75
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 31.5
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 73.75
+      },
+      {
+        "name": "Max A.",
+        "amountBuyIn": 30,
+        "amountAtEnd": 36.75
+      }
+    ]
   }
 ]
