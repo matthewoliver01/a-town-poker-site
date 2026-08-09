@@ -283,5 +283,58 @@
         "amountAtEnd": 36.75
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-08-08",
+    "slug": "cash-game-2026-08-08",
+    "title": "Saturday 8/8/26",
+    "date": "2026-08-08",
+    "host": "Nate F.",
+    "venue": "Nate's House",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 10.4
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 42.5
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 61.9
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 19.9
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 45.3
+      }
+    ]
   }
 ]
