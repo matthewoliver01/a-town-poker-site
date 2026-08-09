@@ -411,6 +411,11 @@
     "status": "upcoming",
     "startTime": "18:30",
     "initialBuyIn": 50,
+    "photos": [
+      {
+        "src": "/photos/luck-casino.avif"
+      }
+    ],
     "players": []
   }
 ]
