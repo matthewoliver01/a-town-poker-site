@@ -72,7 +72,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             </Badge>
             <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{tournament.title}</h1>
             <p className="mt-3 text-sm text-muted-foreground">
-              {formatDate(tournament.date)} · {tournament.venue}{tournament.startTime ? ` · ${formatTime(tournament.startTime)}` : ""}
+              {formatDate(tournament.date)}{tournament.startTime ? ` · ${formatTime(tournament.startTime)}` : ""}
             </p>
           </div>
           {tournament.status === "completed" && topFinishers.length > 0 ? (

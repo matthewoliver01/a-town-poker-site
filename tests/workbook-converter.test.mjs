@@ -44,8 +44,8 @@ test("the converter attaches notes and photos to events and builds homepage slid
   const tournaments = sheets.find((sheet) => sheet.sheet === "Tournaments");
   const tournamentId = tournaments.data[4][0];
 
-  tournaments.data[3][9] = "Notes";
-  tournaments.data[4][9] = "A long heads-up battle closed out the night.";
+  tournaments.data[3][8] = "Notes";
+  tournaments.data[4][8] = "A long heads-up battle closed out the night.";
   sheets.push({
     sheet: "Event Photos",
     data: [
@@ -255,7 +255,6 @@ test("an upcoming tournament can have no registered players", async () => {
     "September 2026 Tournament",
     "2026-09-12",
     "Nate F.",
-    "Nate's House",
     "upcoming",
     "7:00 PM",
     20,
@@ -281,7 +280,6 @@ test("a completed tournament still requires at least two players", async () => {
     "October 2026 Tournament",
     "2026-10-10",
     "Nate F.",
-    "Nate's House",
     "completed",
     null,
     20,

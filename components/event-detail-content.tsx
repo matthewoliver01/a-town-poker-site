@@ -20,7 +20,7 @@ function PhotoGallery({
   return (
     <section
       aria-labelledby="event-photos-heading"
-      className="max-w-xl"
+      className="max-w-4xl"
     >
       <div className="mb-3 flex items-center gap-2">
         <Images className="size-4 text-primary" aria-hidden="true" />
@@ -28,17 +28,11 @@ function PhotoGallery({
           Photos
         </h2>
       </div>
-      <div
-        className={
-          photos.length === 1
-            ? "grid"
-            : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-        }
-      >
+      <div className="flex flex-wrap gap-3">
         {photos.map((photo, index) => (
           <figure
             key={`${photo.src}-${index}`}
-            className="group overflow-hidden rounded-2xl border bg-card shadow-sm"
+            className="group w-full max-w-sm overflow-hidden rounded-2xl border bg-card shadow-sm"
           >
             <a
               href={photo.src}

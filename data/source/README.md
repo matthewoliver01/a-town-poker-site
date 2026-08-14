@@ -23,11 +23,13 @@ row, and leaves the last good JSON untouched.
 
 The headers stay on row 4 and data starts on row 5.
 
-- `Tournaments`: the existing columns, followed by optional `Notes` in column J.
+- `Tournaments`: `Tournament ID`, `Slug`, `Title`, `Date`, `Host`, `Status`,
+  `Start Time`, `Initial Buy-In`, followed by optional `Notes` in column I.
 - `Tournament Results`: `Tournament ID`, `Player`, `Total Buy-In`, `Placement`,
   `Placement Payout`, `Bonus Payout`, followed by optional `Elimination Level`,
   `Eliminated At`, and `Eliminated By`.
-- `Cash Games`: the existing columns, followed by optional `Notes` in column J.
+- `Cash Games`: `Cash Game ID`, `Slug`, `Title`, `Date`, `Host`, `Status`,
+  `Start Time`, `Initial Buy-In`, followed by optional `Notes` in column I.
 - `Cash Game Results`: unchanged.
 - `Event Photos`: `Event ID`, `Image Path`, `Caption`, `Show on Home`, `Sort Order`.
 - `Announcements`: `Announcement ID`, `Date`, `Title`, `Body`, `Event ID`,

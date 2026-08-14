@@ -2,8 +2,12 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import React from "react";
-import { formatSignedMoney } from "../lib/format.ts";
-import { getTournamentStandings } from "../lib/poker-data.ts";
+import { formatMoney, formatSignedMoney } from "../lib/format.ts";
+import {
+  getPlayerProfiles,
+  getQualifiedCashGameStandings,
+  getTournamentStandings,
+} from "../lib/poker-data.ts";
 
 globalThis.React = React;
 
@@ -97,4 +101,73 @@ test("monthly leader uses only the latest month of completed cash games", () => 
     monthlyLeader.caption,
     `Cash-game profit in ${latestMonthLabel}`,
   );
+});
+
+test("Best night uses only a single cash-game result", () => {
+  const cards = collectSuperlativeCards(Home());
+  const profits = cashGames
+    .filter((game) => game.status === "completed")
+    .flatMap((game) =>
+      game.players.map((player) => ({
+        name: player.name,
+        profit: player.amountAtEnd - player.amountBuyIn,
+      })),
+    );
+  const winningProfit = Math.max(...profits.map((player) => player.profit));
+  const expectedNames = [
+    ...new Set(
+      profits
+        .filter((player) => player.profit === winningProfit)
+        .map((player) => player.name),
+    ),
+  ].sort((a, b) => a.localeCompare(b));
+  const bestNight = cards.find((card) => card.label === "Best night");
+
+  assert.ok(bestNight);
+  assert.deepEqual(bestNight.names, expectedNames);
+  assert.equal(bestNight.value, formatSignedMoney(winningProfit));
+  assert.equal(bestNight.caption, "Highest single cash-game profit");
+});
+
+test("cash volatility superlatives use only standings-qualified players", () => {
+  const cards = collectSuperlativeCards(Home());
+  const qualified = getQualifiedCashGameStandings(cashGames).filter(
+    (player) => player.profitLossStandardDeviation !== null,
+  );
+  const highestVariance = Math.max(
+    ...qualified.map((player) => player.profitLossStandardDeviation),
+  );
+  const lowestVariance = Math.min(
+    ...qualified.map((player) => player.profitLossStandardDeviation),
+  );
+  const closestToEven = Math.min(
+    ...qualified.map((player) => Math.abs(player.netProfit)),
+  );
+
+  const expectations = [
+    ["Most volatile", highestVariance],
+    ["Least volatile", lowestVariance],
+    ["Most average", closestToEven],
+  ];
+
+  for (const [label, value] of expectations) {
+    const card = cards.find((candidate) => candidate.label === label);
+    assert.ok(card);
+    assert.equal(card.value, formatMoney(value));
+  }
+});
+
+test("Most badges counts every earned badge and preserves ties", () => {
+  const cards = collectSuperlativeCards(Home());
+  const profiles = getPlayerProfiles(tournaments, cashGames);
+  const highestCount = Math.max(...profiles.map((player) => player.badgeCount));
+  const expectedNames = profiles
+    .filter((player) => player.badgeCount === highestCount)
+    .map((player) => player.name)
+    .sort((a, b) => a.localeCompare(b));
+  const mostBadges = cards.find((card) => card.label === "Most badges");
+
+  assert.ok(mostBadges);
+  assert.deepEqual(mostBadges.names, expectedNames);
+  assert.equal(mostBadges.value, String(highestCount));
 });

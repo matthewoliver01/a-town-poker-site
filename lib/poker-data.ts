@@ -23,6 +23,9 @@ import {
   placementRank,
   placementSortValue,
 } from "./poker-placement";
+import { calculatePlayerBadges } from "./player-badges";
+
+export const CASH_STANDINGS_MIN_ATTENDANCE_RATE = 0.25;
 
 const round = (value: number, digits = 2): number => {
   const multiplier = 10 ** digits;
@@ -327,6 +330,23 @@ export const getCashGameStandings = (
     );
 };
 
+export const getCashGameQualificationMinimum = (
+  cashGames: readonly CashGame[],
+): number =>
+  Math.ceil(
+    cashGames.filter(isCompletedCashGame).length *
+      CASH_STANDINGS_MIN_ATTENDANCE_RATE,
+  );
+
+export const getQualifiedCashGameStandings = (
+  cashGames: readonly CashGame[],
+): CashGameStanding[] => {
+  const minimumGames = getCashGameQualificationMinimum(cashGames);
+  return getCashGameStandings(cashGames).filter(
+    (standing) => standing.gamesPlayed >= minimumGames,
+  );
+};
+
 export const getMonthlyProfitSeries = (
   tournaments: readonly Tournament[],
   cashGames: readonly CashGame[],
@@ -488,6 +508,7 @@ export const getPlayerHistory = (
 export const getPlayerProfiles = (
   tournaments: readonly Tournament[],
   cashGames: readonly CashGame[],
+  asOfDate?: string,
 ): PlayerProfile[] => {
   const tournamentStandings = new Map(
     getTournamentStandings(tournaments).map((standing) => [
@@ -503,11 +524,13 @@ export const getPlayerProfiles = (
   );
   const completedTournaments = tournaments.filter(isCompletedTournament);
   const completedCashGames = cashGames.filter(isCompletedCashGame);
+  const playerBadges = calculatePlayerBadges(tournaments, cashGames, asOfDate);
 
   return getPlayerNames(tournaments, cashGames).map((name) => {
     const tournamentStats =
       tournamentStandings.get(name) ?? emptyTournamentStanding(name);
     const cashStats = cashStandings.get(name) ?? emptyCashGameStanding(name);
+    const badges = playerBadges.get(name) ?? [];
 
     return {
       name,
@@ -526,6 +549,8 @@ export const getPlayerProfiles = (
       combinedWinnings:
         tournamentStats.amountWon + cashStats.totalCashedOut,
       combinedNetProfit: tournamentStats.netProfit + cashStats.netProfit,
+      badges,
+      badgeCount: total(badges.map((badge) => badge.count)),
       history: getPlayerHistory(name, tournaments, cashGames),
       monthlyProfit: getMonthlyProfitSeries(tournaments, cashGames, name),
     };

@@ -5,7 +5,6 @@
     "title": "Wednesday 7/15/26",
     "date": "2026-07-15",
     "host": "Matt O.",
-    "venue": "Matt's House",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
@@ -63,7 +62,6 @@
     "title": "Saturday 7/18/26",
     "date": "2026-07-18",
     "host": "Nate F.",
-    "venue": "Nate's House",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
@@ -116,7 +114,6 @@
     "title": "Wednesday 7/22/26",
     "date": "2026-07-22",
     "host": "Matt O.",
-    "venue": "Matt's House",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
@@ -174,7 +171,6 @@
     "title": "Wednesday 7/29/26",
     "date": "2026-07-29",
     "host": "Matt O.",
-    "venue": "Matt's House",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
@@ -227,7 +223,6 @@
     "title": "Wednesday 8/5/26",
     "date": "2026-08-05",
     "host": "Matt O.",
-    "venue": "Matt's House",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
@@ -290,7 +285,6 @@
     "title": "Saturday 8/8/26",
     "date": "2026-08-08",
     "host": "Nate F.",
-    "venue": "Nate's House",
     "status": "completed",
     "startTime": "20:00",
     "initialBuyIn": 20,
@@ -334,6 +328,58 @@
         "name": "Kyser E.",
         "amountBuyIn": 20,
         "amountAtEnd": 45.3
+      }
+    ]
+  },
+  {
+    "id": "cash-game-2026-08-12",
+    "slug": "cash-game-2026-08-12",
+    "title": "Wednesday 8/12/26",
+    "date": "2026-08-12",
+    "host": "Luke K.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 55,
+        "amountAtEnd": 38.2
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 34.2
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 37.7
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 25.4
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 25.3
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Ally K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 47.8
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 26.4
       }
     ]
   }

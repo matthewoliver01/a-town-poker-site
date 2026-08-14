@@ -63,7 +63,7 @@ export function HomeGallery({ items }: { items: HomeGalleryItem[] }) {
 
   return (
     <div
-      className="overflow-hidden rounded-2xl border bg-card shadow-sm"
+      className="w-full max-w-sm overflow-hidden rounded-2xl border bg-card shadow-sm"
       onMouseEnter={() => setInteractionPaused(true)}
       onMouseLeave={() => setInteractionPaused(false)}
       onFocusCapture={() => setInteractionPaused(true)}

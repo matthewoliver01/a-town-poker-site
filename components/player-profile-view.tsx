@@ -1,8 +1,17 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  CalendarRange,
+  CircleDollarSign,
+  Crown,
+  Medal,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react";
 import {
   CashSessionProfitChart,
   ProfitOverTimeChart,
@@ -36,6 +45,8 @@ import {
 import { formatTournamentPlacement } from "@/lib/poker-placement";
 import type {
   CashGameStanding,
+  PlayerBadge,
+  PlayerBadgeKind,
   PlayerHistoryItem,
   PlayerProfile,
   TournamentStanding,
@@ -69,6 +80,65 @@ type MonthlyResultTile = {
 
 const MONTH_TILE_START = "2026-07";
 
+const badgePresentation: Record<
+  PlayerBadgeKind,
+  {
+    label: string;
+    description: string;
+    icon?: LucideIcon;
+    medallionClassName: string;
+  }
+> = {
+  "tournament-champion": {
+    label: "Tournament Gold",
+    description: "Won a tournament outright.",
+    icon: Trophy,
+    medallionClassName: "border-amber-300 bg-amber-100 text-amber-700",
+  },
+  "tournament-runner-up": {
+    label: "Tournament Silver",
+    description: "Finished second in a tournament.",
+    icon: Medal,
+    medallionClassName: "border-slate-300 bg-slate-100 text-slate-600",
+  },
+  "tournament-third-place": {
+    label: "Tournament Bronze",
+    description: "Finished third in a tournament.",
+    icon: Medal,
+    medallionClassName: "border-orange-300 bg-orange-100 text-orange-700",
+  },
+  "tournament-co-champion": {
+    label: "Tournament Co-Champ",
+    description: "Shared first place in a split tournament.",
+    icon: Crown,
+    medallionClassName: "border-violet-300 bg-violet-100 text-violet-700",
+  },
+  "cash-game-winner": {
+    label: "Cash Game Winner",
+    description: "Posted the highest net profit in a cash game.",
+    icon: CircleDollarSign,
+    medallionClassName: "border-emerald-300 bg-emerald-100 text-emerald-700",
+  },
+  "cash-win-streak": {
+    label: "Cash Game Streak",
+    description:
+      "Four or more consecutive profitable cash-game sessions played.",
+    medallionClassName: "border-orange-300 bg-orange-100 text-orange-700",
+  },
+  "monthly-cash-leader": {
+    label: "Monthly Champion",
+    description: "Led cash-game profit for a completed month.",
+    icon: CalendarDays,
+    medallionClassName: "border-sky-300 bg-sky-100 text-sky-700",
+  },
+  "annual-cash-leader": {
+    label: "Yearly Champion",
+    description: "Led cash-game profit for a completed year.",
+    icon: CalendarRange,
+    medallionClassName: "border-teal-300 bg-teal-100 text-teal-700",
+  },
+};
+
 function StatCard({ label, value, note }: StatCardProps) {
   return (
     <Card>
@@ -87,6 +157,92 @@ function StatCard({ label, value, note }: StatCardProps) {
 
 function pluralize(count: number, singular: string, plural = `${singular}s`) {
   return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function TrophyCase({ badges }: { badges: PlayerBadge[] }) {
+  const totalBadges = badges.reduce((sum, badge) => sum + badge.count, 0);
+  const badgeGroups = [...badges.reduce((groups, badge) => {
+    const group = groups.get(badge.kind) ?? [];
+    group.push(badge);
+    groups.set(badge.kind, group);
+    return groups;
+  }, new Map<PlayerBadgeKind, PlayerBadge[]>())];
+
+  return (
+    <Card className="mt-5">
+      <CardContent className="p-3">
+        <div className="mb-2 flex items-center justify-between gap-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Trophy case
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {pluralize(totalBadges, "badge")}
+          </p>
+        </div>
+        {badges.length > 0 ? (
+          <div
+            className="divide-y"
+            role="list"
+            aria-label="Earned badges"
+          >
+            {badgeGroups.map(([kind, groupedBadges]) => {
+              const presentation = badgePresentation[kind];
+
+              return (
+                <div
+                  key={kind}
+                  role="listitem"
+                  className="grid gap-2 py-2 first:pt-0 last:pb-0 sm:grid-cols-[9rem_minmax(0,1fr)] sm:items-center"
+                >
+                  <p className="text-sm font-semibold">{presentation.label}</p>
+                  <div className="flex flex-wrap -space-x-1.5">
+                    {groupedBadges.flatMap((badge) => {
+                      const Icon = presentation.icon;
+                      const label =
+                        kind === "cash-win-streak"
+                          ? `${badge.streakLength}-game cash win streak`
+                          : presentation.label;
+                      const tooltip = `${label}: ${
+                        kind === "cash-win-streak"
+                          ? `Finished profitable in ${badge.streakLength} consecutive cash-game sessions played.`
+                          : presentation.description
+                      }`;
+
+                      return Array.from(
+                        { length: badge.count },
+                        (_, index) => (
+                          <span
+                            key={`${badge.streakLength ?? "standard"}-${index}`}
+                            tabIndex={0}
+                            title={tooltip}
+                            aria-label={tooltip}
+                            className={cn(
+                              "relative grid size-9 place-items-center rounded-full border-2 border-white outline-none shadow-sm transition hover:z-10 hover:-translate-y-0.5 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring",
+                              presentation.medallionClassName,
+                            )}
+                          >
+                            {kind === "cash-win-streak" ? (
+                              <span className="numeric text-sm font-bold leading-none">
+                                {badge.streakLength}
+                              </span>
+                            ) : Icon ? (
+                              <Icon className="size-3.5" aria-hidden="true" />
+                            ) : null}
+                          </span>
+                        ),
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">No badges earned yet.</p>
+        )}
+      </CardContent>
+    </Card>
+  );
 }
 
 function historyForMode(history: PlayerHistoryItem[], mode: PlayerViewMode) {
@@ -162,33 +318,6 @@ function monthlyResults(history: PlayerHistoryItem[]): MonthlyResultTile[] {
   });
 }
 
-function tileStyle(
-  tile: MonthlyResultTile,
-  largestMagnitude: number,
-): CSSProperties | undefined {
-  if (!tile.eventCount || tile.profit === 0) return undefined;
-
-  const intensity = Math.min(
-    1,
-    Math.abs(tile.profit) / Math.max(largestMagnitude, 200),
-  );
-  const backgroundOpacity = 0.1 + intensity * 0.68;
-  const borderOpacity = 0.22 + intensity * 0.62;
-  const positive = tile.profit > 0;
-  const color = positive ? "22, 163, 74" : "220, 38, 38";
-
-  return {
-    backgroundColor: `rgba(${color}, ${backgroundOpacity})`,
-    borderColor: `rgba(${color}, ${borderOpacity})`,
-    color:
-      intensity >= 0.72
-        ? "#ffffff"
-        : positive
-          ? "#14532d"
-          : "#7f1d1d",
-  };
-}
-
 function MonthlyResultTiles({
   data,
   ariaLabel,
@@ -196,13 +325,6 @@ function MonthlyResultTiles({
   data: MonthlyResultTile[];
   ariaLabel: string;
 }) {
-  const largestMagnitude = Math.max(
-    0,
-    ...data
-      .filter((tile) => tile.eventCount > 0)
-      .map((tile) => Math.abs(tile.profit)),
-  );
-
   if (!data.length) {
     return (
       <p className="py-12 text-center text-sm text-muted-foreground">
@@ -219,7 +341,6 @@ function MonthlyResultTiles({
     >
       {data.map((tile) => {
         const didPlay = tile.eventCount > 0;
-        const even = didPlay && tile.profit === 0;
 
         return (
           <div
@@ -228,9 +349,11 @@ function MonthlyResultTiles({
             className={cn(
               "min-h-28 rounded-xl border p-3.5 transition-colors",
               !didPlay && "border-border bg-muted/65 text-muted-foreground",
-              even && "border-border bg-background text-foreground",
+              didPlay && tile.profit >= 0 &&
+                "border-positive bg-positive text-white",
+              didPlay && tile.profit < 0 &&
+                "border-negative bg-negative text-white",
             )}
-            style={tileStyle(tile, largestMagnitude)}
             aria-label={`${tile.label}: ${
               didPlay
                 ? `${formatSignedMoney(tile.profit)} across ${pluralize(tile.eventCount, "event")}`
@@ -450,6 +573,8 @@ function PlayerModeContent({
       <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label={`${profile.name} ${mode} summary`}>
         {summaryCards.map((card) => <StatCard key={card.label} {...card} />)}
       </section>
+
+      <TrophyCase badges={profile.badges} />
 
       <section className="mt-10 grid gap-6 xl:grid-cols-2">
         <Card>

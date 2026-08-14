@@ -6,6 +6,7 @@ import { createServer } from "node:net";
 import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { formatTime, formatUpdatedAt } from "../lib/format.ts";
+import { getPlayerProfiles } from "../lib/poker-data.ts";
 
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 const nextCli = fileURLToPath(
@@ -144,6 +145,21 @@ const mixedFormatPlayerSlug = mixedFormatPlayerName
 const mixedPlayerCashGame = completedCashGames.find((event) =>
   event.players.some((player) => player.name === mixedFormatPlayerName),
 );
+const testPlayerProfiles = getPlayerProfiles(
+  tournaments,
+  cashGames,
+  "2026-08-14",
+);
+const duplicateBadgeProfile = testPlayerProfiles.find((profile) =>
+  profile.badges.some(
+    (badge) => badge.kind === "cash-game-winner" && badge.count > 1,
+  ),
+);
+const monthlyColorProfile = testPlayerProfiles.find(
+  (profile) =>
+    profile.monthlyProfit.some((month) => month.cashGameProfit > 0) &&
+    profile.monthlyProfit.some((month) => month.cashGameProfit < 0),
+);
 
 function textContent(markup) {
   return markup
@@ -215,6 +231,8 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
   assert.match(html, /Most volatile/i);
   assert.match(html, /Least volatile/i);
   assert.match(html, /Most average/i);
+  assert.match(html, /Most badges/i);
+  assert.match(html, /Highest single cash-game profit/i);
   assert.doesNotMatch(html, /Your site is taking shape|Codex is working/i);
 });
 
@@ -233,6 +251,7 @@ test("defaults standings to cash games and honors the tournament query", async (
   ]);
   assertSelectedTabs(cashHtml, ["Cash games", "Tournaments"], "Cash games");
   assert.match(cashHtml, /Variance/i);
+  assert.match(cashHtml, /at least 25% of completed cash games/i);
   assert.match(cashHtml, /standard deviation of session P\/L/i);
   assertSelectedTabs(
     tournamentHtml,
@@ -351,6 +370,8 @@ test("server-renders a mixed-format player with overall and cash-game views", as
   assert.match(overallHtml, /Net over time/i);
   assert.match(overallHtml, /Monthly results/i);
   assert.match(overallHtml, /Finish percentile/i);
+  assert.match(overallHtml, /Trophy case/i);
+  assert.match(overallHtml, /badge/i);
 
   assertPlayerModeTabs(cashGameHtml, "Cash games");
   assert.ok(cashGameHtml.includes(mixedFormatPlayerName));
@@ -364,4 +385,45 @@ test("server-renders a mixed-format player with overall and cash-game views", as
   assert.doesNotMatch(cashGameHtml, /Tournament stats/i);
   assert.doesNotMatch(cashGameHtml, /Tournament history/i);
   assert.doesNotMatch(cashGameHtml, /Finish percentile/i);
+});
+
+test("renders every duplicate trophy as its own hover-labeled icon", async () => {
+  assert.ok(duplicateBadgeProfile);
+  const duplicateBadge = duplicateBadgeProfile.badges.find(
+    (badge) => badge.kind === "cash-game-winner" && badge.count > 1,
+  );
+  assert.ok(duplicateBadge);
+
+  const response = await render(`/players/${duplicateBadgeProfile.slug}`);
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const presentationLabel = "Cash Game Winner";
+  assert.equal(
+    [...html.matchAll(new RegExp(`title="${presentationLabel}:`, "g"))]
+      .length,
+    duplicateBadge.count,
+  );
+  if (duplicateBadgeProfile.name === "Sofia M.") {
+    assert.match(html, /title="4-game cash win streak:/i);
+    assert.equal(
+      [...textContent(html).matchAll(/Cash Game Streak/g)].length,
+      1,
+    );
+  }
+  assert.equal(
+    [...textContent(html).matchAll(new RegExp(presentationLabel, "g"))].length,
+    1,
+  );
+});
+
+test("uses solid site colors for positive and negative monthly results", async () => {
+  assert.ok(monthlyColorProfile);
+  const response = await render(
+    `/players/${monthlyColorProfile.slug}?mode=cash-games`,
+  );
+  assert.equal(response.status, 200);
+  const html = await response.text();
+
+  assert.match(html, /bg-positive text-white/);
+  assert.match(html, /bg-negative text-white/);
 });

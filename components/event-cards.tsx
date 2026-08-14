@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, CircleDollarSign, MapPin, Megaphone, Users } from "lucide-react";
+import { CalendarDays, CircleDollarSign, Megaphone, Users } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatDate, formatMoney, formatSignedMoney, formatTime } from "@/lib/format";
 import { compareTournamentPlacements } from "@/lib/poker-placement";
@@ -113,7 +113,6 @@ export function TournamentCard({
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-2">
             <Meta icon={CalendarDays}>{formatDate(tournament.date)}</Meta>
-            <Meta icon={MapPin}>{tournament.venue}</Meta>
           </div>
         </CardHeader>
         {announcement ? <AnnouncementCallout announcement={announcement} /> : null}
@@ -165,7 +164,6 @@ export function CashGameCard({
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-2">
             <Meta icon={CalendarDays}>{formatDate(game.date)}</Meta>
-            <Meta icon={MapPin}>{game.venue}</Meta>
           </div>
         </CardHeader>
         {announcement ? <AnnouncementCallout announcement={announcement} /> : null}

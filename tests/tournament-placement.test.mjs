@@ -54,7 +54,6 @@ test("calculates best, worst, average, and wins with tie-aware rankings", () => 
     title: id,
     date,
     host: "Alice",
-    venue: "A-Town",
     initialBuyIn: 20,
     status: "completed",
     players: [
@@ -102,7 +101,6 @@ test("splits one tournament win evenly across co-winners", () => {
       title: "Four-way chop",
       date: "2026-03-01",
       host: "Alice",
-      venue: "A-Town",
       initialBuyIn: 20,
       status: "completed",
       players: [

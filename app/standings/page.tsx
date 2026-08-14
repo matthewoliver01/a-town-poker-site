@@ -3,7 +3,12 @@ import cashGamesJson from "@/data/cash-games.json";
 import tournamentsJson from "@/data/tournaments.json";
 import { PageIntro } from "@/components/page-intro";
 import { StandingsTables, type StandingsMode } from "@/components/standings-tables";
-import { getCashGameStandings, getTournamentStandings } from "@/lib/poker-data";
+import {
+  getCashGameQualificationMinimum,
+  getCompletedCashGames,
+  getQualifiedCashGameStandings,
+  getTournamentStandings,
+} from "@/lib/poker-data";
 import type { CashGame, Tournament } from "@/lib/poker-types";
 
 export const metadata: Metadata = {
@@ -26,7 +31,9 @@ function parseStandingsMode(value: string | string[] | undefined): StandingsMode
 export default async function StandingsPage({ searchParams }: StandingsPageProps) {
   const query = await searchParams;
   const tournamentStandings = getTournamentStandings(tournaments);
-  const cashGameStandings = getCashGameStandings(cashGames);
+  const cashGameStandings = getQualifiedCashGameStandings(cashGames);
+  const completedCashGameCount = getCompletedCashGames(cashGames).length;
+  const minimumCashGames = getCashGameQualificationMinimum(cashGames);
   const initialMode = parseStandingsMode(query.mode);
 
   return (
@@ -38,6 +45,8 @@ export default async function StandingsPage({ searchParams }: StandingsPageProps
           key={initialMode}
           tournamentStandings={tournamentStandings}
           cashGameStandings={cashGameStandings}
+          completedCashGameCount={completedCashGameCount}
+          minimumCashGames={minimumCashGames}
           initialMode={initialMode}
         />
       </section>

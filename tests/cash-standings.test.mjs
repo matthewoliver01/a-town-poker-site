@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { getCashGameStandings } from "../lib/poker-data.ts";
+import {
+  getCashGameQualificationMinimum,
+  getCashGameStandings,
+  getQualifiedCashGameStandings,
+} from "../lib/poker-data.ts";
 
 function cashGame(id, date, aliceProfit, bobProfit) {
   return {
@@ -10,7 +14,6 @@ function cashGame(id, date, aliceProfit, bobProfit) {
     title: id,
     date,
     host: "Alice",
-    venue: "A-Town",
     initialBuyIn: 100,
     status: "completed",
     players: [
@@ -42,4 +45,24 @@ test("requires two sessions before reporting cash-game variance", () => {
   ]);
 
   assert.equal(alice.profitLossStandardDeviation, null);
+});
+
+test("cash standings require attendance at 25% of completed games", () => {
+  const games = [
+    cashGame("one", "2026-01-01", 10, -10),
+    cashGame("two", "2026-01-08", 10, -10),
+    cashGame("three", "2026-01-15", 10, -10),
+    cashGame("four", "2026-01-22", 10, -10),
+    cashGame("five", "2026-01-29", 10, -10),
+  ];
+  games[1].players = games[1].players.filter((player) => player.name !== "Bob");
+  games[2].players = games[2].players.filter((player) => player.name !== "Bob");
+  games[3].players = games[3].players.filter((player) => player.name !== "Bob");
+  games[4].players = games[4].players.filter((player) => player.name !== "Bob");
+
+  assert.equal(getCashGameQualificationMinimum(games), 2);
+  assert.deepEqual(
+    getQualifiedCashGameStandings(games).map((player) => player.name),
+    ["Alice"],
+  );
 });

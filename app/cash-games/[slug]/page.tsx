@@ -55,7 +55,7 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
         <header className="border-b pb-6">
           <Badge variant="secondary" className="mb-3">Upcoming</Badge>
           <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{game.title}</h1>
-          <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)} · {game.venue} · {formatTime(game.startTime)}</p>
+          <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)} · {formatTime(game.startTime)}</p>
         </header>
         <section className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4 border-y py-4 sm:grid-cols-4" aria-label="Cash game details">
           <SummaryStat label="Host" value={game.host} />
@@ -94,7 +94,7 @@ export default async function CashGameDetailPage({ params }: { params: Promise<{
           <div>
             <Badge variant="secondary" className="mb-3">Completed</Badge>
             <h1 className="text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{game.title}</h1>
-            <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)} · {game.venue}{game.startTime ? ` · ${formatTime(game.startTime)}` : ""}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{formatDate(game.date)}{game.startTime ? ` · ${formatTime(game.startTime)}` : ""}</p>
           </div>
           {biggestWinner ? (
             <div className="lg:text-right">

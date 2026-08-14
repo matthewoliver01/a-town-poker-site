@@ -42,7 +42,7 @@ test("event photos use a compact 4:3 container without cropping", () => {
     }),
   );
 
-  assert.match(html, /max-w-xl/);
+  assert.match(html, /max-w-sm/);
   assert.match(html, /aspect-\[4\/3\]/);
   assert.match(html, /object-contain/);
 });
@@ -56,7 +56,6 @@ test("upcoming-card announcements have no quote-style rule or indentation", () =
         title: "October Tournament",
         date: "2026-10-10",
         host: "Matt O.",
-        venue: "Matt's House",
         status: "upcoming",
         startTime: "18:30",
         initialBuyIn: 50,

@@ -24,7 +24,6 @@ export interface TournamentBase {
   title: string;
   date: ISODate;
   host: PlayerName;
-  venue: string;
   startTime?: string;
   initialBuyIn: number;
   notes?: string;
@@ -75,7 +74,6 @@ export interface CashGameBase {
   title: string;
   date: ISODate;
   host: PlayerName;
-  venue: string;
   startTime?: string;
   initialBuyIn: number;
   notes?: string;
@@ -215,6 +213,23 @@ export interface CashGameHistoryItem {
 
 export type PlayerHistoryItem = TournamentHistoryItem | CashGameHistoryItem;
 
+export type PlayerBadgeKind =
+  | "tournament-champion"
+  | "tournament-runner-up"
+  | "tournament-third-place"
+  | "tournament-co-champion"
+  | "cash-game-winner"
+  | "cash-win-streak"
+  | "monthly-cash-leader"
+  | "annual-cash-leader";
+
+export interface PlayerBadge {
+  kind: PlayerBadgeKind;
+  count: number;
+  /** Present only for a cash-win-streak badge. */
+  streakLength?: number;
+}
+
 export interface PlayerProfile {
   name: PlayerName;
   slug: string;
@@ -225,6 +240,8 @@ export interface PlayerProfile {
   combinedBuyIn: number;
   combinedWinnings: number;
   combinedNetProfit: number;
+  badges: PlayerBadge[];
+  badgeCount: number;
   history: PlayerHistoryItem[];
   monthlyProfit: MonthlyProfitPoint[];
 }

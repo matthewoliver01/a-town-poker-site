@@ -27,8 +27,8 @@ Each successful update also refreshes `data/site-metadata.json`. Its
 `lastUpdated` timestamp is displayed in the site header.
 
 The event sheets include an optional `Notes` column. Tournament results accept
-optional elimination level, level-clock time remaining, elimination time, and
-eliminator fields. The `Event Photos` sheet controls event galleries and
+optional elimination level, elimination time, and eliminator fields. The
+`Event Photos` sheet controls event galleries and
 the homepage slideshow; the `Announcements` sheet supports general posts or
 posts tied to one tournament or cash game. See `data/source/README.md` for the
 exact columns and examples.

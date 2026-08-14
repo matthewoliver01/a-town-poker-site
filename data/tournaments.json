@@ -5,7 +5,6 @@
     "title": "March 2026 Tournament",
     "date": "2026-03-28",
     "host": "Nate F.",
-    "venue": "Nate's House",
     "status": "completed",
     "initialBuyIn": 20,
     "photos": [
@@ -121,7 +120,6 @@
     "title": "September 2025 Tournament",
     "date": "2025-09-13",
     "host": "Nate F.",
-    "venue": "Nate's House",
     "status": "completed",
     "initialBuyIn": 20,
     "photos": [
@@ -251,7 +249,6 @@
     "title": "August 2026 Tournament",
     "date": "2026-08-01",
     "host": "Nate F.",
-    "venue": "Nate's House",
     "status": "completed",
     "startTime": "18:30",
     "initialBuyIn": 20,
@@ -407,7 +404,6 @@
     "title": "October 2026 High-Stakes",
     "date": "2026-10-10",
     "host": "Matt O.",
-    "venue": "Matt's House",
     "status": "upcoming",
     "startTime": "18:30",
     "initialBuyIn": 50,

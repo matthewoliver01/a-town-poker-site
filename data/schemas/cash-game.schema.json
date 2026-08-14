@@ -14,7 +14,6 @@
       "title",
       "date",
       "host",
-      "venue",
       "status",
       "initialBuyIn",
       "players"
@@ -38,10 +37,6 @@
         "format": "date"
       },
       "host": {
-        "type": "string",
-        "minLength": 1
-      },
-      "venue": {
         "type": "string",
         "minLength": 1
       },

@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
   Activity,
+  Award,
   CalendarRange,
   Coins,
   Flame,
@@ -34,8 +35,8 @@ import {
 } from "@/lib/format";
 import {
   getCashGameStandings,
+  getQualifiedCashGameStandings,
   getCompletedCashGames,
-  getCompletedTournaments,
   getPlayerProfiles,
   getRecentCashGames,
   getRecentTournaments,
@@ -239,13 +240,13 @@ function SuperlativeCard({
 }
 
 export default function Home() {
-  const completedTournaments = getCompletedTournaments(tournaments);
   const completedCashGames = getCompletedCashGames(cashGames);
   const recentTournaments = getRecentTournaments(tournaments, 3);
   const recentCashGames = getRecentCashGames(cashGames, 3);
   const upcoming = getUpcomingTournaments(tournaments)[0];
   const tournamentLeaders = getTournamentStandings(tournaments);
-  const cashLeaders = getCashGameStandings(cashGames);
+  const allCashLeaders = getCashGameStandings(cashGames);
+  const cashLeaders = getQualifiedCashGameStandings(cashGames);
   const players = getPlayerProfiles(tournaments, cashGames);
   const today = currentEasternDate();
   const activeAnnouncements = siteContent.announcements.filter((announcement) =>
@@ -300,7 +301,7 @@ export default function Home() {
       )
     : undefined;
   const cashSpecialists = getTiedMetricLeaders(
-    cashLeaders.map((player) => ({
+    allCashLeaders.map((player) => ({
       name: player.name,
       value: player.netProfit,
     })),
@@ -343,21 +344,23 @@ export default function Home() {
     })),
   );
 
-  const bestNight = getTiedMetricLeaders([
-    ...completedTournaments.flatMap((event) =>
-      event.players.map((player) => ({
+  const mostBadges = getTiedMetricLeaders(
+    players
+      .filter((player) => player.badgeCount > 0)
+      .map((player) => ({
         name: player.name,
-        value:
-          player.placementPayout + player.bonusPayout - player.totalBuyIn,
+        value: player.badgeCount,
       })),
-    ),
-    ...completedCashGames.flatMap((event) =>
+  );
+
+  const bestNight = getTiedMetricLeaders(
+    completedCashGames.flatMap((event) =>
       event.players.map((player) => ({
         name: player.name,
         value: player.amountAtEnd - player.amountBuyIn,
       })),
     ),
-  ]);
+  );
 
   const superlatives: Superlative[] = [
     ...(cashSpecialists
@@ -399,7 +402,7 @@ export default function Home() {
             label: "Best night",
             names: bestNight.names,
             value: formatSignedMoney(bestNight.value),
-            caption: "Highest single-event profit",
+            caption: "Highest single cash-game profit",
             icon: Flame,
           },
         ]
@@ -410,8 +413,19 @@ export default function Home() {
             label: "Biggest Degen",
             names: mostActive.names,
             value: String(mostActive.value),
-            caption: "Tournaments and cash games played",
+            caption: "Total tournaments & cash games",
             icon: UsersRound,
+          },
+        ]
+      : []),
+    ...(mostBadges
+      ? [
+          {
+            label: "Most badges",
+            names: mostBadges.names,
+            value: String(mostBadges.value),
+            caption: "Badges earned",
+            icon: Award,
           },
         ]
       : []),
@@ -421,7 +435,7 @@ export default function Home() {
             label: "Most volatile",
             names: mostVolatile.names,
             value: formatMoney(mostVolatile.value),
-            caption: "Cash-session profit/loss spread",
+            caption: "Cash-game variance",
             icon: Activity,
           },
         ]
@@ -432,7 +446,7 @@ export default function Home() {
             label: "Least volatile",
             names: leastVolatile.names,
             value: formatMoney(leastVolatile.value),
-            caption: "Cash-session profit/loss spread",
+            caption: "Cash-game variance",
             icon: Gauge,
           },
         ]
@@ -443,7 +457,7 @@ export default function Home() {
             label: "Most average",
             names: mostAverage.names,
             value: formatMoney(mostAverage.value),
-            caption: "Distance from $0 cash net",
+            caption: "Net profit",
             icon: Scale,
           },
         ]
@@ -465,7 +479,7 @@ export default function Home() {
             href="/tournaments"
             linkLabel="All tournaments"
           />
-          <div className={upcoming.photos?.length ? "max-w-3xl" : "max-w-2xl"}>
+          <div className={upcoming.photos?.length ? "max-w-sm" : "max-w-2xl"}>
             <TournamentCard
               tournament={upcoming}
               announcement={
@@ -489,7 +503,7 @@ export default function Home() {
           >
             Photos
           </h2>
-          <div className="max-w-2xl">
+          <div className="max-w-sm">
             <HomeGallery items={galleryItems} />
           </div>
         </section>

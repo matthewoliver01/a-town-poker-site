@@ -34,10 +34,14 @@ function PlayerLink({ name, mode }: { name: string; mode: PlayerViewMode }) {
 export function StandingsTables({
   tournamentStandings,
   cashGameStandings,
+  completedCashGameCount,
+  minimumCashGames,
   initialMode = "cash-games",
 }: {
   tournamentStandings: TournamentStanding[];
   cashGameStandings: CashGameStanding[];
+  completedCashGameCount: number;
+  minimumCashGames: number;
   initialMode?: StandingsMode;
 }) {
   const router = useRouter();
@@ -133,7 +137,12 @@ export function StandingsTables({
             </TableBody>
           </Table>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Ranked by net. Variance is the standard deviation of session P/L; at least two sessions are required.</p>
+        <p className="mt-3 text-xs text-muted-foreground">
+          Ranked by net. Players must attend at least 25% of completed cash
+          games—currently {minimumCashGames} of {completedCashGameCount}. Variance
+          is the standard deviation of session P/L; at least two sessions are
+          required.
+        </p>
       </TabsContent>
     </Tabs>
   );
