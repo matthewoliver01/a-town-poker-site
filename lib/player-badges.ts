@@ -39,15 +39,26 @@ function addBadge(
   counts: BadgeCounts,
   playerName: PlayerName,
   kind: PlayerBadgeKind,
-  streakLength?: number,
+  details: Pick<
+    PlayerBadge,
+    "eventDate" | "eventId" | "period" | "streakLength"
+  > = {},
 ) {
   const playerCounts = counts.get(playerName) ?? new Map<string, PlayerBadge>();
-  const key = streakLength ? `${kind}:${streakLength}` : kind;
+  const key = [
+    kind,
+    details.streakLength,
+    details.period,
+    details.eventId,
+    details.eventDate,
+  ]
+    .filter((value) => value !== undefined)
+    .join(":");
   const badge = playerCounts.get(key);
   playerCounts.set(key, {
     kind,
     count: (badge?.count ?? 0) + 1,
-    ...(streakLength ? { streakLength } : {}),
+    ...details,
   });
   counts.set(playerName, playerCounts);
 }
@@ -69,10 +80,12 @@ function awardPeriodLeaders(
   totals: PeriodTotals,
   kind: PlayerBadgeKind,
 ) {
-  for (const playerTotals of totals.values()) {
+  for (const [period, playerTotals] of totals) {
     const leadingTotal = Math.max(...playerTotals.values());
     for (const [playerName, total] of playerTotals) {
-      if (total === leadingTotal) addBadge(counts, playerName, kind);
+      if (total === leadingTotal) {
+        addBadge(counts, playerName, kind, { period });
+      }
     }
   }
 }
@@ -100,6 +113,10 @@ export function calculatePlayerBadges(
 
     for (const player of tournament.players) {
       const rank = placementRank(player.placement);
+      const eventDetails = {
+        eventDate: tournament.date,
+        eventId: tournament.id,
+      };
       if (rank === 1) {
         addBadge(
           counts,
@@ -107,11 +124,22 @@ export function calculatePlayerBadges(
           hasSplitChampion
             ? "tournament-co-champion"
             : "tournament-champion",
+          eventDetails,
         );
       } else if (rank === 2) {
-        addBadge(counts, player.name, "tournament-runner-up");
+        addBadge(
+          counts,
+          player.name,
+          "tournament-runner-up",
+          eventDetails,
+        );
       } else if (rank === 3) {
-        addBadge(counts, player.name, "tournament-third-place");
+        addBadge(
+          counts,
+          player.name,
+          "tournament-third-place",
+          eventDetails,
+        );
       }
     }
   }
@@ -143,7 +171,10 @@ export function calculatePlayerBadges(
         .map((player) => player.name),
     );
     for (const playerName of winningPlayers) {
-      addBadge(counts, playerName, "cash-game-winner");
+      addBadge(counts, playerName, "cash-game-winner", {
+        eventDate: cashGame.date,
+        eventId: cashGame.id,
+      });
     }
 
     for (const player of profits) {
@@ -155,7 +186,9 @@ export function calculatePlayerBadges(
       } else {
         const completedStreak = cashWinStreaks.get(player.name) ?? 0;
         if (completedStreak >= CASH_WIN_STREAK_MINIMUM) {
-          addBadge(counts, player.name, "cash-win-streak", completedStreak);
+          addBadge(counts, player.name, "cash-win-streak", {
+            streakLength: completedStreak,
+          });
         }
         cashWinStreaks.set(player.name, 0);
       }
@@ -176,7 +209,9 @@ export function calculatePlayerBadges(
 
   for (const [playerName, activeStreak] of cashWinStreaks) {
     if (activeStreak >= CASH_WIN_STREAK_MINIMUM) {
-      addBadge(counts, playerName, "cash-win-streak", activeStreak);
+      addBadge(counts, playerName, "cash-win-streak", {
+        streakLength: activeStreak,
+      });
     }
   }
 
@@ -190,7 +225,14 @@ export function calculatePlayerBadges(
         const kindOrder =
           badgeOrder.indexOf(left.kind) - badgeOrder.indexOf(right.kind);
         if (kindOrder !== 0) return kindOrder;
-        return (right.streakLength ?? 0) - (left.streakLength ?? 0);
+        const streakOrder =
+          (right.streakLength ?? 0) - (left.streakLength ?? 0);
+        if (streakOrder !== 0) return streakOrder;
+        const periodOrder = (right.period ?? "").localeCompare(
+          left.period ?? "",
+        );
+        if (periodOrder !== 0) return periodOrder;
+        return (right.eventDate ?? "").localeCompare(left.eventDate ?? "");
       }),
     ]),
   );

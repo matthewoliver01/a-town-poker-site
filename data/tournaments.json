@@ -99,7 +99,7 @@
         "bonusPayout": 0
       },
       {
-        "name": "David P.",
+        "name": "David B.",
         "totalBuyIn": 40,
         "placement": 13,
         "placementPayout": 0,
@@ -412,6 +412,43 @@
         "src": "/photos/luck-casino.avif"
       }
     ],
-    "players": []
+    "players": [
+      {
+        "name": "Matt O.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Luke K.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Dimple P.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Justin A.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Adam B.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Ben H.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "David B.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Nate F.",
+        "totalBuyIn": 50
+      },
+      {
+        "name": "Noah S.",
+        "totalBuyIn": 50
+      }
+    ]
   }
 ]

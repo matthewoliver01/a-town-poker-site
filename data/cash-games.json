@@ -386,7 +386,7 @@
   {
     "id": "cash-game-2026-08-15",
     "slug": "cash-game-2026-08-15",
-    "title": "Saturday 8/15",
+    "title": "Saturday 8/15/26",
     "date": "2026-08-15",
     "host": "Matt O.",
     "status": "completed",
@@ -442,6 +442,68 @@
         "name": "Tony P.",
         "amountBuyIn": 40,
         "amountAtEnd": 0
+      }
+    ]
+  },
+  {
+    "id": "cash-game-2026-08-19",
+    "slug": "cash-game-2026-08-19",
+    "title": "Wednesday 8/19/26",
+    "date": "2026-08-19",
+    "host": "Matt O.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 30,
+        "amountAtEnd": 34
+      },
+      {
+        "name": "Ally K.",
+        "amountBuyIn": 30,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 76.5
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 43
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 40.75
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 50,
+        "amountAtEnd": 17.75
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 81.25
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 31.5
+      },
+      {
+        "name": "Justin A.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 100,
+        "amountAtEnd": 25.25
       }
     ]
   }

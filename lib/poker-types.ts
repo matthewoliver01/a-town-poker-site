@@ -228,6 +228,12 @@ export interface PlayerBadge {
   count: number;
   /** Present only for a cash-win-streak badge. */
   streakLength?: number;
+  /** Award period in YYYY-MM or YYYY format for monthly and yearly badges. */
+  period?: string;
+  /** Cash-game date for an individual Cash Game Winner badge. */
+  eventDate?: ISODate;
+  /** Keeps separate cash games distinct even when they share a date. */
+  eventId?: string;
 }
 
 export interface PlayerProfile {

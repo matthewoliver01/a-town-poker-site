@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import { createServer } from "node:net";
 import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
-import { formatTime, formatUpdatedAt } from "../lib/format.ts";
+import { formatDate, formatTime, formatUpdatedAt } from "../lib/format.ts";
 import { getPlayerProfiles } from "../lib/poker-data.ts";
 
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
@@ -151,9 +151,15 @@ const testPlayerProfiles = getPlayerProfiles(
   "2026-08-14",
 );
 const duplicateBadgeProfile = testPlayerProfiles.find((profile) =>
-  profile.badges.some(
-    (badge) => badge.kind === "cash-game-winner" && badge.count > 1,
-  ),
+  profile.badges
+    .filter((badge) => badge.kind === "cash-game-winner")
+    .reduce((sum, badge) => sum + badge.count, 0) > 1,
+);
+const monthlyChampionProfile = testPlayerProfiles.find((profile) =>
+  profile.badges.some((badge) => badge.kind === "monthly-cash-leader"),
+);
+const tournamentChampionProfile = testPlayerProfiles.find((profile) =>
+  profile.badges.some((badge) => badge.kind === "tournament-champion"),
 );
 const monthlyColorProfile = testPlayerProfiles.find(
   (profile) =>
@@ -169,6 +175,11 @@ function textContent(markup) {
     .replace(/&quot;/g, '"')
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function shortBadgeDate(date) {
+  const [year, month, day] = date.split("-");
+  return `${Number(month)}/${Number(day)}/${year.slice(-2)}`;
 }
 
 function assertPlayerModeTabs(html, selectedLabel) {
@@ -389,20 +400,28 @@ test("server-renders a mixed-format player with overall and cash-game views", as
 
 test("renders every duplicate trophy as its own hover-labeled icon", async () => {
   assert.ok(duplicateBadgeProfile);
-  const duplicateBadge = duplicateBadgeProfile.badges.find(
-    (badge) => badge.kind === "cash-game-winner" && badge.count > 1,
+  const cashWinnerBadges = duplicateBadgeProfile.badges.filter(
+    (badge) => badge.kind === "cash-game-winner",
   );
-  assert.ok(duplicateBadge);
+  const cashWinnerCount = cashWinnerBadges.reduce(
+    (sum, badge) => sum + badge.count,
+    0,
+  );
+  assert.ok(cashWinnerCount > 1);
 
   const response = await render(`/players/${duplicateBadgeProfile.slug}`);
   assert.equal(response.status, 200);
   const html = await response.text();
   const presentationLabel = "Cash Game Winner";
   assert.equal(
-    [...html.matchAll(new RegExp(`title="${presentationLabel}:`, "g"))]
+    [...html.matchAll(new RegExp(`title="${presentationLabel} —`, "g"))]
       .length,
-    duplicateBadge.count,
+    cashWinnerCount,
   );
+  for (const badge of cashWinnerBadges) {
+    assert.ok(badge.eventDate);
+    assert.ok(html.includes(`>${shortBadgeDate(badge.eventDate)}</span>`));
+  }
   if (duplicateBadgeProfile.name === "Sofia M.") {
     assert.match(html, /title="4-game cash win streak:/i);
     assert.equal(
@@ -414,6 +433,48 @@ test("renders every duplicate trophy as its own hover-labeled icon", async () =>
     [...textContent(html).matchAll(new RegExp(presentationLabel, "g"))].length,
     1,
   );
+});
+
+test("renders dated tournament and monthly champion medallions", async () => {
+  assert.ok(tournamentChampionProfile);
+  assert.ok(monthlyChampionProfile);
+  const tournamentBadge = tournamentChampionProfile.badges.find(
+    (badge) => badge.kind === "tournament-champion",
+  );
+  const monthlyBadge = monthlyChampionProfile.badges.find(
+    (badge) => badge.kind === "monthly-cash-leader",
+  );
+  assert.ok(tournamentBadge?.eventDate);
+  assert.equal(monthlyBadge?.period, "2026-07");
+
+  const [tournamentResponse, monthlyResponse] = await Promise.all([
+    render(`/players/${tournamentChampionProfile.slug}`),
+    render(`/players/${monthlyChampionProfile.slug}`),
+  ]);
+  assert.equal(tournamentResponse.status, 200);
+  assert.equal(monthlyResponse.status, 200);
+  const [tournamentHtml, monthlyHtml] = await Promise.all([
+    tournamentResponse.text(),
+    monthlyResponse.text(),
+  ]);
+
+  assert.ok(
+    tournamentHtml.includes(
+      `title="Tournament Gold — ${formatDate(tournamentBadge.eventDate)}:`,
+    ),
+  );
+  assert.ok(
+    tournamentHtml.includes(`>${shortBadgeDate(tournamentBadge.eventDate)}</span>`),
+  );
+  assert.match(monthlyHtml, /title="July 2026 Monthly Champion:/);
+  assert.match(monthlyHtml, />JUL<\/span>/);
+  assert.match(monthlyHtml, />26<\/span>/);
+  assert.equal(
+    [...textContent(monthlyHtml).matchAll(/Monthly Champion/g)].length,
+    1,
+  );
+  assert.match(monthlyHtml, /bg-gradient-to-br p-\[3px\]/);
+  assert.match(monthlyHtml, /ring-black\/30/);
 });
 
 test("uses solid site colors for positive and negative monthly results", async () => {

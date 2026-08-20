@@ -4,11 +4,10 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
-  CalendarDays,
-  CalendarRange,
   CircleDollarSign,
   Crown,
   Medal,
+  Star,
   Trophy,
   type LucideIcon,
 } from "lucide-react";
@@ -86,56 +85,68 @@ const badgePresentation: Record<
     label: string;
     description: string;
     icon?: LucideIcon;
-    medallionClassName: string;
+    detail?: string;
+    frameClassName: string;
+    faceClassName: string;
   }
 > = {
   "tournament-champion": {
     label: "Tournament Gold",
     description: "Won a tournament outright.",
     icon: Trophy,
-    medallionClassName: "border-amber-300 bg-amber-100 text-amber-700",
+    detail: "1",
+    frameClassName: "from-yellow-200 via-amber-500 to-amber-950",
+    faceClassName: "from-amber-400 via-amber-600 to-yellow-950 text-white",
   },
   "tournament-runner-up": {
     label: "Tournament Silver",
     description: "Finished second in a tournament.",
     icon: Medal,
-    medallionClassName: "border-slate-300 bg-slate-100 text-slate-600",
+    detail: "2",
+    frameClassName: "from-slate-100 via-slate-400 to-slate-800",
+    faceClassName: "from-slate-400 via-slate-600 to-slate-900 text-white",
   },
   "tournament-third-place": {
     label: "Tournament Bronze",
     description: "Finished third in a tournament.",
     icon: Medal,
-    medallionClassName: "border-orange-300 bg-orange-100 text-orange-700",
+    detail: "3",
+    frameClassName: "from-orange-200 via-amber-700 to-orange-950",
+    faceClassName: "from-orange-500 via-amber-700 to-orange-950 text-white",
   },
   "tournament-co-champion": {
     label: "Tournament Co-Champ",
     description: "Shared first place in a split tournament.",
     icon: Crown,
-    medallionClassName: "border-violet-300 bg-violet-100 text-violet-700",
+    detail: "T1",
+    frameClassName: "from-fuchsia-300 via-violet-600 to-indigo-950",
+    faceClassName: "from-violet-500 via-violet-700 to-indigo-950 text-white",
   },
   "cash-game-winner": {
     label: "Cash Game Winner",
     description: "Posted the highest net profit in a cash game.",
     icon: CircleDollarSign,
-    medallionClassName: "border-emerald-300 bg-emerald-100 text-emerald-700",
+    frameClassName: "from-emerald-200 via-emerald-600 to-emerald-950",
+    faceClassName: "from-emerald-500 via-emerald-700 to-green-950 text-white",
   },
   "cash-win-streak": {
     label: "Cash Game Streak",
     description:
       "Four or more consecutive profitable cash-game sessions played.",
-    medallionClassName: "border-orange-300 bg-orange-100 text-orange-700",
+    frameClassName: "from-orange-200 via-orange-600 to-red-950",
+    faceClassName: "from-orange-500 via-red-600 to-red-950 text-white",
   },
   "monthly-cash-leader": {
     label: "Monthly Champion",
     description: "Led cash-game profit for a completed month.",
-    icon: CalendarDays,
-    medallionClassName: "border-sky-300 bg-sky-100 text-sky-700",
+    frameClassName: "from-cyan-200 via-blue-600 to-indigo-950",
+    faceClassName: "from-sky-500 via-blue-700 to-indigo-950 text-white",
   },
   "annual-cash-leader": {
     label: "Yearly Champion",
     description: "Led cash-game profit for a completed year.",
-    icon: CalendarRange,
-    medallionClassName: "border-teal-300 bg-teal-100 text-teal-700",
+    frameClassName: "from-teal-200 via-teal-600 to-slate-950",
+    faceClassName: "from-teal-500 via-teal-700 to-slate-950 text-white",
   },
 };
 
@@ -157,6 +168,132 @@ function StatCard({ label, value, note }: StatCardProps) {
 
 function pluralize(count: number, singular: string, plural = `${singular}s`) {
   return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function monthlyBadgeFace(period?: string) {
+  const [year, month] = period?.split("-") ?? [];
+  const monthNumber = Number(month);
+  const yearNumber = Number(year);
+
+  if (!year || !month || !Number.isInteger(monthNumber) || !Number.isInteger(yearNumber)) {
+    return { full: "Unknown month", month: "MON", year: "--" };
+  }
+
+  const date = new Date(Date.UTC(yearNumber, monthNumber - 1, 1));
+  return {
+    month: new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      timeZone: "UTC",
+    })
+      .format(date)
+      .toUpperCase(),
+    full: new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      timeZone: "UTC",
+      year: "numeric",
+    }).format(date),
+    year: year.slice(-2),
+  };
+}
+
+function eventBadgeDate(date?: string) {
+  const [year, month, day] = date?.split("-") ?? [];
+  if (!year || !month || !day) return "DATE";
+  return `${Number(month)}/${Number(day)}/${year.slice(-2)}`;
+}
+
+function badgeTooltip(badge: PlayerBadge) {
+  const presentation = badgePresentation[badge.kind];
+
+  if (badge.kind === "cash-win-streak") {
+    return `${badge.streakLength}-game cash win streak: Finished profitable in ${badge.streakLength} consecutive cash-game sessions played.`;
+  }
+  if (badge.kind === "monthly-cash-leader" && badge.period) {
+    const { full } = monthlyBadgeFace(badge.period);
+    return `${full} Monthly Champion: ${presentation.description}`;
+  }
+  if (badge.kind === "annual-cash-leader" && badge.period) {
+    return `${badge.period} Yearly Champion: ${presentation.description}`;
+  }
+  if (badge.eventDate) {
+    return `${presentation.label} — ${formatDate(badge.eventDate)}: ${presentation.description}`;
+  }
+  return `${presentation.label}: ${presentation.description}`;
+}
+
+function BadgeMedallion({ badge, instance }: { badge: PlayerBadge; instance: number }) {
+  const presentation = badgePresentation[badge.kind];
+  const Icon = presentation.icon;
+  const monthFace = monthlyBadgeFace(badge.period);
+  const tooltip = badgeTooltip(badge);
+
+  return (
+    <span
+      key={`${badge.kind}-${badge.eventId ?? badge.eventDate ?? badge.period ?? badge.streakLength ?? "standard"}-${instance}`}
+      tabIndex={0}
+      title={tooltip}
+      aria-label={tooltip}
+      className={cn(
+        "group/trophy relative grid size-14 shrink-0 place-items-center rounded-[1.05rem] bg-gradient-to-br p-[3px] shadow-[0_6px_14px_-4px_rgba(15,23,42,0.75)] ring-1 ring-black/30 outline-none transition duration-200 hover:z-10 hover:-translate-y-0.5 hover:scale-105 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        presentation.frameClassName,
+      )}
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          "relative grid size-full place-items-center overflow-hidden rounded-[0.82rem] border border-white/40 bg-gradient-to-br shadow-inner",
+          presentation.faceClassName,
+        )}
+      >
+        <span className="absolute inset-[3px] rounded-[0.55rem] ring-1 ring-inset ring-white/20" />
+        <span className="absolute -left-3 -top-5 h-12 w-7 rotate-[32deg] bg-white/20 blur-[1px]" />
+        <span className="absolute bottom-1 left-1 size-1 rounded-full bg-white/70 shadow-[0_0_5px_rgba(255,255,255,0.85)]" />
+        <Star className="absolute right-1 top-1 size-2.5 fill-current opacity-75" />
+
+        {badge.eventDate && Icon ? (
+          <span className="relative z-10 flex flex-col items-center gap-0.5 drop-shadow-sm">
+            <Icon className="size-4.5" strokeWidth={2.35} />
+            <span className="numeric text-[8px] font-black leading-none tracking-tight">
+              {eventBadgeDate(badge.eventDate)}
+            </span>
+          </span>
+        ) : badge.kind === "monthly-cash-leader" ? (
+          <span className="relative z-10 text-center font-black leading-none drop-shadow-sm">
+            <span className="block text-[10px] tracking-[0.08em]">
+              {monthFace.month}
+            </span>
+            <span className="numeric mt-0.5 block text-[9px] opacity-90">
+              {monthFace.year}
+            </span>
+          </span>
+        ) : badge.kind === "annual-cash-leader" ? (
+          <span className="numeric relative z-10 text-[11px] font-black tracking-tight drop-shadow-sm">
+            {badge.period ?? "YEAR"}
+          </span>
+        ) : badge.kind === "cash-win-streak" ? (
+          <span className="numeric relative z-10 text-xl font-black leading-none drop-shadow-sm">
+            {badge.streakLength}
+          </span>
+        ) : Icon ? (
+          <Icon
+            className="relative z-10 size-5 drop-shadow-sm"
+            strokeWidth={2.35}
+          />
+        ) : null}
+
+        {presentation.detail ? (
+          <span
+            className={cn(
+              "numeric absolute z-10 text-[8px] font-black leading-none drop-shadow-sm",
+              badge.eventDate ? "left-1 top-1" : "bottom-1 right-1",
+            )}
+          >
+            {presentation.detail}
+          </span>
+        ) : null}
+      </span>
+    </span>
+  );
 }
 
 function TrophyCase({ badges }: { badges: PlayerBadge[] }) {
@@ -195,43 +332,16 @@ function TrophyCase({ badges }: { badges: PlayerBadge[] }) {
                   className="grid gap-2 py-2 first:pt-0 last:pb-0 sm:grid-cols-[9rem_minmax(0,1fr)] sm:items-center"
                 >
                   <p className="text-sm font-semibold">{presentation.label}</p>
-                  <div className="flex flex-wrap -space-x-1.5">
-                    {groupedBadges.flatMap((badge) => {
-                      const Icon = presentation.icon;
-                      const label =
-                        kind === "cash-win-streak"
-                          ? `${badge.streakLength}-game cash win streak`
-                          : presentation.label;
-                      const tooltip = `${label}: ${
-                        kind === "cash-win-streak"
-                          ? `Finished profitable in ${badge.streakLength} consecutive cash-game sessions played.`
-                          : presentation.description
-                      }`;
-
-                      return Array.from(
-                        { length: badge.count },
-                        (_, index) => (
-                          <span
-                            key={`${badge.streakLength ?? "standard"}-${index}`}
-                            tabIndex={0}
-                            title={tooltip}
-                            aria-label={tooltip}
-                            className={cn(
-                              "relative grid size-9 place-items-center rounded-full border-2 border-white outline-none shadow-sm transition hover:z-10 hover:-translate-y-0.5 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-ring",
-                              presentation.medallionClassName,
-                            )}
-                          >
-                            {kind === "cash-win-streak" ? (
-                              <span className="numeric text-sm font-bold leading-none">
-                                {badge.streakLength}
-                              </span>
-                            ) : Icon ? (
-                              <Icon className="size-3.5" aria-hidden="true" />
-                            ) : null}
-                          </span>
-                        ),
-                      );
-                    })}
+                  <div className="flex flex-wrap gap-2">
+                    {groupedBadges.flatMap((badge) =>
+                      Array.from({ length: badge.count }, (_, index) => (
+                        <BadgeMedallion
+                            key={`${badge.eventId ?? badge.eventDate ?? badge.period ?? badge.streakLength ?? "standard"}-${index}`}
+                          badge={badge}
+                          instance={index}
+                        />
+                      )),
+                    )}
                   </div>
                 </div>
               );

@@ -44,7 +44,12 @@ function cashGame(id, date, results) {
 }
 
 function badgeCount(badges, playerName, kind) {
-  return badges.get(playerName)?.find((badge) => badge.kind === kind)?.count ?? 0;
+  return (
+    badges
+      .get(playerName)
+      ?.filter((badge) => badge.kind === kind)
+      .reduce((sum, badge) => sum + badge.count, 0) ?? 0
+  );
 }
 
 test("awards tournament medals and replaces split first with co-champion badges", () => {
@@ -70,6 +75,13 @@ test("awards tournament medals and replaces split first with co-champion badges"
   assert.equal(badgeCount(badges, "Bob", "tournament-co-champion"), 1);
   assert.equal(badgeCount(badges, "Bob", "tournament-runner-up"), 1);
   assert.equal(badgeCount(badges, "Carla", "tournament-third-place"), 2);
+  assert.deepEqual(
+    badges
+      .get("Carla")
+      ?.filter((badge) => badge.kind === "tournament-third-place")
+      .map((badge) => badge.eventDate),
+    ["2026-02-01", "2026-01-01"],
+  );
 });
 
 test("awards tied cash wins and waits until a month ends for monthly leaders", () => {
@@ -100,6 +112,19 @@ test("awards tied cash wins and waits until a month ends for monthly leaders", (
   assert.equal(badgeCount(badges, "Carla", "cash-game-winner"), 2);
   assert.equal(badgeCount(badges, "Bob", "monthly-cash-leader"), 1);
   assert.equal(badgeCount(badges, "Carla", "monthly-cash-leader"), 0);
+  assert.equal(
+    badges
+      .get("Bob")
+      ?.find((badge) => badge.kind === "monthly-cash-leader")?.period,
+    "2026-07",
+  );
+  assert.deepEqual(
+    badges
+      .get("Carla")
+      ?.filter((badge) => badge.kind === "cash-game-winner")
+      .map((badge) => badge.eventDate),
+    ["2026-08-05", "2026-07-20"],
+  );
 });
 
 test("awards annual cash leaders only after the year ends", () => {
@@ -120,6 +145,37 @@ test("awards annual cash leaders only after the year ends", () => {
 
   assert.equal(badgeCount(badges, "Alice", "annual-cash-leader"), 1);
   assert.equal(badgeCount(badges, "Bob", "annual-cash-leader"), 0);
+  assert.equal(
+    badges
+      .get("Alice")
+      ?.find((badge) => badge.kind === "annual-cash-leader")?.period,
+    "2025",
+  );
+});
+
+test("keeps separate, newest-first badges for each won month", () => {
+  const badges = calculatePlayerBadges(
+    [],
+    [
+      cashGame("january", "2026-01-10", [
+        ["Alice", 10],
+        ["Bob", -10],
+      ]),
+      cashGame("february", "2026-02-10", [
+        ["Alice", 20],
+        ["Bob", -20],
+      ]),
+    ],
+    "2026-03-01",
+  );
+
+  assert.deepEqual(
+    badges
+      .get("Alice")
+      ?.filter((badge) => badge.kind === "monthly-cash-leader")
+      .map((badge) => badge.period),
+    ["2026-02", "2026-01"],
+  );
 });
 
 test("tracks only cash-win streaks of four or more", () => {
