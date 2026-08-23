@@ -15,7 +15,7 @@
     "build": "next build",
     "start": "next start",
     "test": "npm run build && node --import tsx --test tests/*.test.mjs",
-    "lint": "eslint . --ignore-pattern .next"
+    "lint": "eslint . --ignore-pattern .next --ignore-pattern .npm"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
