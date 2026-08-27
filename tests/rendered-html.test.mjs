@@ -213,7 +213,10 @@ function assertSelectedTabs(html, labels, selectedLabel) {
   for (const label of labels) {
     assert.ok(renderedLabels.includes(label), `Expected a ${label} tab`);
   }
-  assert.deepEqual(selectedLabels, [selectedLabel]);
+  assert.deepEqual(
+    selectedLabels,
+    Array.isArray(selectedLabel) ? selectedLabel : [selectedLabel],
+  );
 }
 
 async function render(pathname = "/") {
@@ -247,28 +250,36 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
   assert.doesNotMatch(html, /Your site is taking shape|Codex is working/i);
 });
 
-test("defaults standings to cash games and honors the tournament query", async () => {
-  const [cashResponse, tournamentResponse] = await Promise.all([
+test("keeps sortable standings on the dedicated standings page", async () => {
+  const [cashResponse, tournamentResponse, cashEventsResponse, tournamentEventsResponse] = await Promise.all([
     render("/standings"),
     render("/standings?mode=tournaments"),
+    render("/cash-games"),
+    render("/tournaments"),
   ]);
 
   assert.equal(cashResponse.status, 200);
   assert.equal(tournamentResponse.status, 200);
+  assert.equal(cashEventsResponse.status, 200);
+  assert.equal(tournamentEventsResponse.status, 200);
 
-  const [cashHtml, tournamentHtml] = await Promise.all([
+  const [cashHtml, tournamentHtml, cashEventsHtml, tournamentEventsHtml] = await Promise.all([
     cashResponse.text(),
     tournamentResponse.text(),
+    cashEventsResponse.text(),
+    tournamentEventsResponse.text(),
   ]);
-  assertSelectedTabs(cashHtml, ["Cash games", "Tournaments"], "Cash games");
+  assertSelectedTabs(cashHtml, ["Cash games", "Tournaments", "Overall", "Jul 2026", "Aug 2026"], ["Cash games", "Overall"]);
+  assert.match(cashHtml, /Qualified/i);
+  assert.match(cashHtml, /All players/i);
   assert.match(cashHtml, /Variance/i);
   assert.match(cashHtml, /at least 25% of completed cash games/i);
   assert.match(cashHtml, /standard deviation of session P\/L/i);
-  assertSelectedTabs(
-    tournamentHtml,
-    ["Cash games", "Tournaments"],
-    "Tournaments",
-  );
+  assertSelectedTabs(tournamentHtml, ["Cash games", "Tournaments"], ["Tournaments", "Overall"]);
+  assert.match(tournamentHtml, /Avg\. finish/i);
+  assert.match(tournamentHtml, /aria-sort=/i);
+  assert.doesNotMatch(cashEventsHtml, /<h2[^>]*>Standings<\/h2>/i);
+  assert.doesNotMatch(tournamentEventsHtml, /<h2[^>]*>Standings<\/h2>/i);
 });
 
 test("server-renders generated tournament and cash-game detail routes", async () => {

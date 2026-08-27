@@ -453,6 +453,41 @@ const emptyCashGameStanding = (name: PlayerName): CashGameStanding => ({
   returnOnInvestment: 0,
 });
 
+/**
+ * Builds a monthly cash-game table while keeping qualification tied to the
+ * player's attendance across the full cash-game schedule.
+ */
+export const getCashGameStandingsForMonth = (
+  cashGames: readonly CashGame[],
+  month: string,
+  qualifiedOnly = false,
+): CashGameStanding[] => {
+  const monthlyStandings = getCashGameStandings(
+    cashGames.filter(
+      (cashGame) =>
+        isCompletedCashGame(cashGame) && cashGame.date.startsWith(`${month}-`),
+    ),
+  );
+
+  if (!qualifiedOnly) return monthlyStandings;
+
+  const monthlyByName = new Map(
+    monthlyStandings.map((standing) => [standing.name, standing]),
+  );
+
+  return getQualifiedCashGameStandings(cashGames)
+    .map(
+      (standing) =>
+        monthlyByName.get(standing.name) ?? emptyCashGameStanding(standing.name),
+    )
+    .sort(
+      (a, b) =>
+        b.netProfit - a.netProfit ||
+        b.totalCashedOut - a.totalCashedOut ||
+        a.name.localeCompare(b.name),
+    );
+};
+
 export const getPlayerHistory = (
   playerName: PlayerName,
   tournaments: readonly Tournament[],

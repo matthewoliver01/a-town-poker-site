@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CalendarDays, CircleDollarSign, Megaphone, Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatDate, formatMoney, formatSignedMoney, formatTime } from "@/lib/format";
 import { compareTournamentPlacements } from "@/lib/poker-placement";
@@ -87,9 +88,11 @@ const eventCardClassName =
 export function TournamentCard({
   tournament,
   announcement,
+  compact = false,
 }: {
   tournament: Tournament;
   announcement?: EventCardAnnouncement;
+  compact?: boolean;
 }) {
   const completed = tournament.status === "completed";
   const rankedPlayers = completed
@@ -106,17 +109,20 @@ export function TournamentCard({
     <Link href={`/tournaments/${tournament.slug}`} className="block h-full">
       <Card className={eventCardClassName}>
         {photo ? <EventImage photo={photo} title={tournament.title} /> : null}
-        <CardHeader className="gap-4 p-5 pb-5">
+        <CardHeader className={compact ? "gap-3 p-4" : "gap-4 p-5 pb-5"}>
           <div>
-            <h3 className="text-xl font-bold leading-tight tracking-[-0.025em]">{tournament.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Host: <span className="font-semibold text-foreground">{tournament.host}</span></p>
+            <div className="flex items-start justify-between gap-3">
+              <h3 className={compact ? "text-base font-bold leading-tight tracking-[-0.02em]" : "text-xl font-bold leading-tight tracking-[-0.025em]"}>{tournament.title}</h3>
+              {tournament.status === "upcoming" ? <Badge className="shrink-0">Upcoming</Badge> : null}
+            </div>
+            <p className={compact ? "mt-1.5 text-xs text-muted-foreground" : "mt-2 text-sm text-muted-foreground"}>Host: <span className="font-semibold text-foreground">{tournament.host}</span></p>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-2">
             <Meta icon={CalendarDays}>{formatDate(tournament.date)}</Meta>
           </div>
         </CardHeader>
         {announcement ? <AnnouncementCallout announcement={announcement} /> : null}
-        <CardContent className="mt-auto grid grid-cols-2 divide-x border-t px-0 pb-0">
+        <CardContent className={compact ? "mt-auto grid grid-cols-2 divide-x border-t px-0 pb-0 [&>div]:px-4 [&>div]:py-3 [&_p]:mt-1.5 [&_p]:text-lg" : "mt-auto grid grid-cols-2 divide-x border-t px-0 pb-0"}>
           <CardMetric icon={Users} label="Players" value={tournament.players.length} />
           <CardMetric
             icon={CircleDollarSign}
@@ -141,9 +147,11 @@ export function TournamentCard({
 export function CashGameCard({
   game,
   announcement,
+  compact = false,
 }: {
   game: CashGame;
   announcement?: EventCardAnnouncement;
+  compact?: boolean;
 }) {
   const completed = game.status === "completed";
   const results = completed
@@ -157,17 +165,20 @@ export function CashGameCard({
     <Link href={`/cash-games/${game.slug}`} className="block h-full">
       <Card className={eventCardClassName}>
         {photo ? <EventImage photo={photo} title={game.title} /> : null}
-        <CardHeader className="gap-4 p-5 pb-5">
+        <CardHeader className={compact ? "gap-3 p-4" : "gap-4 p-5 pb-5"}>
           <div>
-            <h3 className="text-xl font-bold leading-tight tracking-[-0.025em]">{game.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Host: <span className="font-semibold text-foreground">{game.host}</span></p>
+            <div className="flex items-start justify-between gap-3">
+              <h3 className={compact ? "text-base font-bold leading-tight tracking-[-0.02em]" : "text-xl font-bold leading-tight tracking-[-0.025em]"}>{game.title}</h3>
+              {game.status === "upcoming" ? <Badge className="shrink-0">Upcoming</Badge> : null}
+            </div>
+            <p className={compact ? "mt-1.5 text-xs text-muted-foreground" : "mt-2 text-sm text-muted-foreground"}>Host: <span className="font-semibold text-foreground">{game.host}</span></p>
           </div>
           <div className="flex flex-wrap gap-x-4 gap-y-2">
             <Meta icon={CalendarDays}>{formatDate(game.date)}</Meta>
           </div>
         </CardHeader>
         {announcement ? <AnnouncementCallout announcement={announcement} /> : null}
-        <CardContent className="mt-auto grid grid-cols-2 divide-x border-t px-0 pb-0">
+        <CardContent className={compact ? "mt-auto grid grid-cols-2 divide-x border-t px-0 pb-0 [&>div]:px-4 [&>div]:py-3 [&_p]:mt-1.5 [&_p]:text-lg" : "mt-auto grid grid-cols-2 divide-x border-t px-0 pb-0"}>
           <CardMetric icon={Users} label="Players" value={game.players.length} />
           <CardMetric
             icon={CircleDollarSign}

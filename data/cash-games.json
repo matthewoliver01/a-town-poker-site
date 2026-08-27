@@ -553,5 +553,52 @@
         "amountAtEnd": 12.2
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-08-26",
+    "slug": "cash-game-2026-08-26",
+    "title": "Wednesday 8/26/26",
+    "date": "2026-08-26",
+    "host": "Matt O.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 34.75
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 25.75
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 20.75
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 36.5
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 16.25
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 34
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 32
+      }
+    ]
   }
 ]

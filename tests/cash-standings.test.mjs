@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   getCashGameQualificationMinimum,
   getCashGameStandings,
+  getCashGameStandingsForMonth,
   getQualifiedCashGameStandings,
 } from "../lib/poker-data.ts";
 
@@ -65,4 +66,22 @@ test("cash standings require attendance at 25% of completed games", () => {
     getQualifiedCashGameStandings(games).map((player) => player.name),
     ["Alice"],
   );
+});
+
+test("monthly standings keep globally qualified players who skipped that month", () => {
+  const games = [
+    cashGame("july-one", "2026-07-01", 10, -10),
+    cashGame("july-two", "2026-07-08", 10, -10),
+    cashGame("august-one", "2026-08-01", 20, -20),
+    cashGame("august-two", "2026-08-08", 20, -20),
+  ];
+  games[2].players = games[2].players.filter((player) => player.name !== "Bob");
+  games[3].players = games[3].players.filter((player) => player.name !== "Bob");
+
+  const august = getCashGameStandingsForMonth(games, "2026-08", true);
+  const bob = august.find((player) => player.name === "Bob");
+
+  assert.ok(bob);
+  assert.equal(bob.gamesPlayed, 0);
+  assert.equal(bob.netProfit, 0);
 });
