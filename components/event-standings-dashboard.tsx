@@ -26,8 +26,7 @@ interface Column<Row> {
 export interface CashStandingsPeriod {
   key: string;
   label: string;
-  all: CashGameStanding[];
-  qualified: CashGameStanding[];
+  standings: CashGameStanding[];
 }
 
 function PlayerLink({ name, mode }: { name: string; mode: "cash-games" | "tournaments" }) {
@@ -148,8 +147,8 @@ const cashColumns: Column<CashGameStanding>[] = [
   { key: "winRate", label: "Win rate", value: (row) => row.winRate, render: (row) => <span className="numeric">{row.winRate.toFixed(0)}%</span>, align: "center" },
   { key: "averageProfitLoss", label: "Avg. P/L", value: (row) => row.averageProfitLoss, render: (row) => <SignedMoney value={row.averageProfitLoss} />, align: "right" },
   { key: "variance", label: "Variance", value: (row) => row.profitLossStandardDeviation, render: (row) => <span className="numeric">{row.profitLossStandardDeviation === null ? "—" : formatMoney(row.profitLossStandardDeviation)}</span>, align: "right" },
-  { key: "biggestWin", label: "Biggest win", value: (row) => row.biggestWin, render: (row) => <span className="numeric text-positive">{row.biggestWin === null ? "—" : formatSignedMoney(row.biggestWin)}</span>, align: "right" },
-  { key: "biggestLoss", label: "Biggest loss", value: (row) => row.biggestLoss, render: (row) => <span className="numeric text-negative">{row.biggestLoss === null ? "—" : formatSignedMoney(row.biggestLoss)}</span>, align: "right" },
+  { key: "biggestWin", label: "Biggest win", value: (row) => row.biggestWin, render: (row) => <span className="numeric text-positive">{row.biggestWin === null || row.biggestWin <= 0 ? "N/A" : formatSignedMoney(row.biggestWin)}</span>, align: "right" },
+  { key: "biggestLoss", label: "Biggest loss", value: (row) => row.biggestLoss, render: (row) => <span className="numeric text-negative">{row.biggestLoss === null || row.biggestLoss >= 0 ? "N/A" : formatSignedMoney(row.biggestLoss)}</span>, align: "right" },
   { key: "roi", label: "ROI", value: (row) => row.returnOnInvestment, render: (row) => <span className={cn("numeric font-medium", row.returnOnInvestment >= 0 ? "text-positive" : "text-negative")}>{row.returnOnInvestment.toFixed(1)}%</span>, align: "right" },
 ];
 
@@ -164,11 +163,11 @@ const tournamentColumns: Column<TournamentStanding>[] = [
   { key: "roi", label: "ROI", value: (row) => row.returnOnInvestment, render: (row) => <span className={cn("numeric font-medium", row.returnOnInvestment >= 0 ? "text-positive" : "text-negative")}>{row.returnOnInvestment.toFixed(1)}%</span>, align: "right" },
 ];
 
-function CashGameStandings({ periods, completedGameCount, minimumGames }: { periods: CashStandingsPeriod[]; completedGameCount: number; minimumGames: number }) {
+function CashGameStandings({ periods }: { periods: CashStandingsPeriod[] }) {
   const [periodKey, setPeriodKey] = useState("overall");
-  const [qualifiedOnly, setQualifiedOnly] = useState(true);
+  const [minimumSessions, setMinimumSessions] = useState(0);
   const period = periods.find((entry) => entry.key === periodKey) ?? periods[0];
-  const rows = qualifiedOnly ? period.qualified : period.all;
+  const rows = period.standings.filter((standing) => standing.gamesPlayed >= minimumSessions);
 
   return (
     <>
@@ -178,14 +177,22 @@ function CashGameStandings({ periods, completedGameCount, minimumGames }: { peri
             {periods.map((entry) => <TabsTrigger key={entry.key} value={entry.key}>{entry.label}</TabsTrigger>)}
           </TabsList>
         </Tabs>
-        <div className="flex shrink-0 items-center gap-1 rounded-xl bg-muted p-1" aria-label="Cash-game standings eligibility">
-          <SlidersHorizontal className="ml-2 size-3.5 text-muted-foreground" aria-hidden="true" />
-          <button type="button" aria-pressed={qualifiedOnly} onClick={() => setQualifiedOnly(true)} className={cn("h-8 rounded-lg px-3 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", qualifiedOnly ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>Qualified</button>
-          <button type="button" aria-pressed={!qualifiedOnly} onClick={() => setQualifiedOnly(false)} className={cn("h-8 rounded-lg px-3 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", !qualifiedOnly ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>All players</button>
-        </div>
+        <label className="flex shrink-0 items-center gap-2 rounded-xl bg-muted px-3 py-1 text-sm font-medium text-muted-foreground">
+          <SlidersHorizontal className="size-3.5" aria-hidden="true" />
+          <span>Minimum sessions</span>
+          <input
+            type="number"
+            min={0}
+            step={1}
+            value={minimumSessions}
+            onChange={(event) => setMinimumSessions(Math.max(0, Number(event.target.value) || 0))}
+            className="h-8 w-14 rounded-lg border-0 bg-background px-2 text-center text-sm font-semibold text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Minimum sessions"
+          />
+        </label>
       </div>
       <SortableStandingsTable rows={rows} columns={cashColumns} emptyMessage="No cash-game results for this period." />
-      <p className="mt-3 text-xs text-muted-foreground">Qualified players attended at least 25% of completed cash games—currently {minimumGames} of {completedGameCount}. Monthly standings use results from that month; qualification always uses the full schedule. Variance is the standard deviation of session P/L.</p>
+      <p className="mt-3 text-xs text-muted-foreground">Monthly standings use results from that month. Variance is the standard deviation of session P/L.</p>
     </>
   );
 }
@@ -204,14 +211,10 @@ export type StandingsMode = "cash-games" | "tournaments";
 export function StandingsDashboard({
   periods,
   tournamentStandings,
-  completedGameCount,
-  minimumGames,
   initialMode = "cash-games",
 }: {
   periods: CashStandingsPeriod[];
   tournamentStandings: TournamentStanding[];
-  completedGameCount: number;
-  minimumGames: number;
   initialMode?: StandingsMode;
 }) {
   const router = useRouter();
@@ -228,7 +231,7 @@ export function StandingsDashboard({
         <TabsTrigger value="tournaments">Tournaments</TabsTrigger>
       </TabsList>
       <TabsContent value="cash-games">
-        <CashGameStandings periods={periods} completedGameCount={completedGameCount} minimumGames={minimumGames} />
+        <CashGameStandings periods={periods} />
       </TabsContent>
       <TabsContent value="tournaments">
         <TournamentStandings standings={tournamentStandings} />

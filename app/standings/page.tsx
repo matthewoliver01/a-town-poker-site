@@ -8,11 +8,9 @@ import {
   type StandingsMode,
 } from "@/components/event-standings-dashboard";
 import {
-  getCashGameQualificationMinimum,
   getCashGameStandings,
   getCashGameStandingsForMonth,
   getCompletedCashGames,
-  getQualifiedCashGameStandings,
   getTournamentStandings,
 } from "@/lib/poker-data";
 import type { CashGame, Tournament } from "@/lib/poker-types";
@@ -69,14 +67,12 @@ export default async function StandingsPage({ searchParams }: { searchParams: Pr
     {
       key: "overall",
       label: "Overall",
-      all: getCashGameStandings(cashGames),
-      qualified: getQualifiedCashGameStandings(cashGames),
+      standings: getCashGameStandings(cashGames),
     },
     ...months.toReversed().map((month) => ({
       key: month,
       label: monthLabel(month),
-      all: getCashGameStandingsForMonth(cashGames, month),
-      qualified: getCashGameStandingsForMonth(cashGames, month, true),
+      standings: getCashGameStandingsForMonth(cashGames, month),
     })),
   ];
 
@@ -88,8 +84,6 @@ export default async function StandingsPage({ searchParams }: { searchParams: Pr
           key={parseMode(query.mode)}
           periods={periods}
           tournamentStandings={getTournamentStandings(tournaments)}
-          completedGameCount={completedCashGames.length}
-          minimumGames={getCashGameQualificationMinimum(cashGames)}
           initialMode={parseMode(query.mode)}
         />
       </section>

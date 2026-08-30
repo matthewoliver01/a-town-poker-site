@@ -600,5 +600,52 @@
         "amountAtEnd": 32
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-08-29",
+    "slug": "cash-game-2026-08-29",
+    "title": "Saturday 8/29/26",
+    "date": "2026-08-29",
+    "host": "Nate F.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 60,
+        "amountAtEnd": 21.7
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 80,
+        "amountAtEnd": 20
+      },
+      {
+        "name": "Justin A.",
+        "amountBuyIn": 25,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 22
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 104.1
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 60,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Noah S.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 157.2
+      }
+    ]
   }
 ]

@@ -241,6 +241,7 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
   assert.ok(html.includes(latestCompletedCashGame.title));
   assert.match(html, /Upcoming tournament/i);
   assert.match(html, /Cash specialist/i);
+  assert.match(html, /Min\. \d+ games? to qualify/i);
   assert.match(html, /Tournament king/i);
   assert.match(html, /Most volatile/i);
   assert.match(html, /Least volatile/i);
@@ -270,10 +271,9 @@ test("keeps sortable standings on the dedicated standings page", async () => {
     tournamentEventsResponse.text(),
   ]);
   assertSelectedTabs(cashHtml, ["Cash games", "Tournaments", "Overall", "Jul 2026", "Aug 2026"], ["Cash games", "Overall"]);
-  assert.match(cashHtml, /Qualified/i);
-  assert.match(cashHtml, /All players/i);
+  assert.match(cashHtml, /Minimum sessions/i);
+  assert.doesNotMatch(cashHtml, /qualified/i);
   assert.match(cashHtml, /Variance/i);
-  assert.match(cashHtml, /at least 25% of completed cash games/i);
   assert.match(cashHtml, /standard deviation of session P\/L/i);
   assertSelectedTabs(tournamentHtml, ["Cash games", "Tournaments"], ["Tournaments", "Overall"]);
   assert.match(tournamentHtml, /Avg\. finish/i);

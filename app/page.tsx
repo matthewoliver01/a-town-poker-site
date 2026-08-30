@@ -35,6 +35,7 @@ import {
 } from "@/lib/format";
 import {
   getCashGameStandings,
+  getCashGameQualificationMinimum,
   getQualifiedCashGameStandings,
   getCompletedCashGames,
   getPlayerProfiles,
@@ -79,11 +80,16 @@ function NetValue({ value }: { value: number }) {
   );
 }
 
-function CashStandings({ standings }: { standings: CashGameStanding[] }) {
+function CashStandings({ standings, minimumGames }: { standings: CashGameStanding[]; minimumGames: number }) {
   return (
     <Card className="overflow-hidden">
       <div className="flex items-center justify-between gap-4 border-b px-4 py-3.5">
-        <h3 className="font-semibold">Cash games</h3>
+        <div>
+          <h3 className="font-semibold">Cash games</h3>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            Min. {minimumGames} {minimumGames === 1 ? "game" : "games"} to qualify
+          </p>
+        </div>
         <Link
           href="/standings"
           className="text-xs font-semibold text-primary hover:underline"
@@ -529,7 +535,10 @@ export default function Home() {
           Standings
         </h2>
         <div className="grid gap-5 lg:grid-cols-2">
-          <CashStandings standings={cashLeaders} />
+          <CashStandings
+            standings={cashLeaders}
+            minimumGames={getCashGameQualificationMinimum(cashGames)}
+          />
           <TournamentStandings standings={tournamentLeaders} />
         </div>
       </section>
