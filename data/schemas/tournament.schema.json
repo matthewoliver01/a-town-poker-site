@@ -52,6 +52,11 @@
         "multipleOf": 0.01,
         "exclusiveMinimum": 0
       },
+      "blindSchedule": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "$ref": "#/$defs/blindScheduleEntry" }
+      },
       "players": {
         "type": "array"
       }
@@ -92,6 +97,44 @@
     ]
   },
   "$defs": {
+    "blindScheduleEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "duration"],
+      "properties": {
+        "level": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "duration": {
+          "oneOf": [
+            { "type": "number", "exclusiveMinimum": 0 },
+            { "type": "string", "minLength": 1, "maxLength": 50 }
+          ]
+        },
+        "smallBlind": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "exclusiveMinimum": 0
+        },
+        "bigBlind": {
+          "type": "number",
+          "multipleOf": 0.01,
+          "exclusiveMinimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": { "required": ["smallBlind"] },
+          "then": { "required": ["bigBlind"] }
+        },
+        {
+          "if": { "required": ["bigBlind"] },
+          "then": { "required": ["smallBlind"] }
+        }
+      ]
+    },
     "completedPlayer": {
       "type": "object",
       "additionalProperties": false,

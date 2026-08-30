@@ -230,6 +230,54 @@ test("the converter includes available elimination details and omits missing one
   assert.equal("eliminatedBy" in incompletePlayer, false);
 });
 
+test("the converter attaches flexible blind schedules to their tournaments", async () => {
+  const sheets = structuredClone(await loadWorkbookSheets());
+  const tournaments = sheets.find((sheet) => sheet.sheet === "Tournaments");
+  const tournamentId = tournaments.data[4][0];
+  sheets.push({
+    sheet: "Blind Schedules",
+    data: [
+      ["Blind Schedules"],
+      ["Add one row per level. Leave both blind amounts blank for breaks."],
+      [],
+      ["Tournament ID", "Level", "Duration", "Small Blind", "Big Blind"],
+      [tournamentId, 1, 20, 0.1, 0.2],
+      [tournamentId, 4.5, "10 min", null, null],
+      [tournamentId, "Break", 15, null, null],
+      [tournamentId, 5, 20, "$5", "$10"],
+    ],
+  });
+
+  const parsed = parsePokerSheets(sheets);
+  const tournament = parsed.tournaments.find((event) => event.id === tournamentId);
+  assert.deepEqual(tournament?.blindSchedule, [
+    { level: "1", duration: 20, smallBlind: 0.1, bigBlind: 0.2 },
+    { level: "4.5", duration: "10 min" },
+    { level: "Break", duration: 15 },
+    { level: "5", duration: 20, smallBlind: 5, bigBlind: 10 },
+  ]);
+});
+
+test("the converter requires both blind amounts when a schedule row is not a break", async () => {
+  const sheets = structuredClone(await loadWorkbookSheets());
+  const tournaments = sheets.find((sheet) => sheet.sheet === "Tournaments");
+  sheets.push({
+    sheet: "Blind Schedules",
+    data: [
+      [],
+      [],
+      [],
+      ["Tournament ID", "Level", "Duration", "Small Blind", "Big Blind"],
+      [tournaments.data[4][0], 1, 20, 1, null],
+    ],
+  });
+
+  assert.throws(
+    () => parsePokerSheets(sheets),
+    /enter both blind amounts or leave both blank for a break/,
+  );
+});
+
 test("the converter accepts tournament results without optional elimination columns", async () => {
   const sheets = structuredClone(await loadWorkbookSheets());
   const results = sheets.find((sheet) => sheet.sheet === "Tournament Results");

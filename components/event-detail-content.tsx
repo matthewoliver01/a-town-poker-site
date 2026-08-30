@@ -1,7 +1,8 @@
-import { Images, Megaphone, NotebookText, Pin } from "lucide-react";
+import { Clock3, Images, ListOrdered, Megaphone, NotebookText, Pin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDate } from "@/lib/format";
-import type { EventPhoto, SiteAnnouncement } from "@/lib/poker-types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { formatDate, formatMoney } from "@/lib/format";
+import type { EventPhoto, SiteAnnouncement, TournamentBlindLevel } from "@/lib/poker-types";
 
 interface EventDetailContentProps {
   eventTitle: string;
@@ -74,6 +75,98 @@ function NotesCard({ notes }: { notes: string }) {
       </CardHeader>
       <CardContent className="whitespace-pre-line pt-5 text-sm leading-6 text-muted-foreground">
         {notes}
+      </CardContent>
+    </Card>
+  );
+}
+
+function formatBlindDuration(duration: TournamentBlindLevel["duration"]) {
+  return typeof duration === "number" ? `${duration} min` : duration;
+}
+
+function estimatedDuration(schedule: TournamentBlindLevel[]) {
+  let totalMinutes = 0;
+  let hasDuration = false;
+  let approximate = false;
+
+  for (const entry of schedule) {
+    const minutes =
+      typeof entry.duration === "number"
+        ? entry.duration
+        : Number.parseFloat(entry.duration.match(/^\s*(\d+(?:\.\d+)?)/)?.[1] ?? "NaN");
+    if (!Number.isFinite(minutes)) continue;
+    totalMinutes += minutes;
+    hasDuration = true;
+    if (typeof entry.duration === "string" && entry.duration.includes("+")) {
+      approximate = true;
+    }
+  }
+
+  if (!hasDuration) return null;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = Math.round(totalMinutes % 60);
+  const parts = [hours > 0 ? `${hours} hr` : "", minutes > 0 ? `${minutes} min` : ""].filter(Boolean);
+  return `${parts.join(" ") || "0 min"}${approximate ? "+" : ""}`;
+}
+
+export function TournamentBlindSchedule({
+  schedule,
+}: {
+  schedule: TournamentBlindLevel[];
+}) {
+  const totalTime = estimatedDuration(schedule);
+
+  return (
+    <Card className="max-w-3xl overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between gap-4 border-b">
+        <div className="flex items-center gap-2">
+          <ListOrdered className="size-4 text-primary" aria-hidden="true" />
+          <CardTitle className="text-base">Blind schedule</CardTitle>
+        </div>
+        {totalTime ? (
+          <div className="text-right">
+            <p className="text-[11px] text-muted-foreground">Total estimated time</p>
+            <p className="numeric text-sm font-semibold">{totalTime}</p>
+          </div>
+        ) : null}
+      </CardHeader>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader className="bg-muted/40">
+            <TableRow className="hover:bg-transparent">
+              <TableHead>Level</TableHead>
+              <TableHead>
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock3 className="size-3.5" aria-hidden="true" /> Duration
+                </span>
+              </TableHead>
+              <TableHead>Small blind</TableHead>
+              <TableHead>Big blind</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {schedule.map((entry, index) => (
+              <TableRow key={`${entry.level}-${index}`}>
+                <TableCell className="font-medium">{entry.level}</TableCell>
+                <TableCell>{formatBlindDuration(entry.duration)}</TableCell>
+                <TableCell className="numeric">
+                  {entry.smallBlind === undefined ? (
+                    <span className="text-muted-foreground">—</span>
+                  ) : (
+                    formatMoney(entry.smallBlind)
+                  )}
+                </TableCell>
+                <TableCell className="numeric">
+                  {entry.bigBlind === undefined ? (
+                    <span className="text-muted-foreground">—</span>
+                  ) : (
+                    formatMoney(entry.bigBlind)
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

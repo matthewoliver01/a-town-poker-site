@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import tournamentsJson from "@/data/tournaments.json";
 import siteContentJson from "@/data/site-content.json";
-import { EventDetailContent } from "@/components/event-detail-content";
+import { EventDetailContent, TournamentBlindSchedule } from "@/components/event-detail-content";
 import { PlayerAvatar } from "@/components/player-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -158,6 +158,11 @@ export default async function TournamentDetailPage({ params }: { params: Promise
           </CardContent>
         </Card>
       )}
+      {tournament.blindSchedule?.length ? (
+        <div className="mt-8">
+          <TournamentBlindSchedule schedule={tournament.blindSchedule} />
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -18,6 +18,17 @@ export interface EventPhoto {
   caption?: string;
 }
 
+export interface TournamentBlindLevel {
+  /** Level number or a label such as "Break". Decimal levels (for example 4.5) are supported. */
+  level: string;
+  /** Usually minutes, but descriptive text is allowed for a flexible workbook entry. */
+  duration: number | string;
+  /** Omitted for breaks. */
+  smallBlind?: number;
+  /** Omitted for breaks. */
+  bigBlind?: number;
+}
+
 export interface TournamentBase {
   id: string;
   slug: string;
@@ -28,6 +39,7 @@ export interface TournamentBase {
   initialBuyIn: number;
   notes?: string;
   photos?: EventPhoto[];
+  blindSchedule?: TournamentBlindLevel[];
 }
 
 export interface CompletedTournamentPlayer {

@@ -61,6 +61,11 @@ const TABLES = {
       "Eliminated By",
     ],
   },
+  blindSchedules: {
+    sheet: "Blind Schedules",
+    headers: ["Tournament ID", "Level", "Duration", "Small Blind", "Big Blind"],
+    optionalSheet: true,
+  },
   cashGames: {
     sheet: "Cash Games",
     headers: [
@@ -356,6 +361,32 @@ const optionalEliminationLevel = (row, column) => {
   fail(row, column, "enter a level number or short label.");
 };
 
+const requireBlindLevel = (row, column) => {
+  const value = cleanCell(row[column]);
+  if (isBlank(value)) fail(row, column, "a level is required.");
+
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return String(value);
+  }
+
+  if (typeof value === "string" && value.length <= 50) return value;
+
+  fail(row, column, "enter a positive level number or a short label such as Break.");
+};
+
+const requireBlindDuration = (row, column) => {
+  const value = cleanCell(row[column]);
+  if (isBlank(value)) fail(row, column, "a duration is required.");
+
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string" && value.length <= 50) return value;
+
+  fail(row, column, "enter a positive duration or a short label.");
+};
+
 export const parseTournamentPlacementCell = (value) => {
   const cleaned = cleanCell(value);
 
@@ -509,6 +540,50 @@ const groupPlayerRows = (rows, idColumn, validIds, onWarning) => {
   return grouped;
 };
 
+const groupBlindScheduleRows = (rows, validTournamentIds) => {
+  const grouped = new Map();
+
+  for (const row of rows) {
+    const tournamentId = requireString(row, "Tournament ID");
+    if (!validTournamentIds.has(tournamentId)) {
+      fail(
+        row,
+        "Tournament ID",
+        `“${tournamentId}” does not match a tournament on the Tournaments sheet.`,
+      );
+    }
+
+    const level = requireBlindLevel(row, "Level");
+    const duration = requireBlindDuration(row, "Duration");
+    const smallBlindIsBlank = isBlank(row["Small Blind"]);
+    const bigBlindIsBlank = isBlank(row["Big Blind"]);
+
+    if (smallBlindIsBlank !== bigBlindIsBlank) {
+      fail(
+        row,
+        smallBlindIsBlank ? "Small Blind" : "Big Blind",
+        "enter both blind amounts or leave both blank for a break.",
+      );
+    }
+
+    const entry = {
+      level,
+      duration,
+      ...(!smallBlindIsBlank
+        ? {
+            smallBlind: requireMoney(row, "Small Blind", 0.01),
+            bigBlind: requireMoney(row, "Big Blind", 0.01),
+          }
+        : {}),
+    };
+    const schedule = grouped.get(tournamentId) ?? [];
+    schedule.push(entry);
+    grouped.set(tournamentId, schedule);
+  }
+
+  return grouped;
+};
+
 const assertPlayerRows = (event, playerRows, minimum = 2) => {
   if (playerRows.length < minimum) {
     fail(
@@ -659,7 +734,7 @@ const cleanEventPhotos = (photos = []) =>
     ...(photo.caption ? { caption: photo.caption } : {}),
   }));
 
-const buildTournaments = (parents, groupedRows, groupedPhotos) => {
+const buildTournaments = (parents, groupedRows, groupedPhotos, groupedBlindSchedules) => {
   assertUnique(parents, "id", "Tournament ID", "Tournament ID");
   assertUnique(parents, "slug", "tournament slug", "Slug");
 
@@ -776,6 +851,9 @@ const buildTournaments = (parents, groupedRows, groupedPhotos) => {
       ...(event.notes ? { notes: event.notes } : {}),
       ...(groupedPhotos.has(event.id)
         ? { photos: cleanEventPhotos(groupedPhotos.get(event.id)) }
+        : {}),
+      ...(groupedBlindSchedules.has(event.id)
+        ? { blindSchedule: groupedBlindSchedules.get(event.id) }
         : {}),
       players: cleanPlayers,
     };
@@ -906,6 +984,10 @@ export const parsePokerSheets = (sheets, { onWarning = () => {} } = {}) => {
     sheetMap.get(TABLES.tournamentResults.sheet),
     TABLES.tournamentResults,
   );
+  const blindScheduleRows = mapSheetRows(
+    sheetMap.get(TABLES.blindSchedules.sheet),
+    TABLES.blindSchedules,
+  );
   const cashGameRows = mapSheetRows(
     sheetMap.get(TABLES.cashGames.sheet),
     TABLES.cashGames,
@@ -967,6 +1049,10 @@ export const parsePokerSheets = (sheets, { onWarning = () => {} } = {}) => {
     cashGameIds,
     onWarning,
   );
+  const groupedBlindSchedules = groupBlindScheduleRows(
+    blindScheduleRows,
+    tournamentIds,
+  );
   const photos = parseEventPhotos(eventPhotoRows, eventDirectory);
   const announcements = parseAnnouncements(announcementRows, eventDirectory);
   const groupedPhotos = groupPhotos(photos);
@@ -976,6 +1062,7 @@ export const parsePokerSheets = (sheets, { onWarning = () => {} } = {}) => {
       tournamentParents,
       tournamentPlayerRows,
       groupedPhotos,
+      groupedBlindSchedules,
     ),
     cashGames: buildCashGames(cashGameParents, cashGamePlayerRows, groupedPhotos),
     siteContent: buildSiteContent(photos, announcements, eventDirectory),
