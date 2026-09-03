@@ -336,13 +336,24 @@ export default function Home() {
     volatilityCandidates.length >= 2
       ? getTiedMetricLeaders(volatilityCandidates, "lowest")
       : undefined;
-  const mostAverage = getTiedMetricLeaders(
-    cashLeaders.map((player) => ({
-      name: player.name,
-      value: Math.abs(player.netProfit),
-    })),
+  const mostAverageCandidates = cashLeaders.map((player) => ({
+    name: player.name,
+    value: Math.abs(player.netProfit),
+    netProfit: player.netProfit,
+  }));
+  const mostAverageMetric = getTiedMetricLeaders(
+    mostAverageCandidates,
     "lowest",
   );
+  const mostAverage = mostAverageMetric
+    ? {
+        ...mostAverageMetric,
+        value:
+          mostAverageCandidates.find((candidate) =>
+            mostAverageMetric.names.includes(candidate.name),
+          )?.netProfit ?? 0,
+      }
+    : undefined;
   const mostActive = getTiedMetricLeaders(
     players.map((player) => ({
       name: player.name,
@@ -462,7 +473,7 @@ export default function Home() {
           {
             label: "Most average",
             names: mostAverage.names,
-            value: formatMoney(mostAverage.value),
+            value: formatSignedMoney(mostAverage.value),
             caption: "Net profit",
             icon: Scale,
           },

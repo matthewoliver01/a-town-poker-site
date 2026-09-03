@@ -647,5 +647,77 @@
         "amountAtEnd": 157.2
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-09-02",
+    "slug": "cash-game-2026-09-02",
+    "title": "Wednesday 9/2/26",
+    "date": "2026-09-02",
+    "host": "Matt O.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 32.5
+      },
+      {
+        "name": "Reid H.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 26.75
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 30,
+        "amountAtEnd": 61.25
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 73.75
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 45
+      },
+      {
+        "name": "Justin A.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Ally K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 50,
+        "amountAtEnd": 33.75
+      },
+      {
+        "name": "Noah S.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 20.5
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 26.5
+      }
+    ]
   }
 ]

@@ -143,6 +143,9 @@ test("cash volatility superlatives use only standings-qualified players", () => 
   const closestToEven = Math.min(
     ...qualified.map((player) => Math.abs(player.netProfit)),
   );
+  const closestPlayer = qualified.find(
+    (player) => Math.abs(player.netProfit) === closestToEven,
+  );
 
   const expectations = [
     ["Most volatile", highestVariance],
@@ -153,7 +156,12 @@ test("cash volatility superlatives use only standings-qualified players", () => 
   for (const [label, value] of expectations) {
     const card = cards.find((candidate) => candidate.label === label);
     assert.ok(card);
-    assert.equal(card.value, formatMoney(value));
+    assert.equal(
+      card.value,
+      label === "Most average"
+        ? formatSignedMoney(closestPlayer.netProfit)
+        : formatMoney(value),
+    );
   }
 });
 
