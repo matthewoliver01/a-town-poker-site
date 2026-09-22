@@ -766,5 +766,136 @@
         "amountAtEnd": 38.75
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-09-12",
+    "slug": "cash-game-2026-09-12",
+    "title": "Saturday 9/12/26",
+    "date": "2026-09-12",
+    "host": "Luke K.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 36.1
+      },
+      {
+        "name": "Noah S.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 18.8
+      },
+      {
+        "name": "Wyatt",
+        "amountBuyIn": 40,
+        "amountAtEnd": 21.1
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 84
+      }
+    ]
+  },
+  {
+    "id": "cash-game-2026-09-16",
+    "slug": "cash-game-2026-09-16",
+    "title": "Wednesday 9/16/26",
+    "date": "2026-09-16",
+    "host": "Luke K.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 30.2
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 18.2
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 26.7
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 24.9
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 12.9
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 7.1
+      }
+    ]
+  },
+  {
+    "id": "cash-game-2026-09-19",
+    "slug": "cash-game-2026-09-19",
+    "title": "Saturday 9/19/26",
+    "date": "2026-09-19",
+    "host": "Nate F.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 23.8
+      },
+      {
+        "name": "Dimple P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 23.6
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 62.4
+      },
+      {
+        "name": "Ben H.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 76.5
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 80,
+        "amountAtEnd": 51.5
+      },
+      {
+        "name": "Sammy A.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 22.2
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      }
+    ]
   }
 ]
