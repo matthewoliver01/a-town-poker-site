@@ -959,5 +959,62 @@
         "amountAtEnd": 35
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-09-26",
+    "slug": "cash-game-2026-09-26",
+    "title": "Saturday 9/26/26",
+    "date": "2026-09-26",
+    "host": "Nate F.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 40
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 41.6
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 9.6
+      },
+      {
+        "name": "Noah S.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 45.8
+      },
+      {
+        "name": "Sammy A.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 28.5
+      },
+      {
+        "name": "Justin A.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 21.9
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 51.6
+      }
+    ]
   }
 ]

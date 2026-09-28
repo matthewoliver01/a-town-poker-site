@@ -33,6 +33,21 @@ the homepage slideshow; the `Announcements` sheet supports general posts or
 posts tied to one tournament or cash game. See `data/source/README.md` for the
 exact columns and examples.
 
+## Upcoming tournament logistics and rules
+
+Long-form tournament details live in `content/tournaments/<Tournament ID>.md`,
+not in Excel. Each `## Heading` becomes a section on the upcoming tournament
+page, with jump links, followed by the Excel-powered players and blind schedule.
+Start with `content/tournaments/tournament-2026-10-10.md`, or copy `_template.md`
+for a new event. Missing files are optional; completed pages stay unchanged.
+
+Save the Markdown and refresh your local page; no `update-data` step is needed.
+Commit and rebuild/deploy to publish it. Excel, its conversion script, and the
+header's data-update timestamp still work exactly as before.
+See [the editing guide](content/tournaments/README.md) for formatting and examples.
+
+## Check the data
+
 Check that the workbook and JSON match without changing files:
 
 ```bash

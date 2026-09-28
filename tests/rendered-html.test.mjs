@@ -7,6 +7,7 @@ import { after, before, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { formatDate, formatTime, formatUpdatedAt } from "../lib/format.ts";
 import { getPlayerProfiles } from "../lib/poker-data.ts";
+import { getTournamentGuide } from "../lib/tournament-guide.ts";
 
 const projectRoot = fileURLToPath(new URL("..", import.meta.url));
 const nextCli = fileURLToPath(
@@ -150,7 +151,8 @@ const testPlayerProfiles = getPlayerProfiles(
   cashGames,
   "2026-08-14",
 );
-const duplicateBadgeProfile = testPlayerProfiles.find((profile) =>
+// Match the live page's current-date awards; retain historical fixtures below.
+const duplicateBadgeProfile = getPlayerProfiles(tournaments, cashGames).find((profile) =>
   profile.badges
     .filter((badge) => badge.kind === "cash-game-winner")
     .reduce((sum, badge) => sum + badge.count, 0) > 1,
@@ -241,7 +243,7 @@ test("server-renders the A-Town Poker home page with generated event data", asyn
   assert.ok(html.includes(latestCompletedCashGame.title));
   assert.match(html, /Upcoming tournament/i);
   assert.match(html, /Cash specialist/i);
-  assert.match(html, /Min\. \d+ games? to qualify/i);
+  assert.match(textContent(html), /Min\. \d+ games? to qualify/i);
   assert.match(html, /Tournament king/i);
   assert.match(html, /Most volatile/i);
   assert.match(html, /Least volatile/i);
@@ -340,6 +342,54 @@ test("tournament results place financials first and split optional elimination d
   assert.doesNotMatch(html, /Elimination details/i);
   assert.doesNotMatch(html, /<th[^>]*>Round<\/th>/i);
   assert.match(html, /—/);
+});
+
+test("production tournament pages show Markdown guides only for upcoming events", async (t) => {
+  let guidedTournament;
+  let guide;
+  for (const tournament of tournaments.filter((event) => event.status === "upcoming")) {
+    const candidate = await getTournamentGuide(tournament.id);
+    if (candidate?.sections.length) {
+      guidedTournament = tournament;
+      guide = candidate;
+      break;
+    }
+  }
+  if (!guidedTournament) {
+    t.skip("No upcoming tournament currently has a Markdown guide.");
+    return;
+  }
+
+  const [upcomingResponse, completedResponse] = await Promise.all([
+    render(`/tournaments/${guidedTournament.slug}`),
+    render(`/tournaments/${latestCompletedTournament.slug}`),
+  ]);
+  assert.equal(upcomingResponse.status, 200);
+  assert.equal(completedResponse.status, 200);
+  const [upcomingHtml, completedHtml] = await Promise.all([
+    upcomingResponse.text(),
+    completedResponse.text(),
+  ]);
+
+  assert.match(upcomingHtml, /aria-label="Tournament sections"/);
+  for (const section of guide.sections) {
+    assert.ok(upcomingHtml.includes(`href="#${section.id}"`));
+    assert.ok(upcomingHtml.includes(`id="${section.id}"`));
+    assert.ok(upcomingHtml.includes(`id="${section.id}-heading"`));
+    assert.ok(textContent(upcomingHtml).includes(section.title));
+  }
+  const sectionIds = [...upcomingHtml.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(sectionIds.filter((id) => guide.sections.some((section) => section.id === id)), guide.sections.map(({ id }) => id));
+  assert.ok(sectionIds.includes("registered-players"));
+  if (guidedTournament.blindSchedule?.length) {
+    assert.equal(sectionIds.at(-1), "blind-schedule");
+  }
+  if (guidedTournament.players.length === 0) {
+    assert.match(upcomingHtml, /No players registered yet\./);
+  }
+  assert.doesNotMatch(completedHtml, /aria-label="Tournament sections"/);
+  assert.doesNotMatch(completedHtml, /<section\b[^>]*\bid="tournament-info/);
+  assert.match(completedHtml, /Results/);
 });
 
 test("server-renders player mode controls and selects modes from the query string", async () => {

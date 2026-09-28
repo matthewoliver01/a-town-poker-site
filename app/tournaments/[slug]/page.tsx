@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import tournamentsJson from "@/data/tournaments.json";
 import siteContentJson from "@/data/site-content.json";
 import { EventDetailContent, TournamentBlindSchedule } from "@/components/event-detail-content";
+import { UpcomingTournament } from "@/components/upcoming-tournament";
 import { PlayerAvatar } from "@/components/player-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { formatDate, formatMoney, formatSignedMoney, formatTime } from "@/lib/fo
 import { compareTournamentPlacements, formatTournamentPlacement } from "@/lib/poker-placement";
 import type { SiteContent, Tournament } from "@/lib/poker-types";
 import { isAnnouncementActive } from "@/lib/site-content";
+import { getTournamentGuide } from "@/lib/tournament-guide";
 import { cn } from "@/lib/utils";
 
 const tournaments = tournamentsJson as Tournament[];
@@ -60,6 +62,10 @@ export default async function TournamentDetailPage({ params }: { params: Promise
       isAnnouncementActive(announcement),
   );
 
+  if (tournament.status === "upcoming") {
+    return <UpcomingTournament tournament={tournament} guide={await getTournamentGuide(tournament.id)} announcements={announcements} />;
+  }
+
   return (
     <div className="page-shell py-8 sm:py-12">
       <Link href="/tournaments" className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"><ArrowLeft className="size-4" /> All tournaments</Link>
@@ -99,8 +105,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
         announcements={announcements}
       />
 
-      {tournament.status === "completed" ? (
-        <Card className="mt-8 overflow-hidden">
+      <Card className="mt-8 overflow-hidden">
             <CardHeader className="border-b"><CardTitle className="text-lg">Results</CardTitle></CardHeader>
             <CardContent className="p-0">
               <Table className="table-fixed min-w-[820px] [&_td]:px-2.5 [&_th]:px-2.5">
@@ -149,15 +154,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                 </TableBody>
               </Table>
             </CardContent>
-        </Card>
-      ) : (
-        <Card className="mt-8 overflow-hidden">
-          <CardHeader className="border-b"><CardTitle className="text-lg">Registered players</CardTitle></CardHeader>
-          <CardContent className="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
-            {tournament.players.length > 0 ? tournament.players.map((player) => <div key={player.name} className="flex items-center gap-3 rounded-xl border p-3"><PlayerAvatar name={player.name} /><div><p className="font-semibold">{player.name}</p><p className="numeric mt-1 text-xs text-muted-foreground">Buy-in: {formatMoney(player.totalBuyIn)}</p></div></div>) : <p className="text-sm text-muted-foreground sm:col-span-2 lg:col-span-3">No players registered yet.</p>}
-          </CardContent>
-        </Card>
-      )}
+      </Card>
       {tournament.blindSchedule?.length ? (
         <div className="mt-8">
           <TournamentBlindSchedule schedule={tournament.blindSchedule} />
