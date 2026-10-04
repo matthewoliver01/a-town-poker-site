@@ -1073,5 +1073,52 @@
         "amountAtEnd": 44
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-10-03",
+    "slug": "cash-game-2026-10-03",
+    "title": "Saturday 10/3/26",
+    "date": "2026-10-03",
+    "host": "Nate F.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Ben H.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 39.1
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 12.8
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 36.7
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 15
+      },
+      {
+        "name": "Noah S.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 19.4
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 21.2
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 54.3
+      }
+    ]
   }
 ]
