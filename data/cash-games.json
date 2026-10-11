@@ -1087,7 +1087,7 @@
       {
         "name": "Ben H.",
         "amountBuyIn": 20,
-        "amountAtEnd": 39.1
+        "amountAtEnd": 39.3
       },
       {
         "name": "Luke K.",
@@ -1097,7 +1097,7 @@
       {
         "name": "Adam B.",
         "amountBuyIn": 20,
-        "amountAtEnd": 36.7
+        "amountAtEnd": 36.9
       },
       {
         "name": "Tony P.",
@@ -1112,12 +1112,12 @@
       {
         "name": "Sofia M.",
         "amountBuyIn": 20,
-        "amountAtEnd": 21.2
+        "amountAtEnd": 22.2
       },
       {
         "name": "Nate F.",
         "amountBuyIn": 40,
-        "amountAtEnd": 54.3
+        "amountAtEnd": 54.4
       }
     ]
   }

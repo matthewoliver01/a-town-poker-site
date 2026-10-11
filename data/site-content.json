@@ -1,6 +1,16 @@
 {
   "slides": [
     {
+      "id": "tournament-2026-10-10-photo-4",
+      "src": "/photos/october2026tourney.heic",
+      "caption": "October 2026 tournament winner: Adam B.",
+      "eventId": "tournament-2026-10-10",
+      "eventType": "tournament",
+      "eventSlug": "tournament-2026-10-10",
+      "eventTitle": "October 2026 High-Stakes",
+      "eventDate": "2026-10-10"
+    },
+    {
       "id": "tournament-2026-08-01-photo-3",
       "src": "/photos/august2026tourney.jpg",
       "caption": "August 2026 tournament winner: Nathan C.",

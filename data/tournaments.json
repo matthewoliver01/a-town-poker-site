@@ -502,30 +502,31 @@
     "title": "October 2026 High-Stakes",
     "date": "2026-10-10",
     "host": "Matt O.",
-    "status": "upcoming",
+    "status": "completed",
     "startTime": "18:30",
     "initialBuyIn": 50,
     "photos": [
       {
-        "src": "/photos/luck-casino.avif"
+        "src": "/photos/october2026tourney.heic",
+        "caption": "October 2026 tournament winner: Adam B."
       }
     ],
     "blindSchedule": [
       {
         "level": "1",
-        "duration": 20,
+        "duration": 30,
         "smallBlind": 0.25,
         "bigBlind": 0.5
       },
       {
         "level": "2",
-        "duration": 20,
+        "duration": 30,
         "smallBlind": 0.5,
         "bigBlind": 1
       },
       {
         "level": "3",
-        "duration": 20,
+        "duration": 30,
         "smallBlind": 0.75,
         "bigBlind": 1.5
       },
@@ -542,14 +543,14 @@
       {
         "level": "5",
         "duration": 20,
-        "smallBlind": 1.25,
-        "bigBlind": 2.5
+        "smallBlind": 1.5,
+        "bigBlind": 3
       },
       {
         "level": "6",
         "duration": 20,
-        "smallBlind": 1.5,
-        "bigBlind": 3
+        "smallBlind": 2,
+        "bigBlind": 4
       },
       {
         "level": "Break",
@@ -558,26 +559,26 @@
       {
         "level": "7",
         "duration": 15,
-        "smallBlind": 2,
-        "bigBlind": 4
-      },
-      {
-        "level": "8",
-        "duration": 15,
         "smallBlind": 3,
         "bigBlind": 6
       },
       {
-        "level": "9",
+        "level": "8",
         "duration": 15,
         "smallBlind": 4,
         "bigBlind": 8
       },
       {
-        "level": "10",
+        "level": "9",
         "duration": 15,
         "smallBlind": 5,
         "bigBlind": 10
+      },
+      {
+        "level": "10",
+        "duration": 15,
+        "smallBlind": 6,
+        "bigBlind": 12
       },
       {
         "level": "Break",
@@ -586,23 +587,17 @@
       {
         "level": "11",
         "duration": 15,
-        "smallBlind": 6,
-        "bigBlind": 12
-      },
-      {
-        "level": "12",
-        "duration": 15,
         "smallBlind": 8,
         "bigBlind": 16
       },
       {
-        "level": "13",
+        "level": "12",
         "duration": 15,
         "smallBlind": 10,
         "bigBlind": 20
       },
       {
-        "level": "14",
+        "level": "13",
         "duration": 15,
         "smallBlind": 12,
         "bigBlind": 25
@@ -611,39 +606,73 @@
     "players": [
       {
         "name": "Matt O.",
-        "totalBuyIn": 50
+        "totalBuyIn": 50,
+        "placement": 8,
+        "eliminationLevel": "4",
+        "eliminatedAt": "20:51",
+        "placementPayout": 0,
+        "bonusPayout": 0
       },
       {
         "name": "Luke K.",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Dimple P.",
-        "totalBuyIn": 50
-      },
-      {
-        "name": "Sammy A.",
-        "totalBuyIn": 50
+        "totalBuyIn": 50,
+        "placement": 6,
+        "eliminationLevel": "5",
+        "eliminatedAt": "21:10",
+        "placementPayout": 0,
+        "bonusPayout": 0
       },
       {
         "name": "Adam B.",
-        "totalBuyIn": 50
+        "totalBuyIn": 50,
+        "placement": 1,
+        "placementPayout": 375,
+        "bonusPayout": 0
       },
       {
         "name": "Ben H.",
-        "totalBuyIn": 50
+        "totalBuyIn": 225,
+        "placement": 5,
+        "eliminationLevel": "6",
+        "eliminatedAt": "21:26",
+        "placementPayout": 0,
+        "bonusPayout": 0
       },
       {
         "name": "David B.",
-        "totalBuyIn": 50
+        "totalBuyIn": 50,
+        "placement": 3,
+        "eliminationLevel": "11",
+        "eliminatedAt": "23:08",
+        "placementPayout": 62.5,
+        "bonusPayout": 0
       },
       {
         "name": "Nate F.",
-        "totalBuyIn": 50
+        "totalBuyIn": 50,
+        "placement": 2,
+        "eliminationLevel": "12",
+        "eliminatedAt": "23:29",
+        "placementPayout": 187.5,
+        "bonusPayout": 0
       },
       {
         "name": "Noah S.",
-        "totalBuyIn": 50
+        "totalBuyIn": 50,
+        "placement": 7,
+        "eliminationLevel": "5",
+        "eliminatedAt": "21:05",
+        "placementPayout": 0,
+        "bonusPayout": 0
+      },
+      {
+        "name": "Sofia M.",
+        "totalBuyIn": 100,
+        "placement": 4,
+        "eliminationLevel": "8",
+        "eliminatedAt": "22:19",
+        "placementPayout": 0,
+        "bonusPayout": 0
       }
     ]
   }
