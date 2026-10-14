@@ -1120,5 +1120,47 @@
         "amountAtEnd": 54.4
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-10-07",
+    "slug": "cash-game-2026-10-07",
+    "title": "Wednesday 10/7/26",
+    "date": "2026-10-07",
+    "host": "Luke K.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 30,
+        "amountAtEnd": 14.1
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 55
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 15.7
+      },
+      {
+        "name": "Nathan C.",
+        "amountBuyIn": 30,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 35.3
+      },
+      {
+        "name": "Noah S.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 19.9
+      }
+    ]
   }
 ]
