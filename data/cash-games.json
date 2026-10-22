@@ -1162,5 +1162,42 @@
         "amountAtEnd": 19.9
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-10-21",
+    "slug": "cash-game-2026-10-21",
+    "title": "Wednesday 10/21/26",
+    "date": "2026-10-21",
+    "host": "Matt O.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 43
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 60,
+        "amountAtEnd": 21.5
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 33.25
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 26.25
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 36
+      }
+    ]
   }
 ]
