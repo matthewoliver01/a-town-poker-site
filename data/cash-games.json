@@ -1199,5 +1199,67 @@
         "amountAtEnd": 36
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-10-24",
+    "slug": "cash-game-2026-10-24",
+    "title": "Saturday 10/24/26",
+    "date": "2026-10-24",
+    "host": "Nate F.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Liam M.",
+        "amountBuyIn": 23.5,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "David P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 47.7
+      },
+      {
+        "name": "Ben H.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 55.5
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 70.1
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 82.6
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 55,
+        "amountAtEnd": 0
+      },
+      {
+        "name": "Justin A.",
+        "amountBuyIn": 25,
+        "amountAtEnd": 7.6
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 0
+      }
+    ]
   }
 ]
