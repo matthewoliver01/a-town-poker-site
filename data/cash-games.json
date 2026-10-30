@@ -1261,5 +1261,52 @@
         "amountAtEnd": 0
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-10-28",
+    "slug": "cash-game-2026-10-28",
+    "title": "Wednesday 10/28/26",
+    "date": "2026-10-28",
+    "host": "Matt O.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 28
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 10.5
+      },
+      {
+        "name": "Kyser E.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 21.25
+      },
+      {
+        "name": "Tony P.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 59.5
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 9.5
+      },
+      {
+        "name": "Justin A.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 37
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 14.25
+      }
+    ]
   }
 ]
