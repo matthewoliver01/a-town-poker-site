@@ -1308,5 +1308,79 @@
         "amountAtEnd": 14.25
       }
     ]
+  },
+  {
+    "id": "cash-game-2026-11-04",
+    "slug": "cash-game-2026-11-04",
+    "title": "Wednesday 11/4/26",
+    "date": "2026-11-04",
+    "host": "Matt O.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 22.75
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 18.25
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 22.5
+      },
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 16.5
+      }
+    ]
+  },
+  {
+    "id": "cash-game-2026-11-14",
+    "slug": "cash-game-2026-11-14",
+    "title": "Saturday 11/14/26",
+    "date": "2026-11-14",
+    "host": "Nate F.",
+    "status": "completed",
+    "startTime": "20:00",
+    "initialBuyIn": 20,
+    "players": [
+      {
+        "name": "Matt O.",
+        "amountBuyIn": 60,
+        "amountAtEnd": 20.7
+      },
+      {
+        "name": "Luke K.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 49.1
+      },
+      {
+        "name": "Noah S.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 23
+      },
+      {
+        "name": "Nate F.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 35
+      },
+      {
+        "name": "Sofia M.",
+        "amountBuyIn": 40,
+        "amountAtEnd": 11
+      },
+      {
+        "name": "Adam B.",
+        "amountBuyIn": 20,
+        "amountAtEnd": 61.2
+      }
+    ]
   }
 ]
